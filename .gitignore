@@ -1,0 +1,10 @@
+.class
+*.class
+.classpath
+*.classpath
+.settings/
+.settings
+target/
+*/target/
+bin
+*/bin
