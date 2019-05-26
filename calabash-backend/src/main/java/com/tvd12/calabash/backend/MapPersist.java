@@ -3,7 +3,7 @@ package com.tvd12.calabash.backend;
 import java.util.Map;
 import java.util.Set;
 
-import com.tvd12.ezyfox.binding.EzyWriter;
+import com.tvd12.calabash.backend.exception.UnimplementedOperationException;
 import com.tvd12.ezyfox.reflect.EzyGenerics;
 
 public interface MapPersist<K, V> {
@@ -29,7 +29,7 @@ public interface MapPersist<K, V> {
 			return args[0];
 		}
 		catch(Exception e) {
-			return null;
+			throw new UnimplementedOperationException("must implement 'getKeyType' function", e);
 		}
 	}
 	

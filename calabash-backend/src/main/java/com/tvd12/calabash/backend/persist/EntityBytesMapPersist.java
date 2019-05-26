@@ -8,16 +8,24 @@ import java.util.Set;
 import com.tvd12.calabash.backend.BytesMapPersist;
 import com.tvd12.calabash.backend.MapPersist;
 import com.tvd12.calabash.core.util.ByteArray;
+import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersist {
 
-	protected Class<?> keyType;
-	protected Class<?> valueType;
-	protected MapPersist mapPersist;
-	protected EzyEntityCodec entityCodec;
+	protected final Class<?> keyType;
+	protected final Class<?> valueType;
+	protected final MapPersist mapPersist;
+	protected final EzyEntityCodec entityCodec;
+	
+	protected EntityBytesMapPersist(Builder builder) {
+		this.mapPersist = builder.mapPersist;
+		this.entityCodec = builder.entityCodec;
+		this.keyType = mapPersist.getKeyType();
+		this.valueType = mapPersist.getValueType();
+	}
 	
 	@Override
 	public Map<ByteArray, byte[]> loadAll() {
@@ -86,5 +94,28 @@ public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersis
 		}
 		mapPersist.delete(keyEntities);
 	}
+	
+	public static Builder builder() {
+		return new Builder();
+	}
 
+	public static class Builder implements EzyBuilder<EntityBytesMapPersist> {
+		protected MapPersist mapPersist;
+		protected EzyEntityCodec entityCodec;
+		
+		public Builder mapPersist(MapPersist mapPersist) {
+			this.mapPersist = mapPersist;
+			return this;
+		}
+		
+		public Builder entityCodec(EzyEntityCodec entityCodec) {
+			this.entityCodec = entityCodec;
+			return this;
+		}
+		
+		@Override
+		public EntityBytesMapPersist build() {
+			return new EntityBytesMapPersist(this);
+		}
+	}
 }
