@@ -1,4 +1,4 @@
-package com.tvd12.calabash.core;
+package com.tvd12.calabash.backend;
 
 import java.util.Map;
 import java.util.Set;

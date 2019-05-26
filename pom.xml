@@ -29,5 +29,6 @@
 	</dependencies>
   <modules>
     <module>calabash-core</module>
+    <module>calabash-backend</module>
   </modules>
 </project>

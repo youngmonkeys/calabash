@@ -7,8 +7,8 @@
 		<artifactId>calabash</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>calabash-core</artifactId>
-	<name>calabash-core</name>
+	<artifactId>calabash-backend</artifactId>
+	<name>calabash-backend</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,8 +16,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.tvd12</groupId>
-			<artifactId>ezyfox-codec</artifactId>
-			<version>1.0.0</version>
+			<artifactId>calabash-core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

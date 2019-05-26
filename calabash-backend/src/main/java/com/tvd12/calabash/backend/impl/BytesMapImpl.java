@@ -1,4 +1,4 @@
-package com.tvd12.calabash.core.impl;
+package com.tvd12.calabash.backend.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,37 +7,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
+import com.tvd12.calabash.backend.builder.BytesMapBuilder;
+import com.tvd12.calabash.backend.executor.BytesMapBackupExecutor;
+import com.tvd12.calabash.backend.executor.BytesMapPersistExecutor;
+import com.tvd12.calabash.backend.provider.MapLockProvider;
+import com.tvd12.calabash.backend.setting.MapSetting;
 import com.tvd12.calabash.core.BytesMap;
-import com.tvd12.calabash.core.builder.BytesMapBuilder;
-import com.tvd12.calabash.core.excecutor.BytesMapBackupExecutor;
-import com.tvd12.calabash.core.excecutor.BytesMapPersistExecutor;
 import com.tvd12.calabash.core.util.ByteArray;
-import com.tvd12.ezyfox.io.EzySets;
-
-import lombok.Getter;
 
 public class BytesMapImpl implements BytesMap {
 
-	@Getter
-	protected final String name;
+	protected final MapSetting setting;
+	protected final MapLockProvider lockProvider;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	protected final Object synchronizedLock = new Object();
 	protected final Map<ByteArray, byte[]> map = new HashMap<>();
 	
 	public BytesMapImpl(BytesMapBuilder builder) {
-		this.name = builder.getMapName();
+		this.setting = builder.getMapSetting();
 		this.mapBackupExecutor = builder.getMapBackupExecutor();
 		this.mapPersistExecutor = builder.getMapPersistExecutor();
+		this.lockProvider = new MapLockProvider();
 	}
 	
 	@Override
 	public void loadAll() {
 		synchronized (synchronizedLock) {
-			Map<ByteArray, byte[]> all = mapPersistExecutor.loadAll(name);
+			Map<ByteArray, byte[]> all = mapPersistExecutor.loadAll(setting);
 			map.putAll(all);
-			mapBackupExecutor.backup(name, all);
+			mapBackupExecutor.backup(setting, all);
 		}
 	}
 	
@@ -52,8 +53,8 @@ public class BytesMapImpl implements BytesMap {
 	public byte[] put(ByteArray key, byte[] value) {
 		synchronized (synchronizedLock) {
 			byte[] old = map.put(key, value);
-			mapBackupExecutor.backup(name, key, value);
-			mapPersistExecutor.persist(name, key, value);
+			mapBackupExecutor.backup(setting, key, value);
+			mapPersistExecutor.persist(setting, key, value);
 			return old;
 		}
 	}
@@ -62,8 +63,8 @@ public class BytesMapImpl implements BytesMap {
 	public void putAll(Map<ByteArray, byte[]> m) {
 		synchronized (synchronizedLock) {
 			map.putAll(m);
-			mapBackupExecutor.backup(name, m);
-			mapPersistExecutor.persist(name, m);
+			mapBackupExecutor.backup(setting, m);
+			mapPersistExecutor.persist(setting, m);
 		}
 	}
 
@@ -73,18 +74,38 @@ public class BytesMapImpl implements BytesMap {
 			byte[] value = map.get(key);
 			if(value != null)
 				return value;
-			byte[] unloadValue = mapPersistExecutor.load(name, key);
-			if(unloadValue == null)
-				return null;
-			map.put(key, unloadValue);
-			return unloadValue;
 		}
+		byte[] unloadValue = load(key);
+		return unloadValue;
+		
+	}
+	
+	protected byte[] load(ByteArray key) {
+		Lock keyLock = lockProvider.provideLock(key);
+		byte[] unloadValue = null;
+		keyLock.lock();
+		try {
+			byte[] value = map.get(key);
+			if(value != null)
+				return value;
+			unloadValue = mapPersistExecutor.load(setting, key);
+		}
+		finally {
+			keyLock.unlock();
+		}
+		if(unloadValue != null) {
+			synchronized (synchronizedLock) {
+				map.put(key, unloadValue);
+			}
+		}
+		return unloadValue;
 	}
 	
 	@Override
 	public Map<ByteArray, byte[]> get(Set<ByteArray> keys) {
 		Map<ByteArray, byte[]> answer = new HashMap<>();
 		Set<ByteArray> loadedKeys = new HashSet<>();
+		Set<ByteArray> unloadKeys = new HashSet<>();
 		synchronized (synchronizedLock) {
 			for(ByteArray key : keys) {
 				byte[] value = map.get(key);
@@ -92,12 +113,22 @@ public class BytesMapImpl implements BytesMap {
 					loadedKeys.add(key);
 					answer.put(key, value);
 				}
+				else {
+					unloadKeys.add(key);
+				}
 			}
-			if(loadedKeys.size() < keys.size()) {
-				Set<ByteArray> unloadKeys = EzySets.newHashSet(keys, loadedKeys);
-				Map<ByteArray, byte[]> unloadItems = mapPersistExecutor.load(name, unloadKeys);
-				map.putAll(unloadItems);
-				answer.putAll(unloadItems);
+		}
+		if(unloadKeys.size() > 0) {
+			Map<ByteArray, byte[]> unloadItems = mapPersistExecutor.load(setting, keys);
+			synchronized (synchronizedLock) {
+				for(ByteArray key : unloadItems.keySet()) {
+					byte[] value = map.get(key);
+					if(value == null) {
+						value = unloadItems.get(key);
+						map.put(key, value);
+					}
+					answer.put(key, value);
+				}
 			}
 		}
 		return answer;
@@ -109,7 +140,7 @@ public class BytesMapImpl implements BytesMap {
 			boolean contains = map.containsKey(key);
 			if(contains)
 				return true;
-			byte[] unloadValue = mapPersistExecutor.load(name, key);
+			byte[] unloadValue = mapPersistExecutor.load(setting, key);
 			if(unloadValue == null)
 				return false;
 			map.put(key, unloadValue);
@@ -121,8 +152,8 @@ public class BytesMapImpl implements BytesMap {
 	public byte[] remove(ByteArray key) {
 		synchronized (synchronizedLock) {
 			byte[] removed = map.remove(key);
-			mapPersistExecutor.delete(name, key);
-			mapBackupExecutor.remove(name, key);
+			mapBackupExecutor.remove(setting, key);
+			mapPersistExecutor.delete(setting, key);
 			return removed;
 		}
 	}
@@ -132,8 +163,8 @@ public class BytesMapImpl implements BytesMap {
 		synchronized (synchronizedLock) {
 			for(ByteArray key : keys)
 				map.remove(key);
-			mapBackupExecutor.remove(name, keys);
-			mapPersistExecutor.delete(name, keys);
+			mapBackupExecutor.remove(setting, keys);
+			mapPersistExecutor.delete(setting, keys);
 		}
 	}
 
@@ -187,11 +218,15 @@ public class BytesMapImpl implements BytesMap {
 		synchronized (synchronizedLock) {
 			Set<ByteArray> keySet = new HashSet<>(map.keySet());
 			map.clear();
-			mapBackupExecutor.clear(name);
+			mapBackupExecutor.clear(setting);
 			if(deleteAll) {
-				mapPersistExecutor.delete(name, keySet);
+				mapPersistExecutor.delete(setting, keySet);
 			}
 		}
 	}
-
+	
+	@Override
+	public String getName() {
+		return setting.getMapName();
+	}
 }
