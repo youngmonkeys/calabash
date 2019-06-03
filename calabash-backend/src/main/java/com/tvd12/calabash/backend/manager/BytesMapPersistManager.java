@@ -1,17 +1,11 @@
 package com.tvd12.calabash.backend.manager;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.tvd12.calabash.backend.BytesMapPersist;
 
-public class BytesMapPersistManager {
+public interface BytesMapPersistManager {
 
-	protected final Map<String, BytesMapPersist> mapPersists = new HashMap<>();
+	BytesMapPersist getMapPersist(String mapName);
 	
-	public BytesMapPersist getMapPersist(String mapName) {
-		BytesMapPersist mapPersist = mapPersists.get(mapName);
-		return mapPersist;
-	}
+	void addMapPersist(String mapName, BytesMapPersist mapPersist);
 	
 }

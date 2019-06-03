@@ -5,6 +5,8 @@ import com.tvd12.calabash.backend.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.backend.executor.BytesMapPersistExecutor;
 import com.tvd12.calabash.backend.executor.SimpleBytesMapBackupExecutor;
 import com.tvd12.calabash.backend.executor.SimpleBytesMapPersistExecutor;
+import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
+import com.tvd12.calabash.backend.manager.SimpleBytesMapPersistManager;
 import com.tvd12.calabash.backend.setting.Settings;
 import com.tvd12.calabash.backend.setting.SimpleSettings;
 import com.tvd12.calabash.core.BytesMap;
@@ -14,8 +16,11 @@ public class LocalExample {
 
 	public static void main(String[] args) {
 		Settings settings = new SimpleSettings();
+		BytesMapPersistManager mapPersistManager = new SimpleBytesMapPersistManager();
 		BytesMapBackupExecutor backupExecutor = new SimpleBytesMapBackupExecutor();
-		BytesMapPersistExecutor persistExecutor = new SimpleBytesMapPersistExecutor();
+		BytesMapPersistExecutor persistExecutor = SimpleBytesMapPersistExecutor.builder()
+				.mapPersistManager(mapPersistManager)
+				.build();
 		BytesMap bytesMap = new BytesMapBuilder()
 				.mapSetting(settings.getMapSetting("test"))
 				.mapBackupExecutor(backupExecutor)

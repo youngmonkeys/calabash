@@ -63,7 +63,7 @@ public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersis
 	@Override
 	public void persist(ByteArray key, byte[] value) {
 		Object keyEntity = entityCodec.deserialize(key.getBytes(), keyType);
-		Object valueEntity = entityCodec.serialize(value);
+		Object valueEntity = entityCodec.deserialize(value, valueType);
 		mapPersist.persist(keyEntity, valueEntity);
 	}
 

@@ -44,9 +44,7 @@ public class BytesMapImpl implements BytesMap {
 	
 	@Override
 	public void set(ByteArray key, byte[] value) {
-		synchronized (synchronizedLock) {
-			put(key, value);
-		}
+		put(key, value);
 	}
 	
 	@Override

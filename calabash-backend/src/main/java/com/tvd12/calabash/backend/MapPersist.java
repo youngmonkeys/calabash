@@ -1,5 +1,6 @@
 package com.tvd12.calabash.backend;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,19 +9,25 @@ import com.tvd12.ezyfox.reflect.EzyGenerics;
 
 public interface MapPersist<K, V> {
 
-	Map<K, V> loadAll();
-	
-	Map<K, V> load(Set<K> keys);
-	
 	V load(K key);
 	
 	void persist(K key, V value);
 	
 	void persist(Map<K, V> m);
 	
-	void delete(K key);
+	default Map<K, V> load(Set<K> keys) {
+		return new HashMap<>();
+	}
 	
-	void delete(Set<K> keys);
+	default void delete(K key) {
+	}
+	
+	default void delete(Set<K> keys) {
+	}
+	
+	default Map<K, V> loadAll() {
+		return new HashMap<>();
+	}
 	
 	default Class<?> getKeyType() {
 		try {
@@ -40,7 +47,7 @@ public interface MapPersist<K, V> {
 			return args[1];
 		}
 		catch(Exception e) {
-			return null;
+			throw new UnimplementedOperationException("must implement 'getValueType' function", e);
 		}
 	}
 }

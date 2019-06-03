@@ -5,8 +5,11 @@ import java.util.Map;
 
 public class SimpleSettings implements Settings {
 
-	protected final Object synchronizedLock = new Object();
 	protected Map<String, MapSetting> mapSettings = new HashMap<>();
+	
+	public void addMapSetting(MapSetting setting) {
+		mapSettings.put(setting.getMapName(), setting);
+	}
 	
 	@Override
 	public MapSetting getMapSetting(String mapName) {
@@ -18,10 +21,10 @@ public class SimpleSettings implements Settings {
 	}
 	
 	protected MapSetting newDefaultMapSetting(String mapName) {
-		synchronized (synchronizedLock) {
+		synchronized (mapSettings) {
 			MapSetting mapSetting = mapSettings.get(mapName);
 			if (mapSetting == null) {
-				mapSetting = SimpleMapSetting.defaultSetting(mapName);
+				mapSetting = new SimpleMapSetting();
 				mapSettings.put(mapName, mapSetting);
 			}
 			return mapSetting;

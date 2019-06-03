@@ -5,24 +5,26 @@ import java.util.Map;
 import java.util.Set;
 
 import com.tvd12.calabash.backend.BytesMapPersist;
+import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
 import com.tvd12.calabash.backend.setting.MapPersistSetting;
 import com.tvd12.calabash.backend.setting.MapSetting;
 import com.tvd12.calabash.core.util.ByteArray;
+import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 public class SimpleBytesMapPersistExecutor
 		extends EzyLoggable
 		implements BytesMapPersistExecutor {
 	
-	protected final Map<String, BytesMapPersist> mapPersists;
+	protected final BytesMapPersistManager mapPersistManager;
 	
-	public SimpleBytesMapPersistExecutor() {
-		this.mapPersists = new HashMap<>();
+	public SimpleBytesMapPersistExecutor(Builder builder) {
+		this.mapPersistManager = builder.mapPersistManager;
 	}
 
 	@Override
 	public Map<ByteArray, byte[]> loadAll(MapSetting mapSetting) {
-		BytesMapPersist mapPersist = mapPersists.get(mapSetting.getMapName());
+		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			Map<ByteArray, byte[]> all = mapPersist.loadAll();
 			return all;
@@ -32,7 +34,7 @@ public class SimpleBytesMapPersistExecutor
 
 	@Override
 	public Map<ByteArray, byte[]> load(MapSetting mapSetting, Set<ByteArray> keys) {
-		BytesMapPersist mapPersist = mapPersists.get(mapSetting.getMapName());
+		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			Map<ByteArray, byte[]> all = mapPersist.load(keys);
 			return all;
@@ -42,7 +44,7 @@ public class SimpleBytesMapPersistExecutor
 
 	@Override
 	public byte[] load(MapSetting mapSetting, ByteArray key) {
-		BytesMapPersist mapPersist = mapPersists.get(mapSetting.getMapName());
+		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			byte[] value = mapPersist.load(key);
 			return value;
@@ -52,10 +54,13 @@ public class SimpleBytesMapPersistExecutor
 
 	@Override
 	public void persist(MapSetting mapSetting, ByteArray key, byte[] value) {
-		BytesMapPersist mapPersist = mapPersists.get(mapSetting.getMapName());
+		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
-			if(!setting.isAsync()) {
+			if(setting.isAsync()) {
+				
+			}
+			else {
 				mapPersist.persist(key, value);
 			}
 		}
@@ -64,7 +69,7 @@ public class SimpleBytesMapPersistExecutor
 
 	@Override
 	public void persist(MapSetting mapSetting, Map<ByteArray, byte[]> m) {
-		BytesMapPersist mapPersist = mapPersists.get(mapSetting.getMapName());
+		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
 			if(!setting.isAsync()) {
@@ -76,7 +81,7 @@ public class SimpleBytesMapPersistExecutor
 
 	@Override
 	public void delete(MapSetting mapSetting, ByteArray key) {
-		BytesMapPersist mapPersist = mapPersists.get(mapSetting.getMapName());
+		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
 			if(!setting.isAsync()) {
@@ -88,7 +93,7 @@ public class SimpleBytesMapPersistExecutor
 
 	@Override
 	public void delete(MapSetting mapSetting, Set<ByteArray> keys) {
-		BytesMapPersist mapPersist = mapPersists.get(mapSetting.getMapName());
+		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
 			if(!setting.isAsync()) {
@@ -98,8 +103,28 @@ public class SimpleBytesMapPersistExecutor
 		
 	}
 	
-	public void addMapPersist(String mapName, BytesMapPersist mapPersist) {
-		this.mapPersists.put(mapName, mapPersist);
+	protected BytesMapPersist getMapPersist(MapSetting setting) {
+		BytesMapPersist mp = mapPersistManager.getMapPersist(setting.getMapName());
+		return mp;
+	}
+	
+	public static Builder builder() {
+		return new Builder();
+	}
+	
+	public static class Builder implements EzyBuilder<BytesMapPersistExecutor> {
+		
+		protected BytesMapPersistManager mapPersistManager;
+		
+		public Builder mapPersistManager(BytesMapPersistManager mapPersistManager) {
+			this.mapPersistManager = mapPersistManager;
+			return this;
+		}
+		
+		@Override
+		public BytesMapPersistExecutor build() {
+			return new SimpleBytesMapPersistExecutor(this);
+		}
 	}
 
 }
