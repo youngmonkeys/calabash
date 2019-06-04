@@ -6,6 +6,13 @@ import java.util.Set;
 
 import com.tvd12.calabash.backend.BytesMapPersist;
 import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
+import com.tvd12.calabash.backend.persist.PersistAction;
+import com.tvd12.calabash.backend.persist.PersistActionQueue;
+import com.tvd12.calabash.backend.persist.PersistActionQueueManager;
+import com.tvd12.calabash.backend.persist.PersistDeleteManyAction;
+import com.tvd12.calabash.backend.persist.PersistDeleteOneAction;
+import com.tvd12.calabash.backend.persist.PersistManyAction;
+import com.tvd12.calabash.backend.persist.PersistOneAction;
 import com.tvd12.calabash.backend.setting.MapPersistSetting;
 import com.tvd12.calabash.backend.setting.MapSetting;
 import com.tvd12.calabash.core.util.ByteArray;
@@ -17,9 +24,11 @@ public class SimpleBytesMapPersistExecutor
 		implements BytesMapPersistExecutor {
 	
 	protected final BytesMapPersistManager mapPersistManager;
+	protected final PersistActionQueueManager actionQueueManager;
 	
 	public SimpleBytesMapPersistExecutor(Builder builder) {
 		this.mapPersistManager = builder.mapPersistManager;
+		this.actionQueueManager = builder.actionQueueManager;
 	}
 
 	@Override
@@ -58,7 +67,8 @@ public class SimpleBytesMapPersistExecutor
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
 			if(setting.isAsync()) {
-				
+				PersistOneAction action = new PersistOneAction(key, value);
+				addPersistActionToQueue(mapSetting.getMapName(), action);
 			}
 			else {
 				mapPersist.persist(key, value);
@@ -72,7 +82,11 @@ public class SimpleBytesMapPersistExecutor
 		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
-			if(!setting.isAsync()) {
+			if(setting.isAsync()) {
+				PersistManyAction action = new PersistManyAction(m);
+				addPersistActionToQueue(mapSetting.getMapName(), action);
+			}
+			else {
 				mapPersist.persist(m);
 			}
 		}
@@ -84,7 +98,11 @@ public class SimpleBytesMapPersistExecutor
 		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
-			if(!setting.isAsync()) {
+			if(setting.isAsync()) {
+				PersistDeleteOneAction action = new PersistDeleteOneAction(key);
+				addPersistActionToQueue(mapSetting.getMapName(), action);
+			}
+			else {
 				mapPersist.delete(key);
 			}
 		}
@@ -96,7 +114,11 @@ public class SimpleBytesMapPersistExecutor
 		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
-			if(!setting.isAsync()) {
+			if(setting.isAsync()) {
+				PersistDeleteManyAction action = new PersistDeleteManyAction(keys);
+				addPersistActionToQueue(mapSetting.getMapName(), action);
+			}
+			else {
 				mapPersist.delete(keys);
 			}
 		}
@@ -108,6 +130,12 @@ public class SimpleBytesMapPersistExecutor
 		return mp;
 	}
 	
+	protected void addPersistActionToQueue(String mapName, PersistAction action) {
+		PersistActionQueue queue = actionQueueManager.getQueue(mapName);
+		queue.add(action);
+		
+	}
+	
 	public static Builder builder() {
 		return new Builder();
 	}
@@ -115,9 +143,15 @@ public class SimpleBytesMapPersistExecutor
 	public static class Builder implements EzyBuilder<BytesMapPersistExecutor> {
 		
 		protected BytesMapPersistManager mapPersistManager;
+		protected PersistActionQueueManager actionQueueManager;
 		
 		public Builder mapPersistManager(BytesMapPersistManager mapPersistManager) {
 			this.mapPersistManager = mapPersistManager;
+			return this;
+		}
+		
+		public Builder actionQueueManager(PersistActionQueueManager actionQueueManager) {
+			this.actionQueueManager = actionQueueManager;
 			return this;
 		}
 		

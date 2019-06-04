@@ -12,15 +12,16 @@ import java.util.concurrent.locks.Lock;
 import com.tvd12.calabash.backend.builder.BytesMapBuilder;
 import com.tvd12.calabash.backend.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.backend.executor.BytesMapPersistExecutor;
-import com.tvd12.calabash.backend.provider.MapLockProvider;
 import com.tvd12.calabash.backend.setting.MapSetting;
 import com.tvd12.calabash.core.BytesMap;
 import com.tvd12.calabash.core.util.ByteArray;
+import com.tvd12.ezyfox.concurrent.EzyConcurrentHashMapLockProvider;
+import com.tvd12.ezyfox.concurrent.EzyMapLockProvider;
 
 public class BytesMapImpl implements BytesMap {
 
 	protected final MapSetting setting;
-	protected final MapLockProvider lockProvider;
+	protected final EzyMapLockProvider lockProvider;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	protected final Object synchronizedLock = new Object();
@@ -30,7 +31,7 @@ public class BytesMapImpl implements BytesMap {
 		this.setting = builder.getMapSetting();
 		this.mapBackupExecutor = builder.getMapBackupExecutor();
 		this.mapPersistExecutor = builder.getMapPersistExecutor();
-		this.lockProvider = new MapLockProvider();
+		this.lockProvider = new EzyConcurrentHashMapLockProvider();
 	}
 	
 	@Override

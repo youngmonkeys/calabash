@@ -13,6 +13,8 @@ import com.tvd12.calabash.backend.manager.BytesMapManager;
 import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
 import com.tvd12.calabash.backend.manager.SimpleBytesMapManager;
 import com.tvd12.calabash.backend.manager.SimpleBytesMapPersistManager;
+import com.tvd12.calabash.backend.persist.PersistActionQueueFactory;
+import com.tvd12.calabash.backend.persist.PersistActionQueueManager;
 import com.tvd12.calabash.backend.setting.Settings;
 import com.tvd12.calabash.core.BytesMap;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
@@ -28,6 +30,8 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected final BytesMapPersistManager mapPersistManager;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
+	protected final PersistActionQueueFactory persistActionQueueFactory;
+	protected final PersistActionQueueManager persistActionQueueManager;
 	
 	public CalabashImpl(CalabashBuilder builder) {
 		this.settings = builder.getSettings();
@@ -35,6 +39,8 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		this.mapPersistFactory = builder.getMapPersistFactory();
 		this.mapPersistManager = newMapPersistManager();
 		this.mapBackupExecutor = newMapBackupExecutor();
+		this.persistActionQueueFactory = newPersistActionQueueFactory();
+		this.persistActionQueueManager = newPersistActionQueueManager();
 		this.mapPersistExecutor = newMapPersistExecutor();
 		this.mapFactory = newMapFactory();
 		this.mapManager = newMapManager();
@@ -48,9 +54,18 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		return new SimpleBytesMapPersistManager();
 	}
 	
+	protected PersistActionQueueFactory newPersistActionQueueFactory() {
+		return new PersistActionQueueFactory(settings);
+	}
+	
+	protected PersistActionQueueManager newPersistActionQueueManager() {
+		return new PersistActionQueueManager(persistActionQueueFactory);
+	}
+	
 	protected BytesMapPersistExecutor newMapPersistExecutor() {
 		return SimpleBytesMapPersistExecutor.builder()
 				.mapPersistManager(mapPersistManager)
+				.actionQueueManager(persistActionQueueManager)
 				.build();
 	}
 	
