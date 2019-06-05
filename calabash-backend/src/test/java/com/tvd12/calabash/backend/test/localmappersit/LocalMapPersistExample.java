@@ -11,8 +11,6 @@ import com.tvd12.calabash.backend.MapPersist;
 import com.tvd12.calabash.backend.annotation.MapPersistence;
 import com.tvd12.calabash.backend.builder.CalabashBuilder;
 import com.tvd12.calabash.backend.factory.DefaultMapPersistFactory;
-import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
-import com.tvd12.calabash.backend.manager.SimpleBytesMapPersistManager;
 import com.tvd12.calabash.backend.setting.SimpleMapPersistSetting;
 import com.tvd12.calabash.backend.setting.SimpleMapSetting;
 import com.tvd12.calabash.backend.setting.SimpleSettings;
@@ -37,16 +35,16 @@ import dev.morphia.Datastore;
 
 public class LocalMapPersistExample {
 
+	@SuppressWarnings("rawtypes")
 	public void test() {
 		EzyEntityCodec entityCodec = newEntityCodec();
 		SimpleSettings settings = new SimpleSettings();
 		SimpleMapPersistSetting mapPersistSetting = new SimpleMapPersistSetting();
-		mapPersistSetting.setAsync(false);
+		mapPersistSetting.setAsync(true);
 		SimpleMapSetting mapSetting = new SimpleMapSetting();
 		mapSetting.setMapName(CollectionNames.PERSON);
 		mapSetting.setPersistSetting(mapPersistSetting);
 		settings.addMapSetting(mapSetting);
-		BytesMapPersistManager mapPersistManager = new SimpleBytesMapPersistManager();
 		EzyBeanContext beanContext = newBeanContext();
 		DefaultMapPersistFactory mapPersistFactory = new DefaultMapPersistFactory();
 		List mapPersistences = beanContext.getSingletons(MapPersistence.class);
@@ -60,7 +58,7 @@ public class LocalMapPersistExample {
 				.mapPersistFactory(mapPersistFactory)
 				.build();
 		ByteArray keyBytes = new ByteArray(entityCodec.serialize(1L));
-		byte[] values = entityCodec.serialize(new Person(1L, "foo", 28));
+		byte[] values = entityCodec.serialize(new Person(3L, "bar", 29));
 		BytesMap bytesMap = calabash.getMap(CollectionNames.PERSON);
 		bytesMap.put(keyBytes, values);
 		

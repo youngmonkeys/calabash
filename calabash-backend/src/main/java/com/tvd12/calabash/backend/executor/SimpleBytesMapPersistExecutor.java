@@ -11,8 +11,8 @@ import com.tvd12.calabash.backend.persist.PersistActionQueue;
 import com.tvd12.calabash.backend.persist.PersistActionQueueManager;
 import com.tvd12.calabash.backend.persist.PersistDeleteManyAction;
 import com.tvd12.calabash.backend.persist.PersistDeleteOneAction;
-import com.tvd12.calabash.backend.persist.PersistManyAction;
-import com.tvd12.calabash.backend.persist.PersistOneAction;
+import com.tvd12.calabash.backend.persist.PersistSaveManyAction;
+import com.tvd12.calabash.backend.persist.PersistSaveOneAction;
 import com.tvd12.calabash.backend.setting.MapPersistSetting;
 import com.tvd12.calabash.backend.setting.MapSetting;
 import com.tvd12.calabash.core.util.ByteArray;
@@ -67,7 +67,7 @@ public class SimpleBytesMapPersistExecutor
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
 			if(setting.isAsync()) {
-				PersistOneAction action = new PersistOneAction(key, value);
+				PersistSaveOneAction action = new PersistSaveOneAction(key, value);
 				addPersistActionToQueue(mapSetting.getMapName(), action);
 			}
 			else {
@@ -83,7 +83,7 @@ public class SimpleBytesMapPersistExecutor
 		if(mapPersist != null) {
 			MapPersistSetting setting = mapSetting.getPersistSetting();
 			if(setting.isAsync()) {
-				PersistManyAction action = new PersistManyAction(m);
+				PersistSaveManyAction action = new PersistSaveManyAction(m);
 				addPersistActionToQueue(mapSetting.getMapName(), action);
 			}
 			else {

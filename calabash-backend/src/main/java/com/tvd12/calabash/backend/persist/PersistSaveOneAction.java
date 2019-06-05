@@ -7,14 +7,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PersistOneAction implements PersistAction {
+public class PersistSaveOneAction implements PersistAction {
 
 	protected final ByteArray key;
 	protected final byte[] value;
 	
 	@Override
 	public PersistActionType getType() {
-		return PersistActionType.PERSIST_ONE;
+		return PersistActionType.SAVE_ONE;
 	}
 	
 }

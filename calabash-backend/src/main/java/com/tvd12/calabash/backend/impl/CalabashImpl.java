@@ -13,6 +13,7 @@ import com.tvd12.calabash.backend.manager.BytesMapManager;
 import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
 import com.tvd12.calabash.backend.manager.SimpleBytesMapManager;
 import com.tvd12.calabash.backend.manager.SimpleBytesMapPersistManager;
+import com.tvd12.calabash.backend.persist.PersistActionHandlingLoop;
 import com.tvd12.calabash.backend.persist.PersistActionQueueFactory;
 import com.tvd12.calabash.backend.persist.PersistActionQueueManager;
 import com.tvd12.calabash.backend.setting.Settings;
@@ -32,6 +33,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	protected final PersistActionQueueFactory persistActionQueueFactory;
 	protected final PersistActionQueueManager persistActionQueueManager;
+	protected final PersistActionHandlingLoop persistActionHandlingLoop;
 	
 	public CalabashImpl(CalabashBuilder builder) {
 		this.settings = builder.getSettings();
@@ -44,6 +46,8 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		this.mapPersistExecutor = newMapPersistExecutor();
 		this.mapFactory = newMapFactory();
 		this.mapManager = newMapManager();
+		this.persistActionHandlingLoop = newPersistActionHandlingLoop();
+		this.startAllLoops();
 	}
 	
 	protected BytesMapBackupExecutor newMapBackupExecutor() {
@@ -84,6 +88,21 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		return SimpleBytesMapManager.builder()
 				.mapFactory(mapFactory)
 				.build();
+	}
+	
+	protected PersistActionHandlingLoop newPersistActionHandlingLoop() {
+		return PersistActionHandlingLoop.builder()
+				.mapPersistManager(mapPersistManager)
+				.actionQueueManager(persistActionQueueManager)
+				.build();
+	}
+	
+	protected void startAllLoops() {
+		try {
+			persistActionHandlingLoop.start();
+		} catch (Exception e) {
+			throw new RuntimeException("start all loops failed", e);
+		}
 	}
 
 	@Override

@@ -9,13 +9,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PersistManyAction implements PersistAction {
+public class PersistSaveManyAction implements PersistAction {
 
 	protected final Map<ByteArray, byte[]> keyValues;
 	
 	@Override
 	public PersistActionType getType() {
-		return PersistActionType.PERSIST_MANY;
+		return PersistActionType.SAVE_MANY;
 	}
 	
 }
