@@ -15,13 +15,15 @@ public class PersistSaveActionBulk extends PersistAbstractActionBulk {
 	public void execute() {
 		Map<ByteArray, byte[]> keyValues = new HashMap<>();
 		for(PersistAction action : actions) {
-			if(action instanceof PersistSaveOneAction) {
+			switch (action.getType()) {
+			case SAVE_ONE:
 				PersistSaveOneAction one = (PersistSaveOneAction)action;
 				keyValues.put(one.getKey(), one.getValue());
-			}
-			else {
+				break;
+			default:
 				PersistSaveManyAction many = (PersistSaveManyAction)action;
 				keyValues.putAll(many.getKeyValues());
+				break;
 			}
 		}
 		mapPersist.persist(keyValues);

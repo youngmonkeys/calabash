@@ -58,7 +58,7 @@ public class LocalMapPersistExample {
 				.mapPersistFactory(mapPersistFactory)
 				.build();
 		ByteArray keyBytes = new ByteArray(entityCodec.serialize(1L));
-		byte[] values = entityCodec.serialize(new Person(3L, "bar", 29));
+		byte[] values = entityCodec.serialize(new Person(5L, "bar", 29));
 		BytesMap bytesMap = calabash.getMap(CollectionNames.PERSON);
 		bytesMap.put(keyBytes, values);
 		

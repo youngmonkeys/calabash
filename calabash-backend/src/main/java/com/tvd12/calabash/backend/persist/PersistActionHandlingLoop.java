@@ -21,17 +21,27 @@ public class PersistActionHandlingLoop
 	protected final BytesMapPersistManager mapPersistManager;
 	protected final PersistActionQueueManager actionQueueManager;
 	protected final PersistActionBulkFactory actionBulkFactory;
+	protected final PersistActionBulkTicketQueues bulkTicketQueues;
+	protected final PersistActionBulkHandlingLoop bulkHandlingLoop;
 	protected final ScheduledExecutorService scheduledExecutorService;
 	
 	public PersistActionHandlingLoop(Builder builder) {
 		this.mapPersistManager = builder.mapPersistManager;
 		this.actionQueueManager = builder.actionQueueManager;
 		this.actionBulkFactory = new PersistActionBulkFactory();
+		this.bulkTicketQueues = new PersistActionBulkTicketQueues();
 		this.scheduledExecutorService = newScheduledExecutorService();
+		this.bulkHandlingLoop = newBulkHandlingLoop();
+	}
+	
+	protected PersistActionBulkHandlingLoop newBulkHandlingLoop() {
+		return PersistActionBulkHandlingLoop.builder()
+				.ticketQueues(bulkTicketQueues)
+				.build();
 	}
 	
 	protected ScheduledExecutorService newScheduledExecutorService() {
-		ScheduledExecutorService service = EzyExecutors.newScheduledThreadPool(5, "calabash-persist-loop");
+		ScheduledExecutorService service = EzyExecutors.newSingleThreadScheduledExecutor("calabash-persist-loop");
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdown()));
 		return service;
 	}
@@ -39,11 +49,13 @@ public class PersistActionHandlingLoop
 	@Override
 	public void start() throws Exception {
 		this.scheduledExecutorService.scheduleAtFixedRate(this::handle, 100, 100, TimeUnit.MILLISECONDS);
+		this.bulkHandlingLoop.start();
 	}
 	
 	@Override
 	public void stop() {
 		this.scheduledExecutorService.shutdown();
+		this.bulkHandlingLoop.stop();
 	}
 	
 	protected void handle() {
@@ -79,7 +91,13 @@ public class PersistActionHandlingLoop
 						.build();
 				currentActionType = actionType;
 				sameActions = new ArrayList<>();
-				bulk.execute();
+				PersistActionBulkQueue bulkQueue = bulkTicketQueues.getQueue(mapName);
+				synchronized (bulkQueue) {
+					boolean empty = bulkQueue.isEmpty();
+					bulkQueue.add(bulk);
+					if(empty)
+						bulkTicketQueues.addTicket(bulkQueue);
+				}
 			}
 		}
 	}
