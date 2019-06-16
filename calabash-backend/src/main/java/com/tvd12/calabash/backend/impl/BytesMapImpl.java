@@ -35,11 +35,12 @@ public class BytesMapImpl implements BytesMap {
 	}
 	
 	@Override
-	public void loadAll() {
+	public Map<ByteArray, byte[]> loadAll() {
 		synchronized (synchronizedLock) {
 			Map<ByteArray, byte[]> all = mapPersistExecutor.loadAll(setting);
 			map.putAll(all);
 			mapBackupExecutor.backup(setting, all);
+			return all;
 		}
 	}
 	

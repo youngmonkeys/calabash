@@ -7,7 +7,6 @@ import com.tvd12.calabash.backend.executor.BytesMapPersistExecutor;
 import com.tvd12.calabash.backend.executor.SimpleBytesMapBackupExecutor;
 import com.tvd12.calabash.backend.executor.SimpleBytesMapPersistExecutor;
 import com.tvd12.calabash.backend.factory.BytesMapFactory;
-import com.tvd12.calabash.backend.factory.MapPersistFactory;
 import com.tvd12.calabash.backend.factory.SimpleBytesMapFactory;
 import com.tvd12.calabash.backend.manager.BytesMapManager;
 import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
@@ -18,6 +17,7 @@ import com.tvd12.calabash.backend.persist.PersistActionQueueFactory;
 import com.tvd12.calabash.backend.persist.PersistActionQueueManager;
 import com.tvd12.calabash.backend.setting.Settings;
 import com.tvd12.calabash.core.BytesMap;
+import com.tvd12.calabash.factory.EntityMapPersistFactory;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
@@ -27,7 +27,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected final EzyEntityCodec entityCodec;
 	protected final BytesMapFactory mapFactory;
 	protected final BytesMapManager mapManager;
-	protected final MapPersistFactory mapPersistFactory;
+	protected final EntityMapPersistFactory entityMapPersistFactory;
 	protected final BytesMapPersistManager mapPersistManager;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
@@ -38,7 +38,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	public CalabashImpl(CalabashBuilder builder) {
 		this.settings = builder.getSettings();
 		this.entityCodec = builder.getEntityCodec();
-		this.mapPersistFactory = builder.getMapPersistFactory();
+		this.entityMapPersistFactory = builder.getMapPersistFactory();
 		this.mapPersistManager = newMapPersistManager();
 		this.mapBackupExecutor = newMapBackupExecutor();
 		this.persistActionQueueFactory = newPersistActionQueueFactory();
@@ -77,7 +77,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		return SimpleBytesMapFactory.builder()
 				.settings(settings)
 				.entityCodec(entityCodec)
-				.mapPersistFactory(mapPersistFactory)
+				.entityMapPersistFactory(entityMapPersistFactory)
 				.mapPersistManager(mapPersistManager)
 				.mapBackupExecutor(mapBackupExecutor)
 				.mapPersistExecutor(mapPersistExecutor)

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.tvd12.calabash.backend.BytesMapPersist;
-import com.tvd12.calabash.backend.MapPersist;
+import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
@@ -17,25 +17,25 @@ public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersis
 
 	protected final Class<?> keyType;
 	protected final Class<?> valueType;
-	protected final MapPersist mapPersist;
+	protected final EntityMapPersist entityMapPersist;
 	protected final EzyEntityCodec entityCodec;
 	
 	protected EntityBytesMapPersist(Builder builder) {
-		this.mapPersist = builder.mapPersist;
+		this.entityMapPersist = builder.entityMapPersist;
 		this.entityCodec = builder.entityCodec;
-		this.keyType = mapPersist.getKeyType();
-		this.valueType = mapPersist.getValueType();
+		this.keyType = entityMapPersist.getKeyType();
+		this.valueType = entityMapPersist.getValueType();
 	}
 	
 	@Override
 	public Map<ByteArray, byte[]> loadAll() {
-		Map entities = mapPersist.loadAll();
+		Map entities = entityMapPersist.loadAll();
 		return serializeEntities(entities);
 	}
 
 	@Override
 	public Map<ByteArray, byte[]> load(Set<ByteArray> keys) {
-		Map entities = mapPersist.load(keys);
+		Map entities = entityMapPersist.load(keys);
 		return serializeEntities(entities);
 	}
 	
@@ -53,7 +53,7 @@ public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersis
 	@Override
 	public byte[] load(ByteArray key) {
 		Object keyEntity = entityCodec.deserialize(key.getBytes(), keyType);
-		Object valueEntity = mapPersist.load(keyEntity);
+		Object valueEntity = entityMapPersist.load(keyEntity);
 		if(valueEntity == null)
 			return null;
 		byte[] value = entityCodec.serialize(valueEntity);
@@ -64,7 +64,7 @@ public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersis
 	public void persist(ByteArray key, byte[] value) {
 		Object keyEntity = entityCodec.deserialize(key.getBytes(), keyType);
 		Object valueEntity = entityCodec.deserialize(value, valueType);
-		mapPersist.persist(keyEntity, valueEntity);
+		entityMapPersist.persist(keyEntity, valueEntity);
 	}
 
 	@Override
@@ -76,13 +76,13 @@ public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersis
 			Object valueEntity = entityCodec.deserialize(value, valueType);
 			entities.put(keyEntity, valueEntity);
 		}
-		mapPersist.persist(entities);
+		entityMapPersist.persist(entities);
 	}
 
 	@Override
 	public void delete(ByteArray key) {
 		Object keyEntity = entityCodec.deserialize(key.getBytes(), keyType);
-		mapPersist.delete(keyEntity);
+		entityMapPersist.delete(keyEntity);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersis
 			Object keyEntity = entityCodec.deserialize(key.getBytes(), keyType);
 			keyEntities.add(keyEntity);
 		}
-		mapPersist.delete(keyEntities);
+		entityMapPersist.delete(keyEntities);
 	}
 	
 	public static Builder builder() {
@@ -100,11 +100,11 @@ public class EntityBytesMapPersist extends EzyLoggable implements BytesMapPersis
 	}
 
 	public static class Builder implements EzyBuilder<EntityBytesMapPersist> {
-		protected MapPersist mapPersist;
+		protected EntityMapPersist entityMapPersist;
 		protected EzyEntityCodec entityCodec;
 		
-		public Builder mapPersist(MapPersist mapPersist) {
-			this.mapPersist = mapPersist;
+		public Builder entityMapPersist(EntityMapPersist entityMapPersist) {
+			this.entityMapPersist = entityMapPersist;
 			return this;
 		}
 		
