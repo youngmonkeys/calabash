@@ -27,10 +27,10 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected final EzyEntityCodec entityCodec;
 	protected final BytesMapFactory mapFactory;
 	protected final BytesMapManager mapManager;
-	protected final EntityMapPersistFactory entityMapPersistFactory;
 	protected final BytesMapPersistManager mapPersistManager;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
+	protected final EntityMapPersistFactory entityMapPersistFactory;
 	protected final PersistActionQueueFactory persistActionQueueFactory;
 	protected final PersistActionQueueManager persistActionQueueManager;
 	protected final PersistActionHandlingLoop persistActionHandlingLoop;
@@ -38,7 +38,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	public CalabashImpl(CalabashBuilder builder) {
 		this.settings = builder.getSettings();
 		this.entityCodec = builder.getEntityCodec();
-		this.entityMapPersistFactory = builder.getMapPersistFactory();
+		this.entityMapPersistFactory = builder.getEntityMapPersistFactory();
 		this.mapPersistManager = newMapPersistManager();
 		this.mapBackupExecutor = newMapBackupExecutor();
 		this.persistActionQueueFactory = newPersistActionQueueFactory();
@@ -77,10 +77,10 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		return SimpleBytesMapFactory.builder()
 				.settings(settings)
 				.entityCodec(entityCodec)
-				.entityMapPersistFactory(entityMapPersistFactory)
 				.mapPersistManager(mapPersistManager)
 				.mapBackupExecutor(mapBackupExecutor)
 				.mapPersistExecutor(mapPersistExecutor)
+				.entityMapPersistFactory(entityMapPersistFactory)
 				.build();
 	}
 	

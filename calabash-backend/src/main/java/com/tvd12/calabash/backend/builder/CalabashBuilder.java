@@ -15,7 +15,7 @@ public class CalabashBuilder implements EzyBuilder<Calabash> {
 
 	protected Settings settings;
 	protected EzyEntityCodec entityCodec;
-	protected EntityMapPersistFactory mapPersistFactory;
+	protected EntityMapPersistFactory entityMapPersistFactory;
 	
 	public CalabashBuilder settings(Settings settings) {
 		this.settings = settings;
@@ -27,15 +27,15 @@ public class CalabashBuilder implements EzyBuilder<Calabash> {
 		return this;
 	}
 	
-	public CalabashBuilder mapPersistFactory(EntityMapPersistFactory mapPersistFactory) {
-		this.mapPersistFactory = mapPersistFactory;
+	public CalabashBuilder entityMapPersistFactory(EntityMapPersistFactory entityMapPersistFactory) {
+		this.entityMapPersistFactory = entityMapPersistFactory;
 		return this;
 	}
 	
 	@Override
 	public Calabash build() {
-		if(mapPersistFactory == null)
-			mapPersistFactory = new DefaultEntityMapPersistFactory();
+		if(entityMapPersistFactory == null)
+			entityMapPersistFactory = new DefaultEntityMapPersistFactory();
 		return new CalabashImpl(this);
 	}
 	

@@ -18,18 +18,18 @@ public class SimpleBytesMapFactory extends EzyLoggable implements BytesMapFactor
 
 	protected final Settings settings;
 	protected final EzyEntityCodec entityCodec;
-	protected final EntityMapPersistFactory entityMapPersistFactory;
 	protected final BytesMapPersistManager mapPersistManager;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
+	protected final EntityMapPersistFactory entityMapPersistFactory;
 	
 	protected SimpleBytesMapFactory(Builder builder) {
 		this.settings = builder.settings;
 		this.entityCodec = builder.entityCodec;
-		this.entityMapPersistFactory = builder.entityMapPersistFactory;
 		this.mapPersistManager = builder.mapPersistManager;
 		this.mapBackupExecutor = builder.mapBackupExecutor;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
+		this.entityMapPersistFactory = builder.entityMapPersistFactory;
 	}
 	
 	@Override
