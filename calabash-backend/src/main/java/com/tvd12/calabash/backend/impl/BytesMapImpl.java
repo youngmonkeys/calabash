@@ -24,7 +24,6 @@ public class BytesMapImpl implements BytesMap {
 	protected final EzyMapLockProvider lockProvider;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
-	protected final Object synchronizedLock = new Object();
 	protected final Map<ByteArray, byte[]> map = new HashMap<>();
 	
 	public BytesMapImpl(BytesMapBuilder builder) {
@@ -36,7 +35,7 @@ public class BytesMapImpl implements BytesMap {
 	
 	@Override
 	public Map<ByteArray, byte[]> loadAll() {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			Map<ByteArray, byte[]> all = mapPersistExecutor.loadAll(setting);
 			map.putAll(all);
 			mapBackupExecutor.backup(setting, all);
@@ -51,7 +50,7 @@ public class BytesMapImpl implements BytesMap {
 	
 	@Override
 	public byte[] put(ByteArray key, byte[] value) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			byte[] old = map.put(key, value);
 			mapBackupExecutor.backup(setting, key, value);
 			mapPersistExecutor.persist(setting, key, value);
@@ -61,7 +60,7 @@ public class BytesMapImpl implements BytesMap {
 	
 	@Override
 	public void putAll(Map<ByteArray, byte[]> m) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			map.putAll(m);
 			mapBackupExecutor.backup(setting, m);
 			mapPersistExecutor.persist(setting, m);
@@ -70,13 +69,14 @@ public class BytesMapImpl implements BytesMap {
 
 	@Override
 	public byte[] get(ByteArray key) {
-		synchronized (synchronizedLock) {
-			byte[] value = map.get(key);
-			if(value != null)
-				return value;
+		byte[] value = null;
+		synchronized (map) {
+			value = map.get(key);
 		}
-		byte[] unloadValue = load(key);
-		return unloadValue;
+		if(value != null)
+			return value;
+		value = load(key);
+		return value;
 		
 	}
 	
@@ -94,7 +94,7 @@ public class BytesMapImpl implements BytesMap {
 			keyLock.unlock();
 		}
 		if(unloadValue != null) {
-			synchronized (synchronizedLock) {
+			synchronized (map) {
 				map.put(key, unloadValue);
 			}
 		}
@@ -104,23 +104,19 @@ public class BytesMapImpl implements BytesMap {
 	@Override
 	public Map<ByteArray, byte[]> get(Set<ByteArray> keys) {
 		Map<ByteArray, byte[]> answer = new HashMap<>();
-		Set<ByteArray> loadedKeys = new HashSet<>();
 		Set<ByteArray> unloadKeys = new HashSet<>();
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			for(ByteArray key : keys) {
 				byte[] value = map.get(key);
-				if(value != null) {
-					loadedKeys.add(key);
+				if(value != null)
 					answer.put(key, value);
-				}
-				else {
+				else
 					unloadKeys.add(key);
-				}
 			}
 		}
 		if(unloadKeys.size() > 0) {
 			Map<ByteArray, byte[]> unloadItems = mapPersistExecutor.load(setting, keys);
-			synchronized (synchronizedLock) {
+			synchronized (map) {
 				for(ByteArray key : unloadItems.keySet()) {
 					byte[] value = map.get(key);
 					if(value == null) {
@@ -136,7 +132,7 @@ public class BytesMapImpl implements BytesMap {
 	
 	@Override
 	public boolean containsKey(ByteArray key) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			boolean contains = map.containsKey(key);
 			if(contains)
 				return true;
@@ -150,7 +146,7 @@ public class BytesMapImpl implements BytesMap {
 
 	@Override
 	public byte[] remove(ByteArray key) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			byte[] removed = map.remove(key);
 			mapBackupExecutor.remove(setting, key);
 			mapPersistExecutor.delete(setting, key);
@@ -160,7 +156,7 @@ public class BytesMapImpl implements BytesMap {
 	
 	@Override
 	public void remove(Set<ByteArray> keys) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			for(ByteArray key : keys)
 				map.remove(key);
 			mapBackupExecutor.remove(setting, keys);
@@ -170,7 +166,7 @@ public class BytesMapImpl implements BytesMap {
 
 	@Override
 	public Set<ByteArray> getAllKeys(boolean loadAll) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			if(loadAll) loadAll();
 			Set<ByteArray> keySet = new HashSet<>(map.keySet());
 			return keySet;
@@ -179,7 +175,7 @@ public class BytesMapImpl implements BytesMap {
 
 	@Override
 	public List<byte[]> getAllValues(boolean loadAll) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			if(loadAll) loadAll();
 			List<byte[]> values = new ArrayList<>(map.values());
 			return values;
@@ -188,7 +184,7 @@ public class BytesMapImpl implements BytesMap {
 
 	@Override
 	public Set<Entry<ByteArray, byte[]>> getAllEntries(boolean loadAll) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			if(loadAll) loadAll();
 			Set<Entry<ByteArray, byte[]>> entrySet = new HashSet<>(map.entrySet());
 			return entrySet;
@@ -197,7 +193,7 @@ public class BytesMapImpl implements BytesMap {
 	
 	@Override
 	public int size(boolean loadAll) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			if(loadAll) loadAll();
 			int size = map.size();
 			return size;
@@ -206,7 +202,7 @@ public class BytesMapImpl implements BytesMap {
 
 	@Override
 	public boolean isEmpty(boolean loadAll) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			if(loadAll) loadAll();
 			boolean empty = map.isEmpty();
 			return empty;
@@ -215,7 +211,7 @@ public class BytesMapImpl implements BytesMap {
 	
 	@Override
 	public void clear(boolean deleteAll) {
-		synchronized (synchronizedLock) {
+		synchronized (map) {
 			Set<ByteArray> keySet = new HashSet<>(map.keySet());
 			map.clear();
 			mapBackupExecutor.clear(setting);
