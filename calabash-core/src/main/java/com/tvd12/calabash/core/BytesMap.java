@@ -9,7 +9,7 @@ import com.tvd12.calabash.core.util.ByteArray;
 
 public interface BytesMap {
 	
-	void loadAll();
+	Map<ByteArray, byte[]> loadAll();
 	
 	void set(ByteArray key, byte[] value);
 

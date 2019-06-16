@@ -19,7 +19,11 @@
 			<artifactId>calabash-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>com.tvd12</groupId>
+			<artifactId>ezyfox-binding-codec</artifactId>
+			<version>${ezy.binding.codec.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-morphia</artifactId>

@@ -12,21 +12,14 @@
 	<url>http://maven.apache.org</url>
 	
 	<properties>
-		<ezy.codec.version>1.0.0</ezy.codec.version>
-		<ezy.biding.version>1.0.0</ezy.biding.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
 	<dependencies>
 		<dependency>
 			<groupId>com.tvd12</groupId>
-			<artifactId>ezyfox-codec</artifactId>
-			<version>${ezy.codec.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.tvd12</groupId>
-			<artifactId>ezyfox-binding</artifactId>
-			<version>${ezy.biding.version}</version>
+			<artifactId>ezyfox-concurrent</artifactId>
+			<version>${ezy.concurrent.version}</version>
 		</dependency>
 	</dependencies>
 </project>

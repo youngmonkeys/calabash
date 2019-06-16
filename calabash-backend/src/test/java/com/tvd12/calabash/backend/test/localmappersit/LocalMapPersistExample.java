@@ -7,16 +7,16 @@ import java.util.Map;
 
 import com.mongodb.MongoClient;
 import com.tvd12.calabash.Calabash;
-import com.tvd12.calabash.backend.MapPersist;
 import com.tvd12.calabash.backend.annotation.MapPersistence;
 import com.tvd12.calabash.backend.builder.CalabashBuilder;
-import com.tvd12.calabash.backend.factory.DefaultMapPersistFactory;
 import com.tvd12.calabash.backend.setting.SimpleMapPersistSetting;
 import com.tvd12.calabash.backend.setting.SimpleMapSetting;
 import com.tvd12.calabash.backend.setting.SimpleSettings;
 import com.tvd12.calabash.backend.util.MapPersistenceAnnotations;
 import com.tvd12.calabash.core.BytesMap;
+import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.util.ByteArray;
+import com.tvd12.calabash.factory.DefaultEntityMapPersistFactory;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
 import com.tvd12.ezyfox.bean.EzyBeanContextBuilder;
 import com.tvd12.ezyfox.binding.EzyBindingContext;
@@ -46,20 +46,20 @@ public class LocalMapPersistExample {
 		mapSetting.setPersistSetting(mapPersistSetting);
 		settings.addMapSetting(mapSetting);
 		EzyBeanContext beanContext = newBeanContext();
-		DefaultMapPersistFactory mapPersistFactory = new DefaultMapPersistFactory();
+		DefaultEntityMapPersistFactory mapPersistFactory = new DefaultEntityMapPersistFactory();
 		List mapPersistences = beanContext.getSingletons(MapPersistence.class);
 		for(Object mapPersist : mapPersistences) {
 			String mapName = MapPersistenceAnnotations.getMapName(mapPersist);
-			mapPersistFactory.addMapPersist(mapName, (MapPersist) mapPersist);
+			mapPersistFactory.addMapPersist(mapName, (EntityMapPersist) mapPersist);
 		}
 		Calabash calabash = new CalabashBuilder()
 				.settings(settings)
 				.entityCodec(entityCodec)
-				.mapPersistFactory(mapPersistFactory)
+				.entityMapPersistFactory(mapPersistFactory)
 				.build();
 		ByteArray keyBytes = new ByteArray(entityCodec.serialize(1L));
 		byte[] values = entityCodec.serialize(new Person(5L, "bar", 29));
-		BytesMap bytesMap = calabash.getMap(CollectionNames.PERSON);
+		BytesMap bytesMap = calabash.getBytesMap(CollectionNames.PERSON);
 		bytesMap.put(keyBytes, values);
 		
 	}

@@ -106,7 +106,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	}
 
 	@Override
-	public BytesMap getMap(String name) {
+	public BytesMap getBytesMap(String name) {
 		BytesMap map = mapManager.getMap(name);
 		return map;
 	}

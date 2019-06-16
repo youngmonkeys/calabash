@@ -16,6 +16,8 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
+		<ezy.concurrent.version>1.0.0</ezy.concurrent.version>
+		<ezy.binding.codec.version>1.0.0</ezy.binding.codec.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -30,5 +32,6 @@
   <modules>
     <module>calabash-core</module>
     <module>calabash-backend</module>
+    <module>calabash-local</module>
   </modules>
 </project>

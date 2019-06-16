@@ -2,8 +2,8 @@ package com.tvd12.calabash.backend.test.localmappersit;
 
 import java.util.Map;
 
-import com.tvd12.calabash.backend.MapPersist;
 import com.tvd12.calabash.backend.annotation.MapPersistence;
+import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.ezyfox.bean.annotation.EzyAutoBind;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @EzySingleton
 @MapPersistence(CollectionNames.PERSON)
-public class PersonMapPersist implements MapPersist<Long, Person> {
+public class PersonMapPersist implements EntityMapPersist<Long, Person> {
 
 	@EzyAutoBind
 	protected PersonRepo personRepo;
