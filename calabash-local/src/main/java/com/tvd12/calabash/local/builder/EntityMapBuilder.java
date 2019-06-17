@@ -2,7 +2,7 @@ package com.tvd12.calabash.local.builder;
 
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
-import com.tvd12.calabash.local.map.LocalEntityMap;
+import com.tvd12.calabash.local.impl.EntityMapImpl;
 import com.tvd12.calabash.local.setting.EntityMapSetting;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 
@@ -27,7 +27,7 @@ public class EntityMapBuilder implements EzyBuilder<EntityMap> {
 
 	@Override
 	public EntityMap build() {
-		return new LocalEntityMap<>(this);
+		return new EntityMapImpl<>(this);
 	}
 	
 }

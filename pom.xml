@@ -16,6 +16,9 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
+		<ezy.bean.version>1.0.0</ezy.bean.version>
+		<ezy.msgpack.version>1.0.0</ezy.msgpack.version>
+		<ezy.morphia.version>1.0.0</ezy.morphia.version>
 		<ezy.concurrent.version>1.0.0</ezy.concurrent.version>
 		<ezy.binding.codec.version>1.0.0</ezy.binding.codec.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

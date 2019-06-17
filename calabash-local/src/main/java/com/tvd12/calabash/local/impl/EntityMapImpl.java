@@ -1,4 +1,4 @@
-package com.tvd12.calabash.local.map;
+package com.tvd12.calabash.local.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +15,7 @@ import com.tvd12.ezyfox.concurrent.EzyMapLockProvider;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class LocalEntityMap<K, V>
+public class EntityMapImpl<K, V>
 	extends EzyLoggable
 	implements EntityMap<K, V> {
 
@@ -24,7 +24,8 @@ public class LocalEntityMap<K, V>
 	protected EzyMapLockProvider lockProvider;
 	protected EntityMapPersistExecutor mapPersistExecutor;
 	
-	public LocalEntityMap(EntityMapBuilder builder) {
+	public EntityMapImpl(EntityMapBuilder builder) {
+		this.map = new HashMap<>();
 		this.setting = builder.getMapSetting();
 		this.mapPersistExecutor = builder.getMapPersistExecutor();
 		this.lockProvider = new EzyConcurrentHashMapLockProvider();

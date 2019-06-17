@@ -1,4 +1,4 @@
-package com.tvd12.calabash.backend.annotation;
+package com.tvd12.calabash.core.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,9 +1,9 @@
-package com.tvd12.calabash.backend.util;
+package com.tvd12.calabash.core.util;
 
 import static com.tvd12.ezyfox.reflect.EzyClasses.getVariableName;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-import com.tvd12.calabash.backend.annotation.MapPersistence;
+import com.tvd12.calabash.core.annotation.MapPersistence;
 
 public final class MapPersistenceAnnotations {
 

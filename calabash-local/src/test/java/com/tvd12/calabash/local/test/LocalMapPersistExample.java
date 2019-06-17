@@ -1,4 +1,4 @@
-package com.tvd12.calabash.backend.test.localmappersit;
+package com.tvd12.calabash.local.test;
 
 import static com.tvd12.ezyfox.util.EzyAutoImplAnnotations.getBeanName;
 
@@ -7,25 +7,18 @@ import java.util.Map;
 
 import com.mongodb.MongoClient;
 import com.tvd12.calabash.Calabash;
-import com.tvd12.calabash.backend.builder.CalabashBuilder;
-import com.tvd12.calabash.backend.setting.SimpleMapPersistSetting;
-import com.tvd12.calabash.backend.setting.SimpleMapSetting;
-import com.tvd12.calabash.backend.setting.SimpleSettings;
-import com.tvd12.calabash.core.BytesMap;
+import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.annotation.MapPersistence;
-import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
 import com.tvd12.calabash.factory.DefaultEntityMapPersistFactory;
+import com.tvd12.calabash.local.builder.CalabashBuilder;
+import com.tvd12.calabash.local.setting.SimpleEntityMapPersistSetting;
+import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
+import com.tvd12.calabash.local.setting.SimpleEntitySettings;
+import com.tvd12.calabash.local.test.mappersist.Person;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
 import com.tvd12.ezyfox.bean.EzyBeanContextBuilder;
-import com.tvd12.ezyfox.binding.EzyBindingContext;
-import com.tvd12.ezyfox.binding.codec.EzyBindingEntityCodec;
-import com.tvd12.ezyfox.codec.EzyEntityCodec;
-import com.tvd12.ezyfox.codec.EzyMessageDeserializer;
-import com.tvd12.ezyfox.codec.EzyMessageSerializer;
-import com.tvd12.ezyfox.codec.MsgPackSimpleDeserializer;
-import com.tvd12.ezyfox.codec.MsgPackSimpleSerializer;
 import com.tvd12.ezyfox.mongodb.loader.EzyInputStreamMongoClientLoader;
 import com.tvd12.ezyfox.morphia.EzyDataStoreBuilder;
 import com.tvd12.ezyfox.morphia.bean.EzyMorphiaRepositories;
@@ -37,11 +30,9 @@ public class LocalMapPersistExample {
 
 	@SuppressWarnings("rawtypes")
 	public void test() {
-		EzyEntityCodec entityCodec = newEntityCodec();
-		SimpleSettings settings = new SimpleSettings();
-		SimpleMapPersistSetting mapPersistSetting = new SimpleMapPersistSetting();
-		mapPersistSetting.setAsync(true);
-		SimpleMapSetting mapSetting = new SimpleMapSetting();
+		SimpleEntitySettings settings = new SimpleEntitySettings();
+		SimpleEntityMapPersistSetting mapPersistSetting = new SimpleEntityMapPersistSetting();
+		SimpleEntityMapSetting mapSetting = new SimpleEntityMapSetting();
 		mapSetting.setMapName(CollectionNames.PERSON);
 		mapSetting.setPersistSetting(mapPersistSetting);
 		settings.addMapSetting(mapSetting);
@@ -54,29 +45,11 @@ public class LocalMapPersistExample {
 		}
 		Calabash calabash = new CalabashBuilder()
 				.settings(settings)
-				.entityCodec(entityCodec)
 				.entityMapPersistFactory(mapPersistFactory)
 				.build();
-		ByteArray keyBytes = new ByteArray(entityCodec.serialize(1L));
-		byte[] values = entityCodec.serialize(new Person(5L, "bar", 29));
-		BytesMap bytesMap = calabash.getBytesMap(CollectionNames.PERSON);
-		bytesMap.put(keyBytes, values);
-		
-	}
-	
-	protected EzyEntityCodec newEntityCodec() {
-		EzyBindingContext bindingContext = EzyBindingContext.builder()
-				.scan("com.tvd12.calabash.backend.test.localmappersit")
-				.build();
-		EzyMessageSerializer messageSerializer = new MsgPackSimpleSerializer();
-		EzyMessageDeserializer messageDeserializer = new MsgPackSimpleDeserializer();
-		EzyEntityCodec entityCodec = EzyBindingEntityCodec.builder()
-				.marshaller(bindingContext.newMarshaller())
-				.unmarshaller(bindingContext.newUnmarshaller())
-				.messageSerializer(messageSerializer)
-				.messageDeserializer(messageDeserializer)
-				.build();
-		return entityCodec;
+		Person person = new Person(6, "person 6", 18);
+		EntityMap<Long, Person> entityMap = calabash.getEntityMap(CollectionNames.PERSON);
+		entityMap.put(person.getId(), person);
 	}
 	
 	protected EzyBeanContext newBeanContext() {
@@ -85,7 +58,7 @@ public class LocalMapPersistExample {
 		EzyBeanContextBuilder builder = EzyBeanContext.builder()
 				.addSingleton("mongoClient", mongoClient)
 				.addSingleton("datastore", datastore)
-				.scan("com.tvd12.calabash.backend.test.localmappersit");
+				.scan("com.tvd12.calabash.local.test.mappersist");
 		addAutoImplMongoRepo(builder, datastore);
 		EzyBeanContext beanContext = builder.build();
 		return beanContext;
@@ -95,7 +68,7 @@ public class LocalMapPersistExample {
 		return EzyDataStoreBuilder.dataStoreBuilder()
 			.mongoClient(mongoClient)
 			.databaseName(databaseName)
-			.scan("com.tvd12.calabash.backend.test.localmappersit")
+			.scan("com.tvd12.calabash.local.test.mappersist")
 			.build();
 	}
 	
@@ -119,7 +92,7 @@ public class LocalMapPersistExample {
 	
 	private Map<Class<?>, Object> implementMongoRepo(Datastore datastore) {
 		return EzyMorphiaRepositories.newRepositoriesImplementer()
-			.scan("com.tvd12.calabash.backend.test.localmappersit")
+			.scan("com.tvd12.calabash.local.test.mappersist")
 			.implement(datastore);
 }
 	

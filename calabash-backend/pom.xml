@@ -27,19 +27,19 @@
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-morphia</artifactId>
-			<version>1.0.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.tvd12</groupId>
-			<artifactId>ezyfox-msgpack</artifactId>
-			<version>1.0.0</version>
+			<version>${ezy.morphia.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-bean</artifactId>
-			<version>1.0.0</version>
+			<version>${ezy.bean.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.tvd12</groupId>
+			<artifactId>ezyfox-msgpack</artifactId>
+			<version>${ezy.msgpack.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

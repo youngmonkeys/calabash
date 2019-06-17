@@ -21,12 +21,13 @@ import com.tvd12.ezyfox.concurrent.EzyMapLockProvider;
 public class BytesMapImpl implements BytesMap {
 
 	protected final MapSetting setting;
+	protected final Map<ByteArray, byte[]> map;
 	protected final EzyMapLockProvider lockProvider;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
-	protected final Map<ByteArray, byte[]> map = new HashMap<>();
 	
 	public BytesMapImpl(BytesMapBuilder builder) {
+		this.map  = new HashMap<>();
 		this.setting = builder.getMapSetting();
 		this.mapBackupExecutor = builder.getMapBackupExecutor();
 		this.mapPersistExecutor = builder.getMapPersistExecutor();

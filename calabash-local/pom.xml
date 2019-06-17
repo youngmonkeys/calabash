@@ -19,5 +19,17 @@
 			<artifactId>calabash-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.tvd12</groupId>
+			<artifactId>ezyfox-morphia</artifactId>
+			<version>${ezy.morphia.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.tvd12</groupId>
+			<artifactId>ezyfox-bean</artifactId>
+			<version>${ezy.bean.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
