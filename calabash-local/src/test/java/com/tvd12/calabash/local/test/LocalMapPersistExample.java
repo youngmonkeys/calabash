@@ -32,6 +32,7 @@ public class LocalMapPersistExample {
 	public void test() {
 		SimpleEntitySettings settings = new SimpleEntitySettings();
 		SimpleEntityMapPersistSetting mapPersistSetting = new SimpleEntityMapPersistSetting();
+		mapPersistSetting.setWriteDelay(0);
 		SimpleEntityMapSetting mapSetting = new SimpleEntityMapSetting();
 		mapSetting.setMapName(CollectionNames.PERSON);
 		mapSetting.setPersistSetting(mapPersistSetting);
@@ -47,7 +48,7 @@ public class LocalMapPersistExample {
 				.settings(settings)
 				.entityMapPersistFactory(mapPersistFactory)
 				.build();
-		Person person = new Person(6, "person 6", 18);
+		Person person = new Person(7, "person 6", 18);
 		EntityMap<Long, Person> entityMap = calabash.getEntityMap(CollectionNames.PERSON);
 		entityMap.put(person.getId(), person);
 	}

@@ -3,6 +3,7 @@ package com.tvd12.calabash.local.persist;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -19,11 +20,13 @@ public class PersistActionHandlingLoop
 		extends EzyLoggable 
 		implements EzyStartable, EzyStoppable {
 
+	protected volatile boolean active;
 	protected final EntityMapPersistManager mapPersistManager;
 	protected final PersistActionQueueManager actionQueueManager;
 	protected final PersistActionBulkFactory actionBulkFactory;
 	protected final PersistActionBulkTicketQueues bulkTicketQueues;
 	protected final PersistActionBulkHandlingLoop bulkHandlingLoop;
+	protected final ExecutorService executorService;
 	protected final ScheduledExecutorService scheduledExecutorService;
 	
 	public PersistActionHandlingLoop(Builder builder) {
@@ -31,6 +34,7 @@ public class PersistActionHandlingLoop
 		this.actionQueueManager = builder.actionQueueManager;
 		this.actionBulkFactory = new PersistActionBulkFactory();
 		this.bulkTicketQueues = new PersistActionBulkTicketQueues();
+		this.executorService = newExecutorService();
 		this.scheduledExecutorService = newScheduledExecutorService();
 		this.bulkHandlingLoop = newBulkHandlingLoop();
 	}
@@ -41,26 +45,59 @@ public class PersistActionHandlingLoop
 				.build();
 	}
 	
+	protected ExecutorService newExecutorService() {
+		ExecutorService service = EzyExecutors.newSingleThreadExecutor("calabash-immediate-persist-loop");
+		Runtime.getRuntime().addShutdownHook(new Thread(service::shutdown));
+		return service;
+	}
+	
 	protected ScheduledExecutorService newScheduledExecutorService() {
-		ScheduledExecutorService service = EzyExecutors.newSingleThreadScheduledExecutor("calabash-persist-loop");
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> service.shutdown()));
+		ScheduledExecutorService service = EzyExecutors.newSingleThreadScheduledExecutor("calabash-delayed-persist-loop");
+		Runtime.getRuntime().addShutdownHook(new Thread(service::shutdown));
 		return service;
 	}
 	
 	@Override
 	public void start() throws Exception {
-		this.scheduledExecutorService.scheduleAtFixedRate(this::handle, 100, 100, TimeUnit.MILLISECONDS);
+		this.scheduledExecutorService.scheduleAtFixedRate(this::handleDelayedQueues, 100, 100, TimeUnit.MILLISECONDS);
+		this.executorService.submit(this::loopImmediateQueues);
 		this.bulkHandlingLoop.start();
 	}
 	
 	@Override
 	public void stop() {
+		this.active = false;
+		this.executorService.shutdown();
 		this.scheduledExecutorService.shutdown();
 		this.bulkHandlingLoop.stop();
 	}
 	
-	protected void handle() {
-		Map<String, PersistActionQueue> readyQueues = actionQueueManager.getReadyQueues();
+	protected void handleDelayedQueues() {
+		Map<String, PersistActionQueue> readyQueues = actionQueueManager.getReadyDelayedQueues();
+		for(String mapName : readyQueues.keySet()) {
+			PersistActionQueue queue = readyQueues.get(mapName);
+			handleQueue(mapName, queue);
+		}
+	}
+	
+	protected void loopImmediateQueues() {
+		this.active = true;
+		while(active) {
+			handleImmediateQueues();
+			sleepImmediateQueuesHandling();
+		}
+	}
+	
+	protected void sleepImmediateQueuesHandling() {
+		try {
+			Thread.sleep(100L);
+		} catch (InterruptedException e) {
+			logger.error("sleep immediate queues handling error", e);
+		}
+	}
+	
+	protected void handleImmediateQueues() {
+		Map<String, PersistActionQueue> readyQueues = actionQueueManager.getReadyImmediateQueues();
 		for(String mapName : readyQueues.keySet()) {
 			PersistActionQueue queue = readyQueues.get(mapName);
 			handleQueue(mapName, queue);
@@ -68,6 +105,15 @@ public class PersistActionHandlingLoop
 	}
 	
 	protected void handleQueue(String mapName, PersistActionQueue queue) {
+		try {
+			handleQueue0(mapName, queue);
+		}
+		catch (Exception e) {
+			logger.warn("handle queue of map: {} error", mapName, e);
+		}
+	}
+	
+	protected void handleQueue0(String mapName, PersistActionQueue queue) {
 		EntityMapPersist mapPersist = mapPersistManager.getMapPersist(mapName);
 		List<PersistAction> actions = queue.polls();
 		List<PersistAction> sameActions = null;

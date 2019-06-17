@@ -14,10 +14,8 @@ public class PersistActionQueue {
 	}
 	
 	public boolean isReady() {
-		synchronized (queue) {
-			boolean ready = queue.size() > 0;
-			return ready;
-		}
+		int size = queue.size();
+		return size > 0;
 	}
 	
 	public void add(PersistAction action) {
@@ -33,6 +31,13 @@ public class PersistActionQueue {
 				actions.add(queue.poll());
 		}
 		return actions;
+	}
+	
+	public int size() {
+		synchronized (queue) {
+			int size = queue.size();
+			return size;
+		}
 	}
 	
 }

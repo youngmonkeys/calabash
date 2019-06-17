@@ -5,22 +5,32 @@ import java.util.Map;
 
 public class PersistActionQueueManager {
 
-	protected final Map<String, PersistActionQueue> queues;
 	protected final PersistActionQueueFactory queueFactory;
+	protected final Map<String, PersistActionQueue> delayedQueues;
+	protected final Map<String, PersistActionQueue> immediateQueues;
 	
 	public PersistActionQueueManager(PersistActionQueueFactory queueFactory) {
-		this.queues = new HashMap<>();
 		this.queueFactory = queueFactory;
+		this.delayedQueues = new HashMap<>();
+		this.immediateQueues = new HashMap<>();
 	}
 	
-	public PersistActionQueue getQueue(String mapName) {
-		PersistActionQueue queue = queues.get(mapName);
+	public PersistActionQueue getDelayedQueue(String mapName) {
+		PersistActionQueue queue = delayedQueues.get(mapName);
 		if(queue == null)
-			queue = newQueue(mapName);
+			queue = newQueue(mapName, delayedQueues);
 		return queue;
 	}
 	
-	protected PersistActionQueue newQueue(String mapName) {
+	public PersistActionQueue getImmediateQueue(String mapName) {
+		PersistActionQueue queue = immediateQueues.get(mapName);
+		if(queue == null)
+			queue = newQueue(mapName, immediateQueues);
+		return queue;
+	}
+	
+	protected PersistActionQueue newQueue(
+			String mapName, Map<String, PersistActionQueue> queues) {
 		synchronized (queues) {
 			PersistActionQueue queue = queues.get(mapName);
 			if(queue == null) {
@@ -31,12 +41,24 @@ public class PersistActionQueueManager {
 		}
 	}
 	
-	public Map<String, PersistActionQueue> getReadyQueues() {
+	public Map<String, PersistActionQueue> getReadyDelayedQueues() {
 		Map<String, PersistActionQueue> readyQueues = new HashMap<>();
-		synchronized (queues) {
-			for(String mapName : queues.keySet()) {
-				PersistActionQueue queue = queues.get(mapName);
+		synchronized (delayedQueues) {
+			for(String mapName : delayedQueues.keySet()) {
+				PersistActionQueue queue = delayedQueues.get(mapName);
 				if(queue.isReady())
+					readyQueues.put(mapName, queue);
+			}
+		}
+		return readyQueues;
+	}
+	
+	public Map<String, PersistActionQueue> getReadyImmediateQueues() {
+		Map<String, PersistActionQueue> readyQueues = new HashMap<>();
+		synchronized (immediateQueues) {
+			for(String mapName : immediateQueues.keySet()) {
+				PersistActionQueue queue = immediateQueues.get(mapName);
+				if(queue.size() > 0)
 					readyQueues.put(mapName, queue);
 			}
 		}

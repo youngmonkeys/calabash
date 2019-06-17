@@ -106,11 +106,10 @@ public class SimpleEntityMapPersistExecutor
 		String mapName = setting.getMapName();
 		EntityMapPersistSetting persistSetting = setting.getPersistSetting();
 		long writeDelay = persistSetting.getWriteDelay();
-		if(writeDelay > 0) {
-			PersistActionQueue queue = actionQueueManager.getQueue(mapName);
-			queue.add(action);
-		}
-		
+		PersistActionQueue queue = writeDelay > 0 
+				? actionQueueManager.getDelayedQueue(mapName)
+				: actionQueueManager.getImmediateQueue(mapName);
+		queue.add(action);
 	}
 	
 	public static Builder builder() {
