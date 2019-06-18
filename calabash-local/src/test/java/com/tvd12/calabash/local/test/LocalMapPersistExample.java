@@ -48,7 +48,7 @@ public class LocalMapPersistExample {
 				.settings(settings)
 				.entityMapPersistFactory(mapPersistFactory)
 				.build();
-		Person person = new Person(7, "person 6", 18);
+		Person person = new Person(10, "person 6", 18);
 		EntityMap<Long, Person> entityMap = calabash.getEntityMap(CollectionNames.PERSON);
 		entityMap.put(person.getId(), person);
 	}
