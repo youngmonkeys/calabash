@@ -3,10 +3,14 @@ package com.tvd12.calabash.backend.persist;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.tvd12.calabash.core.persist.PersistAction;
-import com.tvd12.calabash.core.persist.PersistActionBulk;
-import com.tvd12.calabash.core.util.ByteArray;
+import com.tvd12.calabash.backend.BytesMapPersist;
+import com.tvd12.calabash.persist.action.PersistAbstractActionBulk;
+import com.tvd12.calabash.persist.action.PersistAction;
+import com.tvd12.calabash.persist.action.PersistActionBulk;
+import com.tvd12.calabash.persist.action.PersistDeleteManyAction;
+import com.tvd12.calabash.persist.action.PersistDeleteOneAction;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class PersistDeleteActionBulk extends PersistAbstractActionBulk {
 
 	public PersistDeleteActionBulk(Builder builder) {
@@ -15,7 +19,7 @@ public class PersistDeleteActionBulk extends PersistAbstractActionBulk {
 
 	@Override
 	public void execute() {
-		Set<ByteArray> keys = new HashSet<>();
+		Set keys = new HashSet<>();
 		for(PersistAction action : actions) {
 			switch (action.getType()) {
 			case DELETE_ONE:
@@ -26,7 +30,7 @@ public class PersistDeleteActionBulk extends PersistAbstractActionBulk {
 				break;
 			}
 		}
-		mapPersist.delete(keys);
+		((BytesMapPersist)mapPersist).delete(keys);
 	}
 	
 	public static Builder builder() {

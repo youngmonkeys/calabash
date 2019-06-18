@@ -3,10 +3,14 @@ package com.tvd12.calabash.local.persist;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.tvd12.calabash.core.persist.PersistAction;
-import com.tvd12.calabash.core.persist.PersistActionBulk;
+import com.tvd12.calabash.core.EntityMapPersist;
+import com.tvd12.calabash.persist.action.PersistAbstractActionBulk;
+import com.tvd12.calabash.persist.action.PersistAction;
+import com.tvd12.calabash.persist.action.PersistActionBulk;
+import com.tvd12.calabash.persist.action.PersistDeleteManyAction;
+import com.tvd12.calabash.persist.action.PersistDeleteOneAction;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class PersistDeleteActionBulk extends PersistAbstractActionBulk {
 
 	public PersistDeleteActionBulk(Builder builder) {
@@ -26,7 +30,7 @@ public class PersistDeleteActionBulk extends PersistAbstractActionBulk {
 				break;
 			}
 		}
-		mapPersist.delete(keys);
+		((EntityMapPersist)mapPersist).delete(keys);
 	}
 	
 	public static Builder builder() {

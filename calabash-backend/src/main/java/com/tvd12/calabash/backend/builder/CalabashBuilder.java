@@ -3,8 +3,8 @@ package com.tvd12.calabash.backend.builder;
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.backend.impl.CalabashImpl;
 import com.tvd12.calabash.backend.setting.Settings;
-import com.tvd12.calabash.factory.DefaultEntityMapPersistFactory;
-import com.tvd12.calabash.factory.EntityMapPersistFactory;
+import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
+import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
 

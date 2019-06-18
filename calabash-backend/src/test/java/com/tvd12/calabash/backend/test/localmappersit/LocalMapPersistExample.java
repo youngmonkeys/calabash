@@ -16,7 +16,7 @@ import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.annotation.MapPersistence;
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
-import com.tvd12.calabash.factory.DefaultEntityMapPersistFactory;
+import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
 import com.tvd12.ezyfox.bean.EzyBeanContextBuilder;
 import com.tvd12.ezyfox.binding.EzyBindingContext;
@@ -40,7 +40,6 @@ public class LocalMapPersistExample {
 		EzyEntityCodec entityCodec = newEntityCodec();
 		SimpleSettings settings = new SimpleSettings();
 		SimpleMapPersistSetting mapPersistSetting = new SimpleMapPersistSetting();
-		mapPersistSetting.setAsync(true);
 		SimpleMapSetting mapSetting = new SimpleMapSetting();
 		mapSetting.setMapName(CollectionNames.PERSON);
 		mapSetting.setPersistSetting(mapPersistSetting);

@@ -1,9 +1,6 @@
 package com.tvd12.calabash.backend.setting;
 
-public interface MapPersistSetting {
+import com.tvd12.calabash.core.setting.IMapPersistSetting;
 
-	long getDelay();
-	
-	boolean isAsync();
-	
+public interface MapPersistSetting extends IMapPersistSetting {
 }

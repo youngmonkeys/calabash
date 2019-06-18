@@ -4,12 +4,12 @@ import com.tvd12.calabash.backend.BytesMapPersist;
 import com.tvd12.calabash.backend.builder.BytesMapBuilder;
 import com.tvd12.calabash.backend.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.backend.executor.BytesMapPersistExecutor;
-import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
 import com.tvd12.calabash.backend.persist.EntityBytesMapPersist;
 import com.tvd12.calabash.backend.setting.Settings;
 import com.tvd12.calabash.core.BytesMap;
 import com.tvd12.calabash.core.EntityMapPersist;
-import com.tvd12.calabash.factory.EntityMapPersistFactory;
+import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
+import com.tvd12.calabash.persist.manager.MapPersistManager;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.util.EzyLoggable;
@@ -18,7 +18,7 @@ public class SimpleBytesMapFactory extends EzyLoggable implements BytesMapFactor
 
 	protected final Settings settings;
 	protected final EzyEntityCodec entityCodec;
-	protected final BytesMapPersistManager mapPersistManager;
+	protected final MapPersistManager mapPersistManager;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	protected final EntityMapPersistFactory entityMapPersistFactory;
@@ -65,8 +65,8 @@ public class SimpleBytesMapFactory extends EzyLoggable implements BytesMapFactor
 		
 		protected Settings settings;
 		protected EzyEntityCodec entityCodec;
+		protected MapPersistManager mapPersistManager;
 		protected EntityMapPersistFactory entityMapPersistFactory;
-		protected BytesMapPersistManager mapPersistManager;
 		protected BytesMapBackupExecutor mapBackupExecutor;
 		protected BytesMapPersistExecutor mapPersistExecutor;
 		
@@ -85,7 +85,7 @@ public class SimpleBytesMapFactory extends EzyLoggable implements BytesMapFactor
 			return this;
 		}
 		
-		public Builder mapPersistManager(BytesMapPersistManager mapPersistManager) {
+		public Builder mapPersistManager(MapPersistManager mapPersistManager) {
 			this.mapPersistManager = mapPersistManager;
 			return this;
 		}

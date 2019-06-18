@@ -1,7 +1,6 @@
 package com.tvd12.calabash.local.setting;
 
-public interface EntityMapPersistSetting {
+import com.tvd12.calabash.core.setting.IMapPersistSetting;
 
-	long getWriteDelay();
-	
+public interface EntityMapPersistSetting extends IMapPersistSetting {
 }

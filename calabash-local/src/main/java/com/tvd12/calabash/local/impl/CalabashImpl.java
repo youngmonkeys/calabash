@@ -2,20 +2,21 @@ package com.tvd12.calabash.local.impl;
 
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
-import com.tvd12.calabash.factory.EntityMapPersistFactory;
 import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.executor.SimpleEntityMapPersistExecutor;
 import com.tvd12.calabash.local.factory.EntityMapFactory;
 import com.tvd12.calabash.local.factory.SimpleEntityMapFactory;
 import com.tvd12.calabash.local.manager.EntityMapManager;
-import com.tvd12.calabash.local.manager.EntityMapPersistManager;
 import com.tvd12.calabash.local.manager.SimpleEntityMapManager;
-import com.tvd12.calabash.local.manager.SimpleEntityMapPersistManager;
-import com.tvd12.calabash.local.persist.PersistActionHandlingLoop;
-import com.tvd12.calabash.local.persist.PersistActionQueueFactory;
-import com.tvd12.calabash.local.persist.PersistActionQueueManager;
+import com.tvd12.calabash.local.persist.PersistActionHandlingLoopImpl;
 import com.tvd12.calabash.local.setting.Settings;
+import com.tvd12.calabash.persist.action.PersistActionHandlingLoop;
+import com.tvd12.calabash.persist.action.PersistActionQueueFactory;
+import com.tvd12.calabash.persist.action.PersistActionQueueManager;
+import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
+import com.tvd12.calabash.persist.manager.MapPersistManager;
+import com.tvd12.calabash.persist.manager.SimpleMapPersistManager;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings("unchecked")
@@ -24,7 +25,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected final Settings settings;
 	protected final EntityMapFactory mapFactory;
 	protected final EntityMapManager mapManager;
-	protected final EntityMapPersistManager mapPersistManager;
+	protected final MapPersistManager mapPersistManager;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
 	protected final EntityMapPersistFactory entityMapPersistFactory;
 	protected final PersistActionQueueFactory persistActionQueueFactory;
@@ -44,8 +45,8 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		this.startAllLoops();
 	}
 	
-	protected EntityMapPersistManager newMapPersistManager() {
-		return new SimpleEntityMapPersistManager();
+	protected MapPersistManager newMapPersistManager() {
+		return new SimpleMapPersistManager();
 	}
 	
 	protected PersistActionQueueFactory newPersistActionQueueFactory() {
@@ -79,7 +80,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	}
 	
 	protected PersistActionHandlingLoop newPersistActionHandlingLoop() {
-		return PersistActionHandlingLoop.builder()
+		return PersistActionHandlingLoopImpl.builder()
 				.mapPersistManager(mapPersistManager)
 				.actionQueueManager(persistActionQueueManager)
 				.build();

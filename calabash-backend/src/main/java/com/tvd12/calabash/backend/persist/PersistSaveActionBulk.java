@@ -3,10 +3,14 @@ package com.tvd12.calabash.backend.persist;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tvd12.calabash.core.persist.PersistAction;
-import com.tvd12.calabash.core.persist.PersistActionBulk;
-import com.tvd12.calabash.core.util.ByteArray;
+import com.tvd12.calabash.backend.BytesMapPersist;
+import com.tvd12.calabash.persist.action.PersistAbstractActionBulk;
+import com.tvd12.calabash.persist.action.PersistAction;
+import com.tvd12.calabash.persist.action.PersistActionBulk;
+import com.tvd12.calabash.persist.action.PersistSaveManyAction;
+import com.tvd12.calabash.persist.action.PersistSaveOneAction;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class PersistSaveActionBulk extends PersistAbstractActionBulk {
 
 	public PersistSaveActionBulk(Builder builder) {
@@ -15,7 +19,7 @@ public class PersistSaveActionBulk extends PersistAbstractActionBulk {
 
 	@Override
 	public void execute() {
-		Map<ByteArray, byte[]> keyValues = new HashMap<>();
+		Map keyValues = new HashMap<>();
 		for(PersistAction action : actions) {
 			switch (action.getType()) {
 			case SAVE_ONE:
@@ -28,7 +32,7 @@ public class PersistSaveActionBulk extends PersistAbstractActionBulk {
 				break;
 			}
 		}
-		mapPersist.persist(keyValues);
+		((BytesMapPersist)mapPersist).persist(keyValues);
 	}
 	
 	public static Builder builder() {

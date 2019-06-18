@@ -9,15 +9,16 @@ import com.tvd12.calabash.backend.executor.SimpleBytesMapPersistExecutor;
 import com.tvd12.calabash.backend.factory.BytesMapFactory;
 import com.tvd12.calabash.backend.factory.SimpleBytesMapFactory;
 import com.tvd12.calabash.backend.manager.BytesMapManager;
-import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
 import com.tvd12.calabash.backend.manager.SimpleBytesMapManager;
-import com.tvd12.calabash.backend.manager.SimpleBytesMapPersistManager;
-import com.tvd12.calabash.backend.persist.PersistActionHandlingLoop;
-import com.tvd12.calabash.backend.persist.PersistActionQueueFactory;
-import com.tvd12.calabash.backend.persist.PersistActionQueueManager;
+import com.tvd12.calabash.backend.persist.PersistActionHandlingLoopImpl;
 import com.tvd12.calabash.backend.setting.Settings;
 import com.tvd12.calabash.core.BytesMap;
-import com.tvd12.calabash.factory.EntityMapPersistFactory;
+import com.tvd12.calabash.persist.action.PersistActionHandlingLoop;
+import com.tvd12.calabash.persist.action.PersistActionQueueFactory;
+import com.tvd12.calabash.persist.action.PersistActionQueueManager;
+import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
+import com.tvd12.calabash.persist.manager.MapPersistManager;
+import com.tvd12.calabash.persist.manager.SimpleMapPersistManager;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
@@ -27,7 +28,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected final EzyEntityCodec entityCodec;
 	protected final BytesMapFactory mapFactory;
 	protected final BytesMapManager mapManager;
-	protected final BytesMapPersistManager mapPersistManager;
+	protected final MapPersistManager mapPersistManager;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	protected final EntityMapPersistFactory entityMapPersistFactory;
@@ -54,8 +55,8 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		return new SimpleBytesMapBackupExecutor();
 	}
 	
-	protected BytesMapPersistManager newMapPersistManager() {
-		return new SimpleBytesMapPersistManager();
+	protected MapPersistManager newMapPersistManager() {
+		return new SimpleMapPersistManager();
 	}
 	
 	protected PersistActionQueueFactory newPersistActionQueueFactory() {
@@ -91,7 +92,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	}
 	
 	protected PersistActionHandlingLoop newPersistActionHandlingLoop() {
-		return PersistActionHandlingLoop.builder()
+		return PersistActionHandlingLoopImpl.builder()
 				.mapPersistManager(mapPersistManager)
 				.actionQueueManager(persistActionQueueManager)
 				.build();

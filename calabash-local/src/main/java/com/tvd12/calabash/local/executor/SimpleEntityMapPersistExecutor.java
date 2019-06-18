@@ -5,16 +5,16 @@ import java.util.Map;
 import java.util.Set;
 
 import com.tvd12.calabash.core.EntityMapPersist;
-import com.tvd12.calabash.core.persist.PersistAction;
-import com.tvd12.calabash.core.persist.PersistActionQueue;
-import com.tvd12.calabash.local.manager.EntityMapPersistManager;
-import com.tvd12.calabash.local.persist.PersistActionQueueManager;
-import com.tvd12.calabash.local.persist.PersistDeleteManyAction;
-import com.tvd12.calabash.local.persist.PersistDeleteOneAction;
-import com.tvd12.calabash.local.persist.PersistSaveManyAction;
-import com.tvd12.calabash.local.persist.PersistSaveOneAction;
 import com.tvd12.calabash.local.setting.EntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.EntityMapSetting;
+import com.tvd12.calabash.persist.action.PersistAction;
+import com.tvd12.calabash.persist.action.PersistActionQueue;
+import com.tvd12.calabash.persist.action.PersistActionQueueManager;
+import com.tvd12.calabash.persist.action.PersistDeleteManyAction;
+import com.tvd12.calabash.persist.action.PersistDeleteOneAction;
+import com.tvd12.calabash.persist.action.PersistSaveManyAction;
+import com.tvd12.calabash.persist.action.PersistSaveOneAction;
+import com.tvd12.calabash.persist.manager.MapPersistManager;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
@@ -23,7 +23,7 @@ public class SimpleEntityMapPersistExecutor
 		extends EzyLoggable
 		implements EntityMapPersistExecutor {
 	
-	protected final EntityMapPersistManager mapPersistManager;
+	protected final MapPersistManager mapPersistManager;
 	protected final PersistActionQueueManager actionQueueManager;
 	
 	public SimpleEntityMapPersistExecutor(Builder builder) {
@@ -118,10 +118,10 @@ public class SimpleEntityMapPersistExecutor
 	
 	public static class Builder implements EzyBuilder<EntityMapPersistExecutor> {
 		
-		protected EntityMapPersistManager mapPersistManager;
+		protected MapPersistManager mapPersistManager;
 		protected PersistActionQueueManager actionQueueManager;
 		
-		public Builder mapPersistManager(EntityMapPersistManager mapPersistManager) {
+		public Builder mapPersistManager(MapPersistManager mapPersistManager) {
 			this.mapPersistManager = mapPersistManager;
 			return this;
 		}

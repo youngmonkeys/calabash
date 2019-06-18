@@ -7,29 +7,15 @@
 		<artifactId>calabash</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>calabash-local</artifactId>
-	<name>calabash-local</name>
+	<artifactId>calabash-persist</artifactId>
+	<name>calabash-persist</name>
 	<url>http://maven.apache.org</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.tvd12</groupId>
-			<artifactId>calabash-persist</artifactId>
+			<artifactId>calabash-core</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.tvd12</groupId>
-			<artifactId>ezyfox-morphia</artifactId>
-			<version>${ezy.morphia.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.tvd12</groupId>
-			<artifactId>ezyfox-bean</artifactId>
-			<version>${ezy.bean.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

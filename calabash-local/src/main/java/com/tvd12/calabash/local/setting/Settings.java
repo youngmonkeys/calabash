@@ -1,6 +1,8 @@
 package com.tvd12.calabash.local.setting;
 
-public interface Settings {
+import com.tvd12.calabash.core.setting.IMapSettings;
+
+public interface Settings extends IMapSettings {
 
 	EntityMapSetting getMapSetting(String mapName);
 	

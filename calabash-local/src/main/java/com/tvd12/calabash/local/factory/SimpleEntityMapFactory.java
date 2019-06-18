@@ -2,11 +2,11 @@ package com.tvd12.calabash.local.factory;
 
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPersist;
-import com.tvd12.calabash.factory.EntityMapPersistFactory;
 import com.tvd12.calabash.local.builder.EntityMapBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
-import com.tvd12.calabash.local.manager.EntityMapPersistManager;
 import com.tvd12.calabash.local.setting.Settings;
+import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
+import com.tvd12.calabash.persist.manager.MapPersistManager;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
@@ -15,7 +15,7 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 
 	protected final Settings settings;
 	protected final EntityMapPersistFactory entityMapPersistFactory;
-	protected final EntityMapPersistManager mapPersistManager;
+	protected final MapPersistManager mapPersistManager;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
 	
 	protected SimpleEntityMapFactory(Builder builder) {
@@ -53,7 +53,7 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 		
 		protected Settings settings;
 		protected EntityMapPersistFactory entityMapPersistFactory;
-		protected EntityMapPersistManager mapPersistManager;
+		protected MapPersistManager mapPersistManager;
 		protected EntityMapPersistExecutor mapPersistExecutor;
 		
 		public Builder settings(Settings settings) {
@@ -66,7 +66,7 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 			return this;
 		}
 		
-		public Builder mapPersistManager(EntityMapPersistManager mapPersistManager) {
+		public Builder mapPersistManager(MapPersistManager mapPersistManager) {
 			this.mapPersistManager = mapPersistManager;
 			return this;
 		}
