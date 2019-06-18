@@ -1,8 +1,10 @@
-package com.tvd12.calabash.persist.action;
+package com.tvd12.calabash.persist.bulk;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import com.tvd12.calabash.persist.action.PersistActionType;
 
 public abstract class PersistActionBulkFactory {
 	

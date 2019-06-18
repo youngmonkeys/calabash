@@ -1,4 +1,4 @@
-package com.tvd12.calabash.persist.action;
+package com.tvd12.calabash.persist.bulk;
 
 import java.util.LinkedList;
 import java.util.Queue;

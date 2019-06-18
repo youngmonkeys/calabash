@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.tvd12.calabash.core.EntityMapPersist;
-import com.tvd12.calabash.persist.action.PersistAbstractActionBulk;
 import com.tvd12.calabash.persist.action.PersistAction;
-import com.tvd12.calabash.persist.action.PersistActionBulk;
 import com.tvd12.calabash.persist.action.PersistDeleteManyAction;
 import com.tvd12.calabash.persist.action.PersistDeleteOneAction;
+import com.tvd12.calabash.persist.bulk.PersistAbstractActionBulk;
+import com.tvd12.calabash.persist.bulk.PersistActionBulk;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class PersistDeleteActionBulk extends PersistAbstractActionBulk {

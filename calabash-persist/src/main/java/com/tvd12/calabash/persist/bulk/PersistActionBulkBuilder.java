@@ -1,7 +1,8 @@
-package com.tvd12.calabash.persist.action;
+package com.tvd12.calabash.persist.bulk;
 
 import java.util.List;
 
+import com.tvd12.calabash.persist.action.PersistAction;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 
 public interface PersistActionBulkBuilder extends EzyBuilder<PersistActionBulk> {

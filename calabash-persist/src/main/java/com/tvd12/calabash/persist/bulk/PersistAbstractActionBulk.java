@@ -1,6 +1,8 @@
-package com.tvd12.calabash.persist.action;
+package com.tvd12.calabash.persist.bulk;
 
 import java.util.List;
+
+import com.tvd12.calabash.persist.action.PersistAction;
 
 public abstract class PersistAbstractActionBulk implements PersistActionBulk {
 

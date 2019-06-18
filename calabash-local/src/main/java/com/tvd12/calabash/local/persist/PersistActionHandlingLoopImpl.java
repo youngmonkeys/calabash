@@ -1,7 +1,7 @@
 package com.tvd12.calabash.local.persist;
 
-import com.tvd12.calabash.persist.action.PersistActionBulkFactory;
-import com.tvd12.calabash.persist.action.PersistActionHandlingLoop;
+import com.tvd12.calabash.persist.bulk.PersistActionBulkFactory;
+import com.tvd12.calabash.persist.handler.PersistActionHandlingLoop;
 
 public class PersistActionHandlingLoopImpl extends PersistActionHandlingLoop {
 	

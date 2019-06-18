@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.tvd12.calabash.backend.BytesMapPersist;
-import com.tvd12.calabash.persist.action.PersistAbstractActionBulk;
 import com.tvd12.calabash.persist.action.PersistAction;
-import com.tvd12.calabash.persist.action.PersistActionBulk;
 import com.tvd12.calabash.persist.action.PersistSaveManyAction;
 import com.tvd12.calabash.persist.action.PersistSaveOneAction;
+import com.tvd12.calabash.persist.bulk.PersistAbstractActionBulk;
+import com.tvd12.calabash.persist.bulk.PersistActionBulk;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class PersistSaveActionBulk extends PersistAbstractActionBulk {
