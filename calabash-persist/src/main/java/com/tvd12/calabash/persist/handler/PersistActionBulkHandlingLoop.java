@@ -2,11 +2,11 @@ package com.tvd12.calabash.persist.handler;
 
 import java.util.concurrent.ExecutorService;
 
+import com.tvd12.calabash.concurrent.Executors;
 import com.tvd12.calabash.persist.bulk.PersistActionBulk;
 import com.tvd12.calabash.persist.bulk.PersistActionBulkQueue;
 import com.tvd12.calabash.persist.bulk.PersistActionBulkTicketQueues;
 import com.tvd12.ezyfox.builder.EzyBuilder;
-import com.tvd12.ezyfox.concurrent.EzyExecutors;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.ezyfox.util.EzyStartable;
 import com.tvd12.ezyfox.util.EzyStoppable;
@@ -25,7 +25,7 @@ public class PersistActionBulkHandlingLoop
 	}
 	
 	protected ExecutorService newExecutorService() {
-		ExecutorService executorService = EzyExecutors.newFixedThreadPool(8, "calabash-bulk-persit");
+		ExecutorService executorService = Executors.newFixedThreadPool(8, "bulk-persit");
 		Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
 		return executorService;
 	}

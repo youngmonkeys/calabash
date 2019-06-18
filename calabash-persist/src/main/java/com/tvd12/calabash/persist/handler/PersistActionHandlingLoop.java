@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.tvd12.calabash.concurrent.Executors;
 import com.tvd12.calabash.persist.action.PersistAction;
 import com.tvd12.calabash.persist.action.PersistActionQueue;
 import com.tvd12.calabash.persist.action.PersistActionQueueManager;
@@ -17,7 +18,6 @@ import com.tvd12.calabash.persist.bulk.PersistActionBulkQueue;
 import com.tvd12.calabash.persist.bulk.PersistActionBulkTicketQueues;
 import com.tvd12.calabash.persist.manager.MapPersistManager;
 import com.tvd12.ezyfox.builder.EzyBuilder;
-import com.tvd12.ezyfox.concurrent.EzyExecutors;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.ezyfox.util.EzyStartable;
 import com.tvd12.ezyfox.util.EzyStoppable;
@@ -53,13 +53,13 @@ public abstract class PersistActionHandlingLoop
 	}
 	
 	private ScheduledExecutorService newDelayedPersistSchedule() {
-		ScheduledExecutorService service = EzyExecutors.newSingleThreadScheduledExecutor("calabash-delayed-persist-loop");
+		ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor("delayed-persist-loop");
 		Runtime.getRuntime().addShutdownHook(new Thread(service::shutdown));
 		return service;
 	}
 	
 	private ScheduledExecutorService newImmediatePersistSchedule() {
-		ScheduledExecutorService service = EzyExecutors.newSingleThreadScheduledExecutor("calabash-immediate-persist-loop");
+		ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor("immediate-persist-loop");
 		Runtime.getRuntime().addShutdownHook(new Thread(service::shutdown));
 		return service;
 	}
