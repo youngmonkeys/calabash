@@ -3,6 +3,8 @@ package com.tvd12.calabash.backend.persist;
 import java.util.List;
 
 import com.tvd12.calabash.backend.BytesMapPersist;
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionBulk;
 
 public abstract class PersistAbstractActionBulk implements PersistActionBulk {
 

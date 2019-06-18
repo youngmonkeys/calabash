@@ -6,8 +6,6 @@ import java.util.Set;
 
 import com.tvd12.calabash.backend.BytesMapPersist;
 import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
-import com.tvd12.calabash.backend.persist.PersistAction;
-import com.tvd12.calabash.backend.persist.PersistActionQueue;
 import com.tvd12.calabash.backend.persist.PersistActionQueueManager;
 import com.tvd12.calabash.backend.persist.PersistDeleteManyAction;
 import com.tvd12.calabash.backend.persist.PersistDeleteOneAction;
@@ -15,6 +13,8 @@ import com.tvd12.calabash.backend.persist.PersistSaveManyAction;
 import com.tvd12.calabash.backend.persist.PersistSaveOneAction;
 import com.tvd12.calabash.backend.setting.MapPersistSetting;
 import com.tvd12.calabash.backend.setting.MapSetting;
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionQueue;
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.util.EzyLoggable;

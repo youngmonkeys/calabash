@@ -1,12 +1,13 @@
 package com.tvd12.calabash.local.persist;
 
-import com.tvd12.calabash.local.setting.EntitySettings;
+import com.tvd12.calabash.core.persist.PersistActionQueue;
+import com.tvd12.calabash.local.setting.Settings;
 
 public class PersistActionQueueFactory {
 	
-	protected final EntitySettings settings;
+	protected final Settings settings;
 	
-	public PersistActionQueueFactory(EntitySettings settings) {
+	public PersistActionQueueFactory(Settings settings) {
 		this.settings = settings;
 	}
 	

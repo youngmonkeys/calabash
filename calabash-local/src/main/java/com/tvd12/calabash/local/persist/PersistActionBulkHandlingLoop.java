@@ -2,6 +2,8 @@ package com.tvd12.calabash.local.persist;
 
 import java.util.concurrent.ExecutorService;
 
+import com.tvd12.calabash.core.persist.PersistActionBulk;
+import com.tvd12.calabash.core.persist.PersistActionBulkQueue;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.concurrent.EzyExecutors;
 import com.tvd12.ezyfox.util.EzyLoggable;

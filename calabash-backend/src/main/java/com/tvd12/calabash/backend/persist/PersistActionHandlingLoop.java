@@ -8,6 +8,11 @@ import java.util.concurrent.TimeUnit;
 
 import com.tvd12.calabash.backend.BytesMapPersist;
 import com.tvd12.calabash.backend.manager.BytesMapPersistManager;
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionBulk;
+import com.tvd12.calabash.core.persist.PersistActionBulkQueue;
+import com.tvd12.calabash.core.persist.PersistActionQueue;
+import com.tvd12.calabash.core.persist.PersistActionType;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.concurrent.EzyExecutors;
 import com.tvd12.ezyfox.util.EzyLoggable;
@@ -80,7 +85,7 @@ public class PersistActionHandlingLoop
 				currentActionType = actionType;
 				sameActions = new ArrayList<>();
 			}
-			boolean sameType = currentActionType.equals(actionType);
+			boolean sameType = currentActionType.sames(actionType);
 			if(sameType)
 				sameActions.add(action);
 			if(!sameType || i == last) {

@@ -1,4 +1,4 @@
-package com.tvd12.calabash.local.persist;
+package com.tvd12.calabash.core.persist;
 
 import java.util.LinkedList;
 import java.util.Queue;

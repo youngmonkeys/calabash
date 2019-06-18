@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.tvd12.calabash.core.EntityMapPersist;
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionQueue;
 import com.tvd12.calabash.local.manager.EntityMapPersistManager;
-import com.tvd12.calabash.local.persist.PersistAction;
-import com.tvd12.calabash.local.persist.PersistActionQueue;
 import com.tvd12.calabash.local.persist.PersistActionQueueManager;
 import com.tvd12.calabash.local.persist.PersistDeleteManyAction;
 import com.tvd12.calabash.local.persist.PersistDeleteOneAction;

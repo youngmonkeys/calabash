@@ -1,6 +1,7 @@
 package com.tvd12.calabash.backend.persist;
 
 import com.tvd12.calabash.backend.setting.Settings;
+import com.tvd12.calabash.core.persist.PersistActionQueue;
 
 public class PersistActionQueueFactory {
 	

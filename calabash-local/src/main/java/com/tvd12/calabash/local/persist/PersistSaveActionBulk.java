@@ -3,6 +3,9 @@ package com.tvd12.calabash.local.persist;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionBulk;
+
 @SuppressWarnings("unchecked")
 public class PersistSaveActionBulk extends PersistAbstractActionBulk {
 

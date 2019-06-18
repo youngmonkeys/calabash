@@ -3,7 +3,7 @@ package com.tvd12.calabash.local.setting;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SimpleEntitySettings implements EntitySettings {
+public class SimpleSettings implements Settings {
 
 	protected Map<String, EntityMapSetting> mapSettings = new HashMap<>();
 	

@@ -15,7 +15,7 @@ import com.tvd12.calabash.factory.DefaultEntityMapPersistFactory;
 import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.setting.SimpleEntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
-import com.tvd12.calabash.local.setting.SimpleEntitySettings;
+import com.tvd12.calabash.local.setting.SimpleSettings;
 import com.tvd12.calabash.local.test.mappersist.Person;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
 import com.tvd12.ezyfox.bean.EzyBeanContextBuilder;
@@ -30,7 +30,7 @@ public class LocalMapPersistExample {
 
 	@SuppressWarnings("rawtypes")
 	public void test() {
-		SimpleEntitySettings settings = new SimpleEntitySettings();
+		SimpleSettings settings = new SimpleSettings();
 		SimpleEntityMapPersistSetting mapPersistSetting = new SimpleEntityMapPersistSetting();
 		mapPersistSetting.setWriteDelay(0);
 		SimpleEntityMapSetting mapSetting = new SimpleEntityMapSetting();

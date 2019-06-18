@@ -2,6 +2,8 @@ package com.tvd12.calabash.backend.persist;
 
 import java.util.Set;
 
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionType;
 import com.tvd12.calabash.core.util.ByteArray;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +17,7 @@ public class PersistDeleteManyAction implements PersistAction {
 	
 	@Override
 	public PersistActionType getType() {
-		return PersistActionType.DELTE_MANY;
+		return PersistActionType.DELETE_MANY;
 	}
 	
 }

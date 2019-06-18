@@ -3,11 +3,15 @@ package com.tvd12.calabash.local.persist;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.tvd12.calabash.core.EntityMapPersist;
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionBulk;
+import com.tvd12.calabash.core.persist.PersistActionBulkQueue;
+import com.tvd12.calabash.core.persist.PersistActionQueue;
+import com.tvd12.calabash.core.persist.PersistActionType;
 import com.tvd12.calabash.local.manager.EntityMapPersistManager;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.concurrent.EzyExecutors;
@@ -20,22 +24,21 @@ public class PersistActionHandlingLoop
 		extends EzyLoggable 
 		implements EzyStartable, EzyStoppable {
 
-	protected volatile boolean active;
 	protected final EntityMapPersistManager mapPersistManager;
 	protected final PersistActionQueueManager actionQueueManager;
 	protected final PersistActionBulkFactory actionBulkFactory;
 	protected final PersistActionBulkTicketQueues bulkTicketQueues;
 	protected final PersistActionBulkHandlingLoop bulkHandlingLoop;
-	protected final ExecutorService executorService;
-	protected final ScheduledExecutorService scheduledExecutorService;
+	protected final ScheduledExecutorService delayedPersistSchedule;
+	protected final ScheduledExecutorService immediatePersistSchedule;
 	
 	public PersistActionHandlingLoop(Builder builder) {
 		this.mapPersistManager = builder.mapPersistManager;
 		this.actionQueueManager = builder.actionQueueManager;
 		this.actionBulkFactory = new PersistActionBulkFactory();
 		this.bulkTicketQueues = new PersistActionBulkTicketQueues();
-		this.executorService = newExecutorService();
-		this.scheduledExecutorService = newScheduledExecutorService();
+		this.delayedPersistSchedule = newDelayedPersistSchedule();
+		this.immediatePersistSchedule = newImmediatePersistSchedule();
 		this.bulkHandlingLoop = newBulkHandlingLoop();
 	}
 	
@@ -45,30 +48,31 @@ public class PersistActionHandlingLoop
 				.build();
 	}
 	
-	protected ExecutorService newExecutorService() {
-		ExecutorService service = EzyExecutors.newSingleThreadExecutor("calabash-immediate-persist-loop");
+	protected ScheduledExecutorService newDelayedPersistSchedule() {
+		ScheduledExecutorService service = EzyExecutors.newSingleThreadScheduledExecutor("calabash-delayed-persist-loop");
 		Runtime.getRuntime().addShutdownHook(new Thread(service::shutdown));
 		return service;
 	}
 	
-	protected ScheduledExecutorService newScheduledExecutorService() {
-		ScheduledExecutorService service = EzyExecutors.newSingleThreadScheduledExecutor("calabash-delayed-persist-loop");
+	protected ScheduledExecutorService newImmediatePersistSchedule() {
+		ScheduledExecutorService service = EzyExecutors.newSingleThreadScheduledExecutor("calabash-immediate-persist-loop");
 		Runtime.getRuntime().addShutdownHook(new Thread(service::shutdown));
 		return service;
 	}
 	
 	@Override
 	public void start() throws Exception {
-		this.scheduledExecutorService.scheduleAtFixedRate(this::handleDelayedQueues, 100, 100, TimeUnit.MILLISECONDS);
-		this.executorService.submit(this::loopImmediateQueues);
+		this.delayedPersistSchedule.scheduleAtFixedRate(
+				this::handleDelayedQueues, 300, 300, TimeUnit.MILLISECONDS);
+		this.delayedPersistSchedule.scheduleAtFixedRate(
+				this::handleImmediateQueues, 100, 100, TimeUnit.MILLISECONDS);
 		this.bulkHandlingLoop.start();
 	}
 	
 	@Override
 	public void stop() {
-		this.active = false;
-		this.executorService.shutdown();
-		this.scheduledExecutorService.shutdown();
+		this.delayedPersistSchedule.shutdown();
+		this.immediatePersistSchedule.shutdown();
 		this.bulkHandlingLoop.stop();
 	}
 	
@@ -77,22 +81,6 @@ public class PersistActionHandlingLoop
 		for(String mapName : readyQueues.keySet()) {
 			PersistActionQueue queue = readyQueues.get(mapName);
 			handleQueue(mapName, queue);
-		}
-	}
-	
-	protected void loopImmediateQueues() {
-		this.active = true;
-		while(active) {
-			handleImmediateQueues();
-			sleepImmediateQueuesHandling();
-		}
-	}
-	
-	protected void sleepImmediateQueuesHandling() {
-		try {
-			Thread.sleep(100L);
-		} catch (InterruptedException e) {
-			logger.error("sleep immediate queues handling error", e);
 		}
 	}
 	
@@ -127,7 +115,7 @@ public class PersistActionHandlingLoop
 				currentActionType = actionType;
 				sameActions = new ArrayList<>();
 			}
-			boolean sameType = currentActionType.equals(actionType);
+			boolean sameType = currentActionType.sames(actionType);
 			if(sameType)
 				sameActions.add(action);
 			if(!sameType || i == last) {

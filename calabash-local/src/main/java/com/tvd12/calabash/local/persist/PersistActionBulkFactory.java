@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.tvd12.calabash.core.persist.PersistActionType;
+
 public class PersistActionBulkFactory {
 	
 	protected final Map<PersistActionType, Supplier<PersistActionBulkBuilder>> builderSuppliers;

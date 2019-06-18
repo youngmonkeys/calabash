@@ -4,7 +4,7 @@ import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.factory.DefaultEntityMapPersistFactory;
 import com.tvd12.calabash.factory.EntityMapPersistFactory;
 import com.tvd12.calabash.local.impl.CalabashImpl;
-import com.tvd12.calabash.local.setting.EntitySettings;
+import com.tvd12.calabash.local.setting.Settings;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 
 import lombok.Getter;
@@ -12,10 +12,10 @@ import lombok.Getter;
 @Getter
 public class CalabashBuilder implements EzyBuilder<Calabash> {
 
-	protected EntitySettings settings;
+	protected Settings settings;
 	protected EntityMapPersistFactory entityMapPersistFactory;
 	
-	public CalabashBuilder settings(EntitySettings settings) {
+	public CalabashBuilder settings(Settings settings) {
 		this.settings = settings;
 		return this;
 	}

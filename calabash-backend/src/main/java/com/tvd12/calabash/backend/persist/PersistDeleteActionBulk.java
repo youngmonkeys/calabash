@@ -3,6 +3,8 @@ package com.tvd12.calabash.backend.persist;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionBulk;
 import com.tvd12.calabash.core.util.ByteArray;
 
 public class PersistDeleteActionBulk extends PersistAbstractActionBulk {

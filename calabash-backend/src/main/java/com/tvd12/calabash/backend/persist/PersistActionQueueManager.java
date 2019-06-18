@@ -3,6 +3,8 @@ package com.tvd12.calabash.backend.persist;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tvd12.calabash.core.persist.PersistActionQueue;
+
 public class PersistActionQueueManager {
 
 	protected final Map<String, PersistActionQueue> queues;

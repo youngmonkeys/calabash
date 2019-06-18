@@ -15,13 +15,13 @@ import com.tvd12.calabash.local.manager.SimpleEntityMapPersistManager;
 import com.tvd12.calabash.local.persist.PersistActionHandlingLoop;
 import com.tvd12.calabash.local.persist.PersistActionQueueFactory;
 import com.tvd12.calabash.local.persist.PersistActionQueueManager;
-import com.tvd12.calabash.local.setting.EntitySettings;
+import com.tvd12.calabash.local.setting.Settings;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings("unchecked")
 public class CalabashImpl extends EzyLoggable implements Calabash {
 	
-	protected final EntitySettings settings;
+	protected final Settings settings;
 	protected final EntityMapFactory mapFactory;
 	protected final EntityMapManager mapManager;
 	protected final EntityMapPersistManager mapPersistManager;

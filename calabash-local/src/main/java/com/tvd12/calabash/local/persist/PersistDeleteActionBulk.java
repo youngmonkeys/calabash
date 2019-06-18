@@ -3,6 +3,9 @@ package com.tvd12.calabash.local.persist;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.tvd12.calabash.core.persist.PersistAction;
+import com.tvd12.calabash.core.persist.PersistActionBulk;
+
 @SuppressWarnings("unchecked")
 public class PersistDeleteActionBulk extends PersistAbstractActionBulk {
 

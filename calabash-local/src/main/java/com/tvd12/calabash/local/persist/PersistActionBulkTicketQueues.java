@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.tvd12.calabash.core.persist.PersistActionBulkQueue;
+
 public class PersistActionBulkTicketQueues {
 
 	protected final Map<String, PersistActionBulkQueue> queues;
