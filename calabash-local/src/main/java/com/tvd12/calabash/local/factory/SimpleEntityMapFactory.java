@@ -14,13 +14,15 @@ import com.tvd12.ezyfox.util.EzyLoggable;
 public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFactory {
 
 	protected final Settings settings;
-	protected final EntityMapPersistFactory entityMapPersistFactory;
+	protected final EntityUniqueFactory uniqueFactory;
 	protected final MapPersistManager mapPersistManager;
+	protected final EntityMapPersistFactory mapPersistFactory;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
 	
 	protected SimpleEntityMapFactory(Builder builder) {
 		this.settings = builder.settings;
-		this.entityMapPersistFactory = builder.entityMapPersistFactory;
+		this.uniqueFactory = builder.uniqueFactory;
+		this.mapPersistFactory = builder.mapPersistFactory;
 		this.mapPersistManager = builder.mapPersistManager;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
 	}
@@ -36,12 +38,13 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 		EntityMap map = new EntityMapBuilder()
 				.mapPersistExecutor(mapPersistExecutor)
 				.mapSetting(settings.getMapSetting(mapName))
+				.uniqueKeyMaps(uniqueFactory.newUniqueKeyMaps(mapName))
 				.build();
 		return map;
 	}
 	
 	protected void newMapPersist(String mapName) {
-		EntityMapPersist<?, ?> mapPersist = entityMapPersistFactory.newMapPersist(mapName);
+		EntityMapPersist<?, ?> mapPersist = mapPersistFactory.newMapPersist(mapName);
 		mapPersistManager.addMapPersist(mapName, mapPersist);
 	}
 	
@@ -52,8 +55,9 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 	public static class Builder implements EzyBuilder<EntityMapFactory> {
 		
 		protected Settings settings;
-		protected EntityMapPersistFactory entityMapPersistFactory;
+		protected EntityUniqueFactory uniqueFactory;
 		protected MapPersistManager mapPersistManager;
+		protected EntityMapPersistFactory mapPersistFactory;
 		protected EntityMapPersistExecutor mapPersistExecutor;
 		
 		public Builder settings(Settings settings) {
@@ -61,8 +65,13 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 			return this;
 		}
 		
-		public Builder entityMapPersistFactory(EntityMapPersistFactory entityMapPersistFactory) {
-			this.entityMapPersistFactory = entityMapPersistFactory;
+		public Builder uniqueFactory(EntityUniqueFactory uniqueFactory) {
+			this.uniqueFactory = uniqueFactory;
+			return this;
+		}
+		
+		public Builder mapPersistFactory(EntityMapPersistFactory mapPersistFactory) {
+			this.mapPersistFactory = mapPersistFactory;
 			return this;
 		}
 		

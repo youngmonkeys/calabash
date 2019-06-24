@@ -12,10 +12,13 @@ import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.annotation.MapPersistence;
 import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
 import com.tvd12.calabash.local.builder.CalabashBuilder;
+import com.tvd12.calabash.local.factory.EntityUniqueFactory;
+import com.tvd12.calabash.local.factory.SimpleEntityUniqueFactory;
+import com.tvd12.calabash.local.factory.SimpleEntityUniqueFactory.UniqueKeyMapsBuilder;
 import com.tvd12.calabash.local.setting.SimpleEntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
 import com.tvd12.calabash.local.setting.SimpleSettings;
-import com.tvd12.calabash.local.test.mappersist.Person;
+import com.tvd12.calabash.local.test.mappersist.Animal;
 import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
 import com.tvd12.ezyfox.bean.EzyBeanContextBuilder;
@@ -26,7 +29,7 @@ import com.tvd12.ezyfox.stream.EzyAnywayInputStreamLoader;
 
 import dev.morphia.Datastore;
 
-public class LocalMapPersistExample {
+public class LocalMapAnimalPersistExample {
 
 	@SuppressWarnings("rawtypes")
 	public void test() {
@@ -34,7 +37,7 @@ public class LocalMapPersistExample {
 		SimpleEntityMapPersistSetting mapPersistSetting = new SimpleEntityMapPersistSetting();
 		mapPersistSetting.setWriteDelay(0);
 		SimpleEntityMapSetting mapSetting = new SimpleEntityMapSetting();
-		mapSetting.setMapName(CollectionNames.PERSON);
+		mapSetting.setMapName(CollectionNames.ANIMAL);
 		mapSetting.setPersistSetting(mapPersistSetting);
 		settings.addMapSetting(mapSetting);
 		EzyBeanContext beanContext = newBeanContext();
@@ -44,13 +47,25 @@ public class LocalMapPersistExample {
 			String mapName = MapPersistenceAnnotations.getMapName(mapPersist);
 			mapPersistFactory.addMapPersist(mapName, (EntityMapPersist) mapPersist);
 		}
+		
+		SimpleEntityUniqueFactory.Builder uniqueFactoryBuilder = SimpleEntityUniqueFactory.builder();
+		UniqueKeyMapsBuilder<Animal> uniqueKeyMapsBuilder = uniqueFactoryBuilder.newUniqueKeyMapsBuilder(CollectionNames.ANIMAL);
+		uniqueKeyMapsBuilder.addUniqueKeyMap("nick", a -> a.getNick());
+		uniqueKeyMapsBuilder.build();
+		EntityUniqueFactory uniqueFactory = uniqueFactoryBuilder.build();
+		
 		Calabash calabash = new CalabashBuilder()
 				.settings(settings)
+				.uniqueFactory(uniqueFactory)
 				.mapPersistFactory(mapPersistFactory)
 				.build();
-		Person person = new Person(10, "person 6", 18);
-		EntityMap<Long, Person> entityMap = calabash.getEntityMap(CollectionNames.PERSON);
-		entityMap.put(person.getId(), person);
+		Animal animal = new Animal(1, "animal 1", "cat");
+		EntityMap<Long, Animal> entityMap = calabash.getEntityMap(CollectionNames.ANIMAL);
+//		entityMap.put(animal.getId(), animal);
+		AnimalByNickQuery query = new AnimalByNickQuery(animal.getNick());
+		Animal animalByQuery = entityMap.getByQuery(query);
+		System.out.println("animal by query: " + animalByQuery);
+		
 	}
 	
 	protected EzyBeanContext newBeanContext() {
@@ -98,7 +113,7 @@ public class LocalMapPersistExample {
 }
 	
 	public static void main(String[] args) {
-		new LocalMapPersistExample().test();
+		new LocalMapAnimalPersistExample().test();
 	}
 	
 }

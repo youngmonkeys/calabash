@@ -5,13 +5,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
+import java.util.function.Function;
 
 import com.tvd12.calabash.core.EntityMap;
+import com.tvd12.calabash.core.query.MapQuery;
 import com.tvd12.calabash.local.builder.EntityMapBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.setting.EntityMapSetting;
+import com.tvd12.calabash.local.unique.EntityUniques;
 import com.tvd12.ezyfox.concurrent.EzyConcurrentHashMapLockProvider;
 import com.tvd12.ezyfox.concurrent.EzyMapLockProvider;
+import com.tvd12.ezyfox.concurrent.EzyMixedMapLockProxyProvider;
+import com.tvd12.ezyfox.util.EzyHasIdEntity;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -19,25 +24,39 @@ public class EntityMapImpl<K, V>
 	extends EzyLoggable
 	implements EntityMap<K, V> {
 
-	protected Map<K, V> map;
-	protected EntityMapSetting setting;
-	protected EzyMapLockProvider lockProvider;
-	protected EntityMapPersistExecutor mapPersistExecutor;
+	protected final Map<K, V> map;
+	protected final EntityUniques<V> uniques;
+	protected final EntityMapSetting setting;
+	protected final EzyMapLockProvider lockProvider;
+	protected final EzyMapLockProvider lockProviderForQuery;
+	protected final EntityMapPersistExecutor mapPersistExecutor;
+	protected final Map<Object, Function<V, Object>> uniqueKeyMaps;
 	
 	public EntityMapImpl(EntityMapBuilder builder) {
 		this.map = new HashMap<>();
 		this.setting = builder.getMapSetting();
+		this.uniqueKeyMaps = builder.getUniqueKeyMaps();
 		this.mapPersistExecutor = builder.getMapPersistExecutor();
+		this.uniques = newUniques();
 		this.lockProvider = new EzyConcurrentHashMapLockProvider();
+		this.lockProviderForQuery = new EzyMixedMapLockProxyProvider();
+	}
+	
+	protected EntityUniques newUniques() {
+		return new EntityUniques<>(uniqueKeyMaps);
 	}
 	
 	@Override
 	public Map<K, V> loadAll() {
+		Map m = null;
 		synchronized (map) {
-			Map m = mapPersistExecutor.loadAll(setting);
+			m = mapPersistExecutor.loadAll(setting);
 			map.putAll(m);
-			return m;
 		}
+		synchronized (uniques) {
+			uniques.putValues(m.values());
+		}
+		return m;
 	}
 
 	@Override
@@ -47,11 +66,15 @@ public class EntityMapImpl<K, V>
 	
 	@Override
 	public V put(K key, V value) {
+		V v = null;
 		synchronized (map) {
-			V v = map.put(key, value);
+			v = map.put(key, value);
 			mapPersistExecutor.persist(setting, key, value);
-			return v;
 		}
+		synchronized (uniques) {
+			uniques.putValue(value);
+		}
+		return v;
 	}
 
 	@Override
@@ -60,8 +83,11 @@ public class EntityMapImpl<K, V>
 			map.putAll(m);
 			mapPersistExecutor.persist(setting, m);
 		}
+		synchronized (uniques) {
+			uniques.putValues(m.values());
+		}
 	}
-
+	
 	@Override
 	public V get(Object key) {
 		V value = null;
@@ -88,7 +114,11 @@ public class EntityMapImpl<K, V>
 		}
 		if(unloadValue != null) {
 			synchronized (map) {
-				map.put((K)key, unloadValue);
+				if(!map.containsKey(key))
+					map.put((K)key, unloadValue);
+			}
+			synchronized (uniques) {
+				uniques.putValue(unloadValue);
 			}
 		}
 		return unloadValue;
@@ -124,17 +154,75 @@ public class EntityMapImpl<K, V>
 	}
 	
 	@Override
+	public V getByQuery(MapQuery query) {
+		K key = null;
+		V value = null;
+		Map<Object, Object> uniqueKeys = null;
+		if(query instanceof EzyHasIdEntity) {
+			EzyHasIdEntity<K> hasId = (EzyHasIdEntity<K>)query;
+			key = hasId.getId();
+			synchronized (map) {
+				value = map.get(key);
+			}
+		}
+		if(value == null) {
+			uniqueKeys = query.getKeys();
+			synchronized (uniques) {
+				value = uniques.getValue(uniqueKeys);
+			}
+		}
+		if(value == null)
+			value = loadByQuery(query, key, uniqueKeys);
+		return value;
+	}
+	
+	protected V loadByQuery(MapQuery query, K key, Map<Object, Object> uniqueKeys) {
+		V unloadValue = null;
+		Lock lock = lockProviderForQuery.provideLock(query);
+		lock.lock();
+		try {
+			V value = null;
+			if(key != null)
+				value = map.get(key);
+			if(value == null)
+				value = uniques.getValue(uniqueKeys);
+			if(value != null)
+				return value;
+			unloadValue = (V)mapPersistExecutor.loadByQuery(setting, query);
+			
+			if(unloadValue != null) {
+				if(key != null) {
+					synchronized (map) {
+						map.put((K)key, unloadValue);
+					}
+				}
+				synchronized (uniques) {
+					uniques.putValue(unloadValue);
+				}
+			}
+		}
+		finally {
+			lock.unlock();
+		}
+		return unloadValue;
+	}
+	
+	@Override
 	public boolean containsKey(K key) {
+		V unloadValue = null;
 		synchronized (map) {
 			boolean contains = map.containsKey(key);
 			if(contains)
 				return true;
-			V unloadValue = (V)mapPersistExecutor.load(setting, key);
+			unloadValue = (V)mapPersistExecutor.load(setting, key);
 			if(unloadValue == null)
 				return false;
 			map.put(key, unloadValue);
-			return true;
 		}
+		synchronized (uniques) {
+			uniques.putValue(unloadValue);
+		}
+		return true;
 	}
 
 	@Override

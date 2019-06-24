@@ -6,6 +6,7 @@ import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.executor.SimpleEntityMapPersistExecutor;
 import com.tvd12.calabash.local.factory.EntityMapFactory;
+import com.tvd12.calabash.local.factory.EntityUniqueFactory;
 import com.tvd12.calabash.local.factory.SimpleEntityMapFactory;
 import com.tvd12.calabash.local.manager.EntityMapManager;
 import com.tvd12.calabash.local.manager.SimpleEntityMapManager;
@@ -25,16 +26,18 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected final Settings settings;
 	protected final EntityMapFactory mapFactory;
 	protected final EntityMapManager mapManager;
+	protected final EntityUniqueFactory uniqueFactory;
 	protected final MapPersistManager mapPersistManager;
+	protected final EntityMapPersistFactory mapPersistFactory;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
-	protected final EntityMapPersistFactory entityMapPersistFactory;
 	protected final PersistActionQueueFactory persistActionQueueFactory;
 	protected final PersistActionQueueManager persistActionQueueManager;
 	protected final PersistActionHandlingLoop persistActionHandlingLoop;
 	
 	public CalabashImpl(CalabashBuilder builder) {
 		this.settings = builder.getSettings();
-		this.entityMapPersistFactory = builder.getEntityMapPersistFactory();
+		this.uniqueFactory = builder.getUniqueFactory();
+		this.mapPersistFactory = builder.getMapPersistFactory();
 		this.mapPersistManager = newMapPersistManager();
 		this.persistActionQueueFactory = newPersistActionQueueFactory();
 		this.persistActionQueueManager = newPersistActionQueueManager();
@@ -67,9 +70,10 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected EntityMapFactory newMapFactory() {
 		return SimpleEntityMapFactory.builder()
 				.settings(settings)
+				.uniqueFactory(uniqueFactory)
 				.mapPersistManager(mapPersistManager)
+				.mapPersistFactory(mapPersistFactory)
 				.mapPersistExecutor(mapPersistExecutor)
-				.entityMapPersistFactory(entityMapPersistFactory)
 				.build();
 	}
 	

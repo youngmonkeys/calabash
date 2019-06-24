@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.tvd12.calabash.core.EntityMapPersist;
+import com.tvd12.calabash.core.query.MapQuery;
 import com.tvd12.calabash.local.setting.EntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.EntityMapSetting;
 import com.tvd12.calabash.persist.action.PersistAction;
@@ -56,6 +57,16 @@ public class SimpleEntityMapPersistExecutor
 		EntityMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			Object value = mapPersist.load(key);
+			return value;
+		}
+		return null;
+	}
+	
+	@Override
+	public Object loadByQuery(EntityMapSetting mapSetting, MapQuery query) {
+		EntityMapPersist mapPersist = getMapPersist(mapSetting);
+		if(mapPersist != null) {
+			Object value = mapPersist.loadByQuery(query);
 			return value;
 		}
 		return null;

@@ -1,5 +1,7 @@
 package com.tvd12.calabash.local.builder;
 
+import java.util.Map;
+
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.impl.EntityMapImpl;
@@ -12,8 +14,14 @@ import lombok.Getter;
 @SuppressWarnings("rawtypes")
 public class EntityMapBuilder implements EzyBuilder<EntityMap> {
 	
+	protected Map uniqueKeyMaps;
 	protected EntityMapSetting mapSetting;
 	protected EntityMapPersistExecutor mapPersistExecutor;
+	
+	public EntityMapBuilder uniqueKeyMaps(Map uniqueKeyMaps) {
+		this.uniqueKeyMaps = uniqueKeyMaps;
+		return this;
+	}
 	
 	public EntityMapBuilder mapSetting(EntityMapSetting mapSetting) {
 		this.mapSetting = mapSetting;
@@ -24,7 +32,7 @@ public class EntityMapBuilder implements EzyBuilder<EntityMap> {
 		this.mapPersistExecutor = mapPersistExecutor;
 		return this;
 	}
-
+	
 	@Override
 	public EntityMap build() {
 		return new EntityMapImpl<>(this);

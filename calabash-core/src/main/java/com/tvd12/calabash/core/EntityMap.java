@@ -3,6 +3,8 @@ package com.tvd12.calabash.core;
 import java.util.Map;
 import java.util.Set;
 
+import com.tvd12.calabash.core.query.MapQuery;
+
 public interface EntityMap<K, V> {
 
 	Map<K, V> loadAll();
@@ -16,6 +18,8 @@ public interface EntityMap<K, V> {
 	V get(Object key);
 	
 	Map<K, V> get(Set<K> keys);
+	
+	V getByQuery(MapQuery query);
 	
 	boolean containsKey(K key);
 
