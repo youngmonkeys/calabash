@@ -7,16 +7,16 @@ import java.util.Map;
 
 import com.mongodb.MongoClient;
 import com.tvd12.calabash.Calabash;
-import com.tvd12.calabash.backend.builder.CalabashBuilder;
-import com.tvd12.calabash.backend.setting.SimpleMapPersistSetting;
-import com.tvd12.calabash.backend.setting.SimpleMapSetting;
-import com.tvd12.calabash.backend.setting.SimpleSettings;
 import com.tvd12.calabash.core.BytesMap;
 import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.annotation.MapPersistence;
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
 import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
+import com.tvd12.calabash.server.core.builder.CalabashBuilder;
+import com.tvd12.calabash.server.core.setting.SimpleMapPersistSetting;
+import com.tvd12.calabash.server.core.setting.SimpleMapSetting;
+import com.tvd12.calabash.server.core.setting.SimpleSettings;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
 import com.tvd12.ezyfox.bean.EzyBeanContextBuilder;
 import com.tvd12.ezyfox.binding.EzyBindingContext;
@@ -65,7 +65,7 @@ public class LocalMapPersistExample {
 	
 	protected EzyEntityCodec newEntityCodec() {
 		EzyBindingContext bindingContext = EzyBindingContext.builder()
-				.scan("com.tvd12.calabash.backend.test.localmappersit")
+				.scan("com.tvd12.calabash.server.core.test.localmappersit")
 				.build();
 		EzyMessageSerializer messageSerializer = new MsgPackSimpleSerializer();
 		EzyMessageDeserializer messageDeserializer = new MsgPackSimpleDeserializer();
@@ -84,7 +84,7 @@ public class LocalMapPersistExample {
 		EzyBeanContextBuilder builder = EzyBeanContext.builder()
 				.addSingleton("mongoClient", mongoClient)
 				.addSingleton("datastore", datastore)
-				.scan("com.tvd12.calabash.backend.test.localmappersit");
+				.scan("com.tvd12.calabash.server.core.test.localmappersit");
 		addAutoImplMongoRepo(builder, datastore);
 		EzyBeanContext beanContext = builder.build();
 		return beanContext;
@@ -94,7 +94,7 @@ public class LocalMapPersistExample {
 		return EzyDataStoreBuilder.dataStoreBuilder()
 			.mongoClient(mongoClient)
 			.databaseName(databaseName)
-			.scan("com.tvd12.calabash.backend.test.localmappersit")
+			.scan("com.tvd12.calabash.server.core.test.localmappersit")
 			.build();
 	}
 	
@@ -118,7 +118,7 @@ public class LocalMapPersistExample {
 	
 	private Map<Class<?>, Object> implementMongoRepo(Datastore datastore) {
 		return EzyMorphiaRepositories.newRepositoriesImplementer()
-			.scan("com.tvd12.calabash.backend.test.localmappersit")
+			.scan("com.tvd12.calabash.server.core.test.localmappersit")
 			.implement(datastore);
 }
 	

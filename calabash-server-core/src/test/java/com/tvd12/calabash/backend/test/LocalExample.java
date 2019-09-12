@@ -1,16 +1,16 @@
 package com.tvd12.calabash.backend.test;
 
-import com.tvd12.calabash.backend.builder.BytesMapBuilder;
-import com.tvd12.calabash.backend.executor.BytesMapBackupExecutor;
-import com.tvd12.calabash.backend.executor.BytesMapPersistExecutor;
-import com.tvd12.calabash.backend.executor.SimpleBytesMapBackupExecutor;
-import com.tvd12.calabash.backend.executor.SimpleBytesMapPersistExecutor;
-import com.tvd12.calabash.backend.setting.Settings;
-import com.tvd12.calabash.backend.setting.SimpleSettings;
 import com.tvd12.calabash.core.BytesMap;
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.persist.manager.MapPersistManager;
 import com.tvd12.calabash.persist.manager.SimpleMapPersistManager;
+import com.tvd12.calabash.server.core.builder.BytesMapBuilder;
+import com.tvd12.calabash.server.core.executor.BytesMapBackupExecutor;
+import com.tvd12.calabash.server.core.executor.BytesMapPersistExecutor;
+import com.tvd12.calabash.server.core.executor.SimpleBytesMapBackupExecutor;
+import com.tvd12.calabash.server.core.executor.SimpleBytesMapPersistExecutor;
+import com.tvd12.calabash.server.core.setting.Settings;
+import com.tvd12.calabash.server.core.setting.SimpleSettings;
 
 public class LocalExample {
 
