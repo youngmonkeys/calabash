@@ -7,8 +7,8 @@
 		<artifactId>calabash</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>calabash-backend</artifactId>
-	<name>calabash-backend</name>
+	<artifactId>calabash-server-core</artifactId>
+	<name>calabash-server-core</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

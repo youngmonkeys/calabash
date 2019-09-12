@@ -34,8 +34,8 @@
 	</dependencies>
   <modules>
     <module>calabash-core</module>
-    <module>calabash-backend</module>
     <module>calabash-local</module>
     <module>calabash-persist</module>
+    <module>calabash-server-core</module>
   </modules>
 </project>
