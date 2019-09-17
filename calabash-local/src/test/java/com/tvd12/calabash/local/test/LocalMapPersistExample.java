@@ -48,7 +48,7 @@ public class LocalMapPersistExample {
 				.settings(settings)
 				.mapPersistFactory(mapPersistFactory)
 				.build();
-		Person person = new Person(10, "person 6", 18);
+		Person person = new Person(11, "person 6", 18);
 		EntityMap<Long, Person> entityMap = calabash.getEntityMap(CollectionNames.PERSON);
 		entityMap.put(person.getId(), person);
 	}
@@ -95,7 +95,7 @@ public class LocalMapPersistExample {
 		return EzyMorphiaRepositories.newRepositoriesImplementer()
 			.scan("com.tvd12.calabash.local.test.mappersist")
 			.implement(datastore);
-}
+	}
 	
 	public static void main(String[] args) {
 		new LocalMapPersistExample().test();

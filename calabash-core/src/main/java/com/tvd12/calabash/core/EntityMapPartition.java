@@ -3,12 +3,8 @@ package com.tvd12.calabash.core;
 import java.util.Map;
 import java.util.Set;
 
-import com.tvd12.calabash.core.query.MapQuery;
+public interface EntityMapPartition<K, V> {
 
-public interface EntityMap<K, V> {
-
-	Map<K, V> loadAll();
-	
 	void set(K key, V value);
 	
 	V put(K key, V value);
@@ -19,16 +15,16 @@ public interface EntityMap<K, V> {
 	
 	Map<K, V> get(Set<K> keys);
 	
-	V getByQuery(MapQuery query);
-	
 	boolean containsKey(K key);
 
 	V remove(Object key);
 	
 	void remove(Set<K> keys);
-	
+
 	void clear();
 	
-	long size();
+	int size();
+	
+	void evict();
 	
 }

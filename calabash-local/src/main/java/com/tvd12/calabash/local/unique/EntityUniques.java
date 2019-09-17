@@ -48,5 +48,14 @@ public class EntityUniques<V> {
 		return null;
 	}
 	
-
+	public void removeValue(V value) {
+		for(EntityUnique<V> unique : uniques.values())
+			unique.removeValue(value);
+	}
+	
+	public void removeValues(Iterable<V> values) {
+		for(V value : values)
+			removeValue(value);
+	}
+	
 }

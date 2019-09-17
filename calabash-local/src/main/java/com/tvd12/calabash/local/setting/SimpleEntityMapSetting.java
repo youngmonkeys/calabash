@@ -8,5 +8,7 @@ import lombok.Setter;
 public class SimpleEntityMapSetting implements EntityMapSetting {
 
 	protected String mapName;
+	protected int maxPartition = 16;
 	protected SimpleEntityMapPersistSetting persistSetting = new SimpleEntityMapPersistSetting();
+	protected SimpleEntityMapEvictionSetting evictionSetting = new SimpleEntityMapEvictionSetting();
 }

@@ -24,6 +24,9 @@ public class EntityUnique<V> {
 		return value;
 	}
 
-	
+	public void removeValue(V value) {
+		Object key = keyMap.apply(value);
+		map.remove(key);
+	}
 	
 }

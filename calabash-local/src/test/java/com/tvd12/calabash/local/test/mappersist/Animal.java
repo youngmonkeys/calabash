@@ -1,5 +1,6 @@
 package com.tvd12.calabash.local.test.mappersist;
 
+import com.tvd12.calabash.core.Prototype;
 import com.tvd12.calabash.local.test.CollectionNames;
 
 import dev.morphia.annotations.Entity;
@@ -14,11 +15,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(CollectionNames.ANIMAL)
-public class Animal {
+public class Animal implements Prototype {
 
 	@Id
 	protected long id;
 	protected String nick;
 	protected String name;
+	
+	@Override
+	public Object clone() {
+		Animal c = new Animal();
+		c.id = id;
+		c.nick = nick;
+		c.name = name;
+		return c;
+	}
 	
 }
