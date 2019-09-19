@@ -2,6 +2,7 @@ package com.tvd12.calabash.local.impl;
 
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
+import com.tvd12.calabash.core.manager.MapEvictionManager;
 import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.executor.SimpleEntityMapPersistExecutor;
@@ -28,6 +29,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	protected final EntityMapManager mapManager;
 	protected final EntityUniqueFactory uniqueFactory;
 	protected final MapPersistManager mapPersistManager;
+	protected final MapEvictionManager mapEvictionManager;
 	protected final EntityMapPersistFactory mapPersistFactory;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
 	protected final PersistActionQueueFactory persistActionQueueFactory;
@@ -45,11 +47,19 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		this.mapFactory = newMapFactory();
 		this.mapManager = newMapManager();
 		this.persistActionHandlingLoop = newPersistActionHandlingLoop();
-		this.startAllLoops();
+		this.mapEvictionManager = newMapEvictionManager();
+		this.startAllComponents();
 	}
 	
 	protected MapPersistManager newMapPersistManager() {
 		return new SimpleMapPersistManager();
+	}
+	
+	protected MapEvictionManager newMapEvictionManager() {
+		return MapEvictionManager.builder()
+				.mapManager(mapManager)
+				.evictionInterval(settings.getMapEvictionInterval())
+				.build();
 	}
 	
 	protected PersistActionQueueFactory newPersistActionQueueFactory() {
@@ -90,8 +100,9 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 				.build();
 	}
 	
-	protected void startAllLoops() {
+	protected void startAllComponents() {
 		try {
+			mapEvictionManager.start();
 			persistActionHandlingLoop.start();
 		} catch (Exception e) {
 			throw new RuntimeException("start all loops failed", e);

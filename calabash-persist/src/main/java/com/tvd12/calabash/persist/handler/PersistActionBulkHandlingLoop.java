@@ -1,12 +1,11 @@
 package com.tvd12.calabash.persist.handler;
 
-import java.util.concurrent.ExecutorService;
-
 import com.tvd12.calabash.concurrent.Executors;
 import com.tvd12.calabash.persist.bulk.PersistActionBulk;
 import com.tvd12.calabash.persist.bulk.PersistActionBulkQueue;
 import com.tvd12.calabash.persist.bulk.PersistActionBulkTicketQueues;
 import com.tvd12.ezyfox.builder.EzyBuilder;
+import com.tvd12.ezyfox.concurrent.EzyThreadList;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.ezyfox.util.EzyStartable;
 import com.tvd12.ezyfox.util.EzyStoppable;
@@ -16,29 +15,32 @@ public class PersistActionBulkHandlingLoop
 		implements EzyStartable, EzyStoppable {
 
 	protected volatile boolean active;
-	protected final ExecutorService executorService;
+	protected final int threadPoolSize;
+	protected final EzyThreadList executorService;
 	protected final PersistActionBulkTicketQueues ticketQueues;
 	
 	protected PersistActionBulkHandlingLoop(Builder builder) {
 		this.ticketQueues = builder.ticketQueues;
+		this.threadPoolSize = builder.threadPoolSize;
 		this.executorService = newExecutorService();
 	}
 	
-	protected ExecutorService newExecutorService() {
-		ExecutorService executorService = Executors.newFixedThreadPool(8, "bulk-persit");
-		Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
+	protected EzyThreadList newExecutorService() {
+		EzyThreadList executorService = new EzyThreadList(
+				threadPoolSize, 
+				() -> loop(), 
+				Executors.newThreadFactory("persit-bulk"));
 		return executorService;
 	}
 	
 	@Override
 	public void start() throws Exception {
-		this.executorService.submit(this::loop);
+		this.executorService.execute();
 	}
 	
 	@Override
 	public void stop() {
 		this.active = false;
-		this.executorService.shutdown();
 	}
 	
 	protected void loop() {
@@ -69,7 +71,13 @@ public class PersistActionBulkHandlingLoop
 	
 	public static class Builder implements EzyBuilder<PersistActionBulkHandlingLoop> {
 		
-		protected PersistActionBulkTicketQueues ticketQueues;
+		protected int threadPoolSize = 3;
+		protected PersistActionBulkTicketQueues ticketQueues = null;
+		
+		public Builder threadPoolSize(int threadPoolSize) {
+			this.threadPoolSize = threadPoolSize;
+			return this;
+		}
 		
 		public Builder ticketQueues(PersistActionBulkTicketQueues ticketQueues) {
 			this.ticketQueues = ticketQueues;

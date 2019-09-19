@@ -188,6 +188,7 @@ public class EntityMapPartitionImpl<K, V>
 			synchronized (uniques) {
 				uniques.removeValue(v);
 			}
+			lockProvider.removeLock(key);
 			mapEviction.removeKey(key);
 		}
 		return v;
@@ -213,6 +214,9 @@ public class EntityMapPartitionImpl<K, V>
 		synchronized (uniques) {
 			uniques.removeValues(removedValues);
 		}
+		for(K key : keys) {
+			lockProvider.removeLock(key);
+		}
 	}
 
 	@Override
@@ -220,18 +224,8 @@ public class EntityMapPartitionImpl<K, V>
 		Set<K> keys = null;
 		synchronized (map) {
 			keys = new HashSet<>(map.keySet());
-			map.clear();
-			mapPersistExecutor.delete(mapSetting, keys);
 		}
-		mapEviction.removeKeys(keys);
-	}
-	
-	@Override
-	public int size() {
-		synchronized (map) {
-			int size = map.size();
-			return size;
-		}
+		remove(keys);
 	}
 	
 	@Override

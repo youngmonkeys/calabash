@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.tvd12.calabash.core.query.MapQuery;
 
-public interface EntityMap<K, V> {
+public interface EntityMap<K, V> extends IMap {
 
 	Map<K, V> loadAll();
 	
@@ -28,7 +28,5 @@ public interface EntityMap<K, V> {
 	void remove(Set<K> keys);
 	
 	void clear();
-	
-	long size();
 	
 }

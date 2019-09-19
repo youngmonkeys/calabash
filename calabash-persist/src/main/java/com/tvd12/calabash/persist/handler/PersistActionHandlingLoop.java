@@ -53,13 +53,13 @@ public abstract class PersistActionHandlingLoop
 	}
 	
 	private ScheduledExecutorService newDelayedPersistSchedule() {
-		ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor("delayed-persist-loop");
+		ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor("persist-loop-delayed");
 		Runtime.getRuntime().addShutdownHook(new Thread(service::shutdown));
 		return service;
 	}
 	
 	private ScheduledExecutorService newImmediatePersistSchedule() {
-		ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor("immediate-persist-loop");
+		ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor("persist-loop-immediate");
 		Runtime.getRuntime().addShutdownHook(new Thread(service::shutdown));
 		return service;
 	}
@@ -68,7 +68,7 @@ public abstract class PersistActionHandlingLoop
 	public void start() throws Exception {
 		this.delayedPersistSchedule.scheduleAtFixedRate(
 				this::handleDelayedQueues, 300, 300, TimeUnit.MILLISECONDS);
-		this.delayedPersistSchedule.scheduleAtFixedRate(
+		this.immediatePersistSchedule.scheduleAtFixedRate(
 				this::handleImmediateQueues, 100, 100, TimeUnit.MILLISECONDS);
 		this.bulkHandlingLoop.start();
 	}

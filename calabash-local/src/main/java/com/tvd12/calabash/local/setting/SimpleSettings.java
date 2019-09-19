@@ -3,8 +3,14 @@ package com.tvd12.calabash.local.setting;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class SimpleSettings implements Settings {
 
+	@Getter
+	@Setter
+	protected int mapEvictionInterval = 3;
 	protected Map<String, EntityMapSetting> mapSettings = new HashMap<>();
 	
 	public void addMapSetting(EntityMapSetting setting) {

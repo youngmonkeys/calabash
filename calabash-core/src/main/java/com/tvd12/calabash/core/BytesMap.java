@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.tvd12.calabash.core.util.ByteArray;
 
-public interface BytesMap {
+public interface BytesMap extends IMap {
 	
 	Map<ByteArray, byte[]> loadAll();
 	

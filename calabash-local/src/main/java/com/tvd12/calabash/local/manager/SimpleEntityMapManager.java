@@ -1,6 +1,7 @@
 package com.tvd12.calabash.local.manager;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.tvd12.calabash.core.EntityMap;
@@ -35,6 +36,15 @@ public class SimpleEntityMapManager extends EzyLoggable implements EntityMapMana
 				maps.put(mapName, map);
 			}
 			return map;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void getMapList(List buffer) {
+		synchronized (maps) {
+			for(EntityMap map : maps.values())
+				buffer.add(map);
 		}
 	}
 	

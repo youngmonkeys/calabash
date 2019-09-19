@@ -23,8 +23,6 @@ public interface EntityMapPartition<K, V> {
 
 	void clear();
 	
-	int size();
-	
 	void evict();
 	
 }

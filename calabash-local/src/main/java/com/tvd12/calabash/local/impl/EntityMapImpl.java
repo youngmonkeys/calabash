@@ -202,14 +202,6 @@ public class EntityMapImpl<K, V>
 	}
 	
 	@Override
-	public long size() {
-		long size = 0;
-		for(int i = 0 ; i < maxPartition ; ++i)
-			size += partitions[i].size();
-		return size;
-	}
-	
-	@Override
 	public void evict() {
 		for(int i = 0 ; i < maxPartition ; ++i)
 			partitions[i].evict();
