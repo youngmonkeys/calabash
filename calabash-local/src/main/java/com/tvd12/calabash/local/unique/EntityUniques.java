@@ -1,11 +1,15 @@
 package com.tvd12.calabash.local.unique;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-public class EntityUniques<V> {
+import com.tvd12.calabash.core.statistic.StatisticsAware;
+
+public class EntityUniques<V> implements StatisticsAware {
 	
 	protected final Map<Object, EntityUnique<V>> uniques;
 	protected final Map<Object, Function<V, Object>> uniqueKeyMaps;
@@ -56,6 +60,20 @@ public class EntityUniques<V> {
 	public void removeValues(Iterable<V> values) {
 		for(V value : values)
 			removeValue(value);
+	}
+	
+	@Override
+	public void addStatistics(Map<String, Object> statistics) {
+		statistics.put("size", uniques.size());
+		List<Map<String, Object>> itemStats = new ArrayList<>();
+		for(Object uniqueKey : uniques.keySet()) {
+			EntityUnique<V> item = uniques.get(uniqueKey);
+			Map<String, Object> itemStat = new HashMap<>();
+			itemStat.put("key", uniqueKey);
+			((StatisticsAware)item).addStatistics(itemStat);
+			itemStats.add(itemStat);
+		}
+		statistics.put("items", itemStats);
 	}
 	
 }

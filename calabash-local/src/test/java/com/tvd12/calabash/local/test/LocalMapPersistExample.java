@@ -2,6 +2,7 @@ package com.tvd12.calabash.local.test;
 
 import static com.tvd12.ezyfox.util.EzyAutoImplAnnotations.getBeanName;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.annotation.MapPersistence;
+import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
 import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.setting.SimpleEntityMapPersistSetting;
@@ -29,7 +31,7 @@ import dev.morphia.Datastore;
 public class LocalMapPersistExample {
 
 	@SuppressWarnings("rawtypes")
-	public void test() {
+	public void test() throws Exception {
 		SimpleSettings settings = new SimpleSettings();
 		SimpleEntityMapPersistSetting mapPersistSetting = new SimpleEntityMapPersistSetting();
 		mapPersistSetting.setWriteDelay(0);
@@ -51,6 +53,14 @@ public class LocalMapPersistExample {
 		Person person = new Person(11, "person 6", 18);
 		EntityMap<Long, Person> entityMap = calabash.getEntityMap(CollectionNames.PERSON);
 		entityMap.put(person.getId(), person);
+		
+		Map<String, Object> statistics = new HashMap<>();
+		while(true) {
+			Thread.sleep(1000);
+			((StatisticsAware)calabash).addStatistics(statistics);
+			System.out.println("statistics: " + statistics);
+		}
+		
 	}
 	
 	protected EzyBeanContext newBeanContext() {
@@ -97,7 +107,7 @@ public class LocalMapPersistExample {
 			.implement(datastore);
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		new LocalMapPersistExample().test();
 	}
 	

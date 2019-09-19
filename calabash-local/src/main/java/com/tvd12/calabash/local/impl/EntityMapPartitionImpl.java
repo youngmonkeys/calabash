@@ -229,6 +229,14 @@ public class EntityMapPartitionImpl<K, V>
 	}
 	
 	@Override
+	public int size() {
+		synchronized (map) {
+			int size = map.size();
+			return size;
+		}
+	}
+	
+	@Override
 	public void evict() {
 		List<K> evictableKeys = mapEviction.getEvictableKeys();
 		remove(evictableKeys, EMPTY_FUNC);

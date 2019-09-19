@@ -9,6 +9,7 @@ import java.util.function.Function;
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPartition;
 import com.tvd12.calabash.core.query.MapQuery;
+import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.core.util.MapPartitions;
 import com.tvd12.calabash.core.util.Protypes;
 import com.tvd12.calabash.eviction.MapEvictable;
@@ -24,7 +25,7 @@ import com.tvd12.ezyfox.util.EzyLoggable;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class EntityMapImpl<K, V>
 	extends EzyLoggable
-	implements EntityMap<K, V>, MapEvictable {
+	implements EntityMap<K, V>, MapEvictable, StatisticsAware {
 
 	protected final int maxPartition;
 	protected final EntityUniques<V> uniques;
@@ -201,10 +202,27 @@ public class EntityMapImpl<K, V>
 			partitions[i].clear();
 	}
 	
+	public long size() {
+		long size = 0;
+		for(int i = 0 ; i < maxPartition ; ++i)
+			size += partitions[i].size();
+		return size;
+	}
+	
 	@Override
 	public void evict() {
 		for(int i = 0 ; i < maxPartition ; ++i)
 			partitions[i].evict();
+	}
+	
+	@Override
+	public void addStatistics(Map<String, Object> statistics) {
+		statistics.put("size", size());
+		Map<String, Object> uniquesStat = new HashMap<>();
+		synchronized (uniques) {
+			((StatisticsAware)uniques).addStatistics(uniquesStat);
+		}
+		statistics.put("uniques", uniquesStat);
 	}
 
 }

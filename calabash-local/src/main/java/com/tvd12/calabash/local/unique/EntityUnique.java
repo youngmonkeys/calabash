@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class EntityUnique<V> {
+import com.tvd12.calabash.core.statistic.StatisticsAware;
+
+public class EntityUnique<V> implements StatisticsAware {
 
 	protected final Map<Object, V> map;
 	protected final Function<V, Object> keyMap;
@@ -27,6 +29,11 @@ public class EntityUnique<V> {
 	public void removeValue(V value) {
 		Object key = keyMap.apply(value);
 		map.remove(key);
+	}
+	
+	@Override
+	public void addStatistics(Map<String, Object> statistics) {
+		statistics.put("size", map.size());
 	}
 	
 }

@@ -1,8 +1,12 @@
 package com.tvd12.calabash.local.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.manager.MapEvictionManager;
+import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.executor.SimpleEntityMapPersistExecutor;
@@ -22,7 +26,7 @@ import com.tvd12.calabash.persist.manager.SimpleMapPersistManager;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings("unchecked")
-public class CalabashImpl extends EzyLoggable implements Calabash {
+public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAware {
 	
 	protected final Settings settings;
 	protected final EntityMapFactory mapFactory;
@@ -113,6 +117,13 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 	public <K,V> EntityMap<K,V> getEntityMap(String name) {
 		EntityMap<K,V> map = mapManager.getMap(name);
 		return map;
+	}
+	
+	@Override
+	public void addStatistics(Map<String, Object> statistics) {
+		Map<String, Object> mapManagerStat = new HashMap<>();
+		((StatisticsAware)mapManager).addStatistics(mapManagerStat);
+		statistics.put("mapManager", mapManagerStat);
 	}
 
 }

@@ -1,16 +1,20 @@
 package com.tvd12.calabash.local.manager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.tvd12.calabash.core.EntityMap;
+import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.local.factory.EntityMapFactory;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings("rawtypes")
-public class SimpleEntityMapManager extends EzyLoggable implements EntityMapManager {
+public class SimpleEntityMapManager 
+		extends EzyLoggable 
+		implements EntityMapManager, StatisticsAware {
 
 	protected final EntityMapFactory mapFactory;
 	protected final Map<String, EntityMap> maps;
@@ -45,6 +49,22 @@ public class SimpleEntityMapManager extends EzyLoggable implements EntityMapMana
 		synchronized (maps) {
 			for(EntityMap map : maps.values())
 				buffer.add(map);
+		}
+	}
+	
+	@Override
+	public void addStatistics(Map<String, Object> statistics) {
+		synchronized (maps) {
+			statistics.put("numberOfMaps", maps.size());
+			List<Map<String, Object>> mapStats = new ArrayList<>();
+			for(String mapName : maps.keySet()) {
+				EntityMap map = maps.get(mapName);
+				Map<String, Object> mapStat = new HashMap<>();
+				mapStat.put("name", mapName);
+				((StatisticsAware)map).addStatistics(mapStat);
+				mapStats.add(mapStat);
+			}
+			statistics.put("maps", mapStats);
 		}
 	}
 	

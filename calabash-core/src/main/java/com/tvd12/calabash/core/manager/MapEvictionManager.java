@@ -51,6 +51,9 @@ public class MapEvictionManager
 		catch(Exception e) {
 			logger.error("map eviction error", e);
 		}
+		finally {
+			mapListBuffer.clear();
+		}
 	}
 	
 	@Override
