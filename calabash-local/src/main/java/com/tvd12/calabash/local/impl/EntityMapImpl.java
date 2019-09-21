@@ -169,6 +169,7 @@ public class EntityMapImpl<K, V>
 		}
 		finally {
 			lock.unlock();
+			lockProviderForQuery.removeLock(query);
 		}
 		return unloadValue;
 	}
