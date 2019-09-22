@@ -6,6 +6,7 @@ import java.util.Map;
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.manager.MapEvictionManager;
+import com.tvd12.calabash.core.prototype.Prototypes;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
@@ -29,6 +30,7 @@ import com.tvd12.ezyfox.util.EzyLoggable;
 public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAware {
 	
 	protected final Settings settings;
+	protected final Prototypes prototypes;
 	protected final EntityMapFactory mapFactory;
 	protected final EntityMapManager mapManager;
 	protected final EntityUniqueFactory uniqueFactory;
@@ -42,6 +44,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	
 	public CalabashImpl(CalabashBuilder builder) {
 		this.settings = builder.getSettings();
+		this.prototypes = builder.getPrototypes();
 		this.uniqueFactory = builder.getUniqueFactory();
 		this.mapPersistFactory = builder.getMapPersistFactory();
 		this.mapPersistManager = newMapPersistManager();
@@ -77,6 +80,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	protected EntityMapFactory newMapFactory() {
 		return SimpleEntityMapFactory.builder()
 				.settings(settings)
+				.prototype(prototypes)
 				.uniqueFactory(uniqueFactory)
 				.mapPersistManager(mapPersistManager)
 				.mapPersistFactory(mapPersistFactory)

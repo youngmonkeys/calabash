@@ -8,10 +8,10 @@ import java.util.function.Function;
 
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPartition;
+import com.tvd12.calabash.core.prototype.Prototypes;
 import com.tvd12.calabash.core.query.MapQuery;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.core.util.MapPartitions;
-import com.tvd12.calabash.core.util.Protypes;
 import com.tvd12.calabash.eviction.MapEvictable;
 import com.tvd12.calabash.local.builder.EntityMapBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
@@ -28,6 +28,7 @@ public class EntityMapImpl<K, V>
 	implements EntityMap<K, V>, MapEvictable, StatisticsAware {
 
 	protected final int maxPartition;
+	protected final Prototypes prototypes;
 	protected final EntityUniques<V> uniques;
 	protected final EntityMapSetting setting;
 	protected final EzyMapLockProvider lockProviderForQuery;
@@ -37,6 +38,7 @@ public class EntityMapImpl<K, V>
 	
 	public EntityMapImpl(EntityMapBuilder builder) {
 		this.setting = builder.getMapSetting();
+		this.prototypes = builder.getPrototypes();
 		this.uniqueKeyMaps = builder.getUniqueKeyMaps();
 		this.mapPersistExecutor = builder.getMapPersistExecutor();
 		this.maxPartition = setting.getMaxPartition();
@@ -85,7 +87,7 @@ public class EntityMapImpl<K, V>
 	
 	@Override
 	public V put(K key, V value) {
-		V copyValue = Protypes.copy(value);
+		V copyValue = prototypes.copy(value);
 		V v = putToPartition(key, copyValue);
 		return v;
 	}
@@ -98,14 +100,15 @@ public class EntityMapImpl<K, V>
 
 	@Override
 	public void putAll(Map<K, V> m) {
-		Map<K, V> copy = Protypes.copyMap(m);
+		Map<K, V> copy = prototypes.copyMap(m);
 		putAllToPartitions(copy);
 	}
 	
 	@Override
 	public V get(Object key) {
 		V value = getFromPartition(key);
-		return Protypes.copy(value);
+		V copyValue = prototypes.copy(value);
+		return copyValue;
 	}
 	
 	protected V getFromPartition(Object key) {
@@ -123,7 +126,8 @@ public class EntityMapImpl<K, V>
 			Map<K, V> fragment = partitions[index].get(pkeys);
 			answer.putAll(fragment);
 		}
-		return Protypes.copyMap(answer);
+		Map<K, V> copyMap = prototypes.copyMap(answer);
+		return copyMap;
 	}
 	
 	@Override
@@ -144,7 +148,8 @@ public class EntityMapImpl<K, V>
 		}
 		if(value == null)
 			value = loadByQuery(query, key, uniqueKeys);
-		return Protypes.copy(value);
+		V copyValue = prototypes.copy(value);
+		return copyValue;
 	}
 	
 	protected V loadByQuery(MapQuery query, K key, Map<Object, Object> uniqueKeys) {

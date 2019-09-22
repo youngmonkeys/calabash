@@ -2,6 +2,7 @@ package com.tvd12.calabash.local.factory;
 
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPersist;
+import com.tvd12.calabash.core.prototype.Prototypes;
 import com.tvd12.calabash.local.builder.EntityMapBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.setting.Settings;
@@ -14,6 +15,7 @@ import com.tvd12.ezyfox.util.EzyLoggable;
 public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFactory {
 
 	protected final Settings settings;
+	protected final Prototypes prototypes;
 	protected final EntityUniqueFactory uniqueFactory;
 	protected final MapPersistManager mapPersistManager;
 	protected final EntityMapPersistFactory mapPersistFactory;
@@ -21,6 +23,7 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 	
 	protected SimpleEntityMapFactory(Builder builder) {
 		this.settings = builder.settings;
+		this.prototypes = builder.prototypes;
 		this.uniqueFactory = builder.uniqueFactory;
 		this.mapPersistFactory = builder.mapPersistFactory;
 		this.mapPersistManager = builder.mapPersistManager;
@@ -36,6 +39,7 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 	
 	protected EntityMap createMap(String mapName) {
 		EntityMap map = new EntityMapBuilder()
+				.prototypes(prototypes)
 				.mapPersistExecutor(mapPersistExecutor)
 				.mapSetting(settings.getMapSetting(mapName))
 				.uniqueKeyMaps(uniqueFactory.newUniqueKeyMaps(mapName))
@@ -55,6 +59,7 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 	public static class Builder implements EzyBuilder<EntityMapFactory> {
 		
 		protected Settings settings;
+		protected Prototypes prototypes;
 		protected EntityUniqueFactory uniqueFactory;
 		protected MapPersistManager mapPersistManager;
 		protected EntityMapPersistFactory mapPersistFactory;
@@ -62,6 +67,11 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 		
 		public Builder settings(Settings settings) {
 			this.settings = settings;
+			return this;
+		}
+		
+		public Builder prototype(Prototypes prototypes) {
+			this.prototypes = prototypes;
 			return this;
 		}
 		

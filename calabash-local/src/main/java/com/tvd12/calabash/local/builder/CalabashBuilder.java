@@ -1,6 +1,8 @@
 package com.tvd12.calabash.local.builder;
 
 import com.tvd12.calabash.Calabash;
+import com.tvd12.calabash.core.prototype.Prototypes;
+import com.tvd12.calabash.core.prototype.SimplePrototypes;
 import com.tvd12.calabash.local.factory.EntityUniqueFactory;
 import com.tvd12.calabash.local.factory.SimpleEntityUniqueFactory;
 import com.tvd12.calabash.local.impl.CalabashImpl;
@@ -15,11 +17,17 @@ import lombok.Getter;
 public class CalabashBuilder implements EzyBuilder<Calabash> {
 
 	protected Settings settings;
+	protected Prototypes prototypes;
 	protected EntityUniqueFactory uniqueFactory;
 	protected EntityMapPersistFactory mapPersistFactory;
 	
 	public CalabashBuilder settings(Settings settings) {
 		this.settings = settings;
+		return this;
+	}
+	
+	public CalabashBuilder prototypes(Prototypes prototypes) {
+		this.prototypes = prototypes;
 		return this;
 	}
 	
@@ -35,6 +43,8 @@ public class CalabashBuilder implements EzyBuilder<Calabash> {
 	
 	@Override
 	public Calabash build() {
+		if(prototypes == null)
+			prototypes = new SimplePrototypes();
 		if(uniqueFactory == null)
 			uniqueFactory = new SimpleEntityUniqueFactory();
 		if(mapPersistFactory == null)

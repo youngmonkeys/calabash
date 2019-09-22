@@ -1,6 +1,6 @@
 package com.tvd12.calabash.local.test.mappersist;
 
-import com.tvd12.calabash.core.Prototype;
+import com.tvd12.calabash.core.prototype.Prototype;
 import com.tvd12.calabash.local.test.CollectionNames;
 
 import dev.morphia.annotations.Entity;
