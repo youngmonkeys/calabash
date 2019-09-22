@@ -15,15 +15,13 @@ public interface EntityMapPartition<K, V> {
 	
 	Map<K, V> get(Set<K> keys);
 	
-	boolean containsKey(K key);
-
 	V remove(Object key);
 	
 	void remove(Set<K> keys);
 
-	void clear();
-	
 	int size();
+	
+	void clear();
 	
 	void evict();
 	

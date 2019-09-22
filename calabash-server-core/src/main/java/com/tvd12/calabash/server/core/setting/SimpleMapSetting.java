@@ -8,6 +8,9 @@ import lombok.Setter;
 public class SimpleMapSetting implements MapSetting {
 
 	protected String mapName;
+	protected int maxPartition = 16;
 	protected SimpleMapBackupSetting backupSetting = new SimpleMapBackupSetting();
 	protected SimpleMapPersistSetting persistSetting = new SimpleMapPersistSetting();
+	protected SimpleMapEvictionSetting evictionSetting = new SimpleMapEvictionSetting();
+
 }

@@ -1,8 +1,8 @@
 package com.tvd12.calabash.server.core.executor;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.server.core.BytesMapBackup;
@@ -48,18 +48,16 @@ public class SimpleBytesMapBackupExecutor
 			if(!setting.isAsync())
 				backup.remove(setting, key);
 		}
-		
 	}
 
 	@Override
-	public void remove(MapSetting mapSetting, Set<ByteArray> keys) {
+	public void remove(MapSetting mapSetting, Collection<ByteArray> keys) {
 		BytesMapBackup backup = mapBackups.get(mapSetting.getMapName());
 		if(backup != null) {
 			MapBackupSetting setting = mapSetting.getBackupSetting();
 			if(!setting.isAsync())
 				backup.remove(setting, keys);
 		}
-		
 	}
 
 	@Override

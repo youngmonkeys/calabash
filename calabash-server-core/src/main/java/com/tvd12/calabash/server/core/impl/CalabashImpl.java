@@ -1,7 +1,12 @@
 package com.tvd12.calabash.server.core.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.BytesMap;
+import com.tvd12.calabash.core.manager.MapEvictionManager;
+import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.persist.action.PersistActionQueueFactory;
 import com.tvd12.calabash.persist.action.PersistActionQueueManager;
 import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
@@ -22,13 +27,14 @@ import com.tvd12.calabash.server.core.setting.Settings;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
-public class CalabashImpl extends EzyLoggable implements Calabash {
+public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAware {
 	
 	protected final Settings settings;
 	protected final EzyEntityCodec entityCodec;
 	protected final BytesMapFactory mapFactory;
 	protected final BytesMapManager mapManager;
 	protected final MapPersistManager mapPersistManager;
+	protected final MapEvictionManager mapEvictionManager;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	protected final EntityMapPersistFactory entityMapPersistFactory;
@@ -48,7 +54,8 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		this.mapFactory = newMapFactory();
 		this.mapManager = newMapManager();
 		this.persistActionHandlingLoop = newPersistActionHandlingLoop();
-		this.startAllLoops();
+		this.mapEvictionManager = newMapEvictionManager();
+		this.startAllComponents();
 	}
 	
 	protected BytesMapBackupExecutor newMapBackupExecutor() {
@@ -98,8 +105,16 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 				.build();
 	}
 	
-	protected void startAllLoops() {
+	protected MapEvictionManager newMapEvictionManager() {
+		return MapEvictionManager.builder()
+				.mapManager(mapManager)
+				.evictionInterval(settings.getMapEvictionInterval())
+				.build();
+	}
+	
+	protected void startAllComponents() {
 		try {
+			mapEvictionManager.start();
 			persistActionHandlingLoop.start();
 		} catch (Exception e) {
 			throw new RuntimeException("start all loops failed", e);
@@ -112,4 +127,10 @@ public class CalabashImpl extends EzyLoggable implements Calabash {
 		return map;
 	}
 
+	@Override
+	public void addStatistics(Map<String, Object> statistics) {
+		Map<String, Object> mapManagerStat = new HashMap<>();
+		((StatisticsAware)mapManager).addStatistics(mapManagerStat);
+		statistics.put("mapManager", mapManagerStat);
+	}
 }

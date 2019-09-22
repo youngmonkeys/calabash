@@ -1,7 +1,7 @@
 package com.tvd12.calabash.server.core;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.server.core.setting.MapBackupSetting;
@@ -14,7 +14,7 @@ public interface BytesMapBackup {
 
 	void remove(MapBackupSetting setting, ByteArray key);
 
-	void remove(MapBackupSetting setting, Set<ByteArray> keys);
+	void remove(MapBackupSetting setting, Collection<ByteArray> keys);
 
 	void clear(MapBackupSetting setting);
 	

@@ -5,15 +5,13 @@ import java.util.Set;
 
 import com.tvd12.calabash.core.util.ByteArray;
 
-public interface BytesMap extends IMap {
-	
-	Map<ByteArray, byte[]> loadAll();
+public interface BytesMapPartition extends IMap {
 	
 	void set(ByteArray key, byte[] value);
 
-	void putAll(Map<ByteArray, byte[]> m);
-	
 	byte[] put(ByteArray key, byte[] value);
+	
+	void putAll(Map<ByteArray, byte[]> m);
 	
 	byte[] get(ByteArray key);
 	
@@ -23,8 +21,10 @@ public interface BytesMap extends IMap {
 	
 	void remove(Set<ByteArray> keys);
 
+	int size();
+	
 	void clear();
-
-	String getName();
+	
+	void evict();
 	
 }

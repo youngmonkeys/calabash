@@ -89,6 +89,8 @@ public class EntityMapPartitionImpl<K, V>
 		}
 		if(value == null)
 			value = load(key);
+		if(value != null)
+			mapEviction.updateKeyTime(key);
 		return value;
 	}
 	
@@ -107,13 +109,11 @@ public class EntityMapPartitionImpl<K, V>
 		}
 		if(unloadValue != null) {
 			synchronized (map) {
-				if(!map.containsKey(key))
-					map.put((K)key, unloadValue);
+				map.putIfAbsent((K)key, unloadValue);
 			}
 			synchronized (uniques) {
 				uniques.putValue(unloadValue);
 			}
-			mapEviction.updateKeyTime(key);
 		}
 		return unloadValue;
 	}
@@ -146,34 +146,6 @@ public class EntityMapPartitionImpl<K, V>
 		}
 		mapEviction.updateKeysTime(answer.keySet());
 		return answer;
-	}
-	
-	@Override
-	public boolean containsKey(K key) {
-		V unloadValue = null;
-		boolean contains = false;
-		synchronized (map) {
-			contains = map.containsKey(key);
-			if(!contains) {
-				unloadValue = (V)mapPersistExecutor.load(mapSetting, key);
-				if(unloadValue == null) {
-					contains = false;
-				}
-				else {
-					map.put(key, unloadValue);
-					contains = true;
-				}
-			}
-		}
-		if(unloadValue != null) {
-			synchronized (uniques) {
-				uniques.putValue(unloadValue);
-			}
-		}
-		if(contains) {
-			mapEviction.updateKeyTime(key);
-		}
-		return contains;
 	}
 
 	@Override
@@ -218,6 +190,14 @@ public class EntityMapPartitionImpl<K, V>
 			lockProvider.removeLock(key);
 		}
 	}
+	
+	@Override
+	public int size() {
+		synchronized (map) {
+			int size = map.size();
+			return size;
+		}
+	}
 
 	@Override
 	public void clear() {
@@ -226,14 +206,6 @@ public class EntityMapPartitionImpl<K, V>
 			keys = new HashSet<>(map.keySet());
 		}
 		remove(keys);
-	}
-	
-	@Override
-	public int size() {
-		synchronized (map) {
-			int size = map.size();
-			return size;
-		}
 	}
 	
 	@Override

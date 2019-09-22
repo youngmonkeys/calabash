@@ -59,13 +59,6 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 		return new SimpleMapPersistManager();
 	}
 	
-	protected MapEvictionManager newMapEvictionManager() {
-		return MapEvictionManager.builder()
-				.mapManager(mapManager)
-				.evictionInterval(settings.getMapEvictionInterval())
-				.build();
-	}
-	
 	protected PersistActionQueueFactory newPersistActionQueueFactory() {
 		return new PersistActionQueueFactory(settings);
 	}
@@ -101,6 +94,13 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 		return PersistActionHandlingLoopImpl.builder()
 				.mapPersistManager(mapPersistManager)
 				.actionQueueManager(persistActionQueueManager)
+				.build();
+	}
+	
+	protected MapEvictionManager newMapEvictionManager() {
+		return MapEvictionManager.builder()
+				.mapManager(mapManager)
+				.evictionInterval(settings.getMapEvictionInterval())
 				.build();
 	}
 	

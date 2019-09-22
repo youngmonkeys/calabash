@@ -20,8 +20,6 @@ public interface EntityMap<K, V> extends IMap {
 	Map<K, V> get(Set<K> keys);
 	
 	V getByQuery(MapQuery query);
-	
-	boolean containsKey(K key);
 
 	V remove(Object key);
 	

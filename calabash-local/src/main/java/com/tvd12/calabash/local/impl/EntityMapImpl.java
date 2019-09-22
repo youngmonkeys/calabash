@@ -175,13 +175,6 @@ public class EntityMapImpl<K, V>
 	}
 	
 	@Override
-	public boolean containsKey(K key) {
-		int pindex = MapPartitions.getPartitionIndex(maxPartition, key);
-		boolean answer = partitions[pindex].containsKey(key);
-		return answer;
-	}
-
-	@Override
 	public V remove(Object key) {
 		int pindex = MapPartitions.getPartitionIndex(maxPartition, key);
 		V v = partitions[pindex].remove(key);
