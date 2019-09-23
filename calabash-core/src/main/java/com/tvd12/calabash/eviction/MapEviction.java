@@ -56,8 +56,12 @@ public class MapEviction {
 			for(Object key : keyLastAccessTimes.keySet()) {
 				long lastAccesstime = keyLastAccessTimes.get(key);
 				long idleTime = currentTime - lastAccesstime;
-				if(idleTime > keyMaxIdTime)
+				if(idleTime > keyMaxIdTime) {
 					evictableKeys.add(key);
+				}
+			}
+			for(Object key : evictableKeys) {
+				keyLastAccessTimes.remove(key);
 			}
 		}
 		return evictableKeys;
