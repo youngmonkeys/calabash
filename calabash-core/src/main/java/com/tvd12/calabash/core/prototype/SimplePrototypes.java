@@ -106,7 +106,7 @@ public class SimplePrototypes implements Prototypes {
 		protected Map<Class, PrototypeProxy> proxies;
 		
 		public Builder() {
-			this.proxies = new ConcurrentHashMap<>();
+			this.proxies = defaultProxies();
 		}
 		
 		@Override
@@ -118,6 +118,28 @@ public class SimplePrototypes implements Prototypes {
 		@Override
 		public Prototypes build() {
 			return new SimplePrototypes(this);
+		}
+		
+		protected Map<Class, PrototypeProxy> defaultProxies() {
+			Map<Class, PrototypeProxy> map = new ConcurrentHashMap<>();
+			map.put(boolean[].class, PrimitiveBooleanArrayPrototypeProxy.getInstance());
+			map.put(byte[].class, PrimitiveByteArrayPrototypeProxy.getInstance());
+			map.put(char[].class, PrimitiveCharArrayPrototypeProxy.getInstance());
+			map.put(double[].class, PrimitiveDoubleArrayPrototypeProxy.getInstance());
+			map.put(float[].class, PrimitiveFloatArrayPrototypeProxy.getInstance());
+			map.put(int[].class, PrimitiveIntArrayPrototypeProxy.getInstance());
+			map.put(long[].class, PrimitiveLongArrayPrototypeProxy.getInstance());
+			map.put(short[].class, PrimitiveShortArrayPrototypeProxy.getInstance());
+			map.put(Boolean[].class, new ArrayPrototypeProxy<>(size -> new Boolean[size]));
+			map.put(Byte[].class, new ArrayPrototypeProxy<>(size -> new Byte[size]));
+			map.put(Character[].class, new ArrayPrototypeProxy<>(size -> new Character[size]));
+			map.put(Double[].class, new ArrayPrototypeProxy<>(size -> new Double[size]));
+			map.put(Float[].class, new ArrayPrototypeProxy<>(size -> new Float[size]));
+			map.put(Integer[].class, new ArrayPrototypeProxy<>(size -> new Integer[size]));
+			map.put(Long[].class, new ArrayPrototypeProxy<>(size -> new Long[size]));
+			map.put(Short[].class, new ArrayPrototypeProxy<>(size -> new Short[size]));
+			map.put(String[].class, new ArrayPrototypeProxy<>(size -> new String[size]));
+			return map;
 		}
 		
 	}

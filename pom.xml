@@ -27,8 +27,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.tvd12</groupId>
-			<artifactId>test-util</artifactId>
+			<artifactId>ezyfox-tools</artifactId>
 			<version>1.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.tvd12</groupId>
+			<artifactId>test-util</artifactId>
+			<version>1.0.5</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
