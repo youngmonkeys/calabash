@@ -14,7 +14,12 @@ public interface EntityMapPersist<K, V> {
 	
 	void persist(K key, V value);
 	
-	void persist(Map<K, V> m);
+	default void persist(Map<K, V> m) {
+		for(K key : m.keySet()) {
+			V value = m.get(key);
+			persist(key, value);
+		}
+	}
 	
 	default Map<K, V> load(Set<K> keys) {
 		Map<K, V> keyValues = new HashMap<>();
@@ -33,6 +38,8 @@ public interface EntityMapPersist<K, V> {
 	}
 	
 	default void delete(Set<K> keys) {
+		for(K key : keys)
+			delete(key);
 	}
 	
 	default Map<K, V> loadAll() {
