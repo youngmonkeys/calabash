@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.tvd12.calabash.core.query.MapQuery;
 import com.tvd12.ezyfox.exception.UnimplementedOperationException;
 import com.tvd12.ezyfox.reflect.EzyGenerics;
 
@@ -30,7 +29,7 @@ public interface EntityMapPersist<K, V> {
 		return keyValues;
 	}
 	
-	default Object loadByQuery(MapQuery query) {
+	default Object loadByQuery(Object query) {
 		return null;
 	}
 	

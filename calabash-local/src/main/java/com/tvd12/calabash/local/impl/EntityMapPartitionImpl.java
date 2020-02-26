@@ -8,13 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
-import java.util.function.Function;
 
 import com.tvd12.calabash.core.EntityMapPartition;
 import com.tvd12.calabash.eviction.MapEviction;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.setting.EntityMapSetting;
-import com.tvd12.calabash.local.unique.EntityUniques;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.concurrent.EzyConcurrentHashMapLockProvider;
 import com.tvd12.ezyfox.concurrent.EzyMapLockProvider;
@@ -28,26 +26,18 @@ public class EntityMapPartitionImpl<K, V>
 
 	protected final Map<K, V> map;
 	protected final MapEviction mapEviction;
-	protected final EntityUniques<V> uniques;
 	protected final EntityMapSetting mapSetting;
 	protected final EzyMapLockProvider lockProvider;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
-	protected final Map<Object, Function<V, Object>> uniqueKeyMaps;
 
 	protected final static EzyVoid EMPTY_FUNC = () -> {};
 	
 	public EntityMapPartitionImpl(Builder builder) {
 		this.map = new HashMap<>();
 		this.mapSetting = builder.mapSetting;
-		this.uniques = builder.uniques;
-		this.uniqueKeyMaps = builder.uniqueKeyMaps;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
 		this.lockProvider = new EzyConcurrentHashMapLockProvider();
 		this.mapEviction = new MapEviction(mapSetting.getEvictionSetting());
-	}
-	
-	protected EntityUniques newUniques() {
-		return new EntityUniques<>(uniqueKeyMaps);
 	}
 	
 	@Override
@@ -62,9 +52,6 @@ public class EntityMapPartitionImpl<K, V>
 			v = map.put(key, value);
 			mapPersistExecutor.persist(mapSetting, key, value);
 		}
-		synchronized (uniques) {
-			uniques.putValue(value);
-		}
 		mapEviction.updateKeyTime(key);
 		return v;
 	}
@@ -74,9 +61,6 @@ public class EntityMapPartitionImpl<K, V>
 		synchronized (map) {
 			map.putAll(m);
 			mapPersistExecutor.persist(mapSetting, m);
-		}
-		synchronized (uniques) {
-			uniques.putValues(m.values());
 		}
 		mapEviction.updateKeysTime(m.keySet());
 	}
@@ -111,8 +95,39 @@ public class EntityMapPartitionImpl<K, V>
 			synchronized (map) {
 				map.putIfAbsent((K)key, unloadValue);
 			}
-			synchronized (uniques) {
-				uniques.putValue(unloadValue);
+		}
+		return unloadValue;
+	}
+	
+	@Override
+	public V getByQuery(K key, Object query) {
+		V value = null;
+		synchronized (map) {
+			value = map.get(key);
+		}
+		if(value == null)
+			value = loadByQuery(key, query);
+		if(value != null)
+			mapEviction.updateKeyTime(key);
+		return value;
+	}
+	
+	protected V loadByQuery(K key, Object query) {
+		Lock lock = lockProvider.provideLock(key);
+		V unloadValue = null;
+		lock.lock();
+		try {
+			V value = map.get(key);
+			if(value != null)
+				return value;
+			unloadValue = (V)mapPersistExecutor.loadByQuery(mapSetting, query);
+		}
+		finally {
+			lock.unlock();
+		}
+		if(unloadValue != null) {
+			synchronized (map) {
+				map.putIfAbsent((K)key, unloadValue);
 			}
 		}
 		return unloadValue;
@@ -157,9 +172,6 @@ public class EntityMapPartitionImpl<K, V>
 				mapPersistExecutor.delete(mapSetting, key);
 		}
 		if(v != null) {
-			synchronized (uniques) {
-				uniques.removeValue(v);
-			}
 			lockProvider.removeLock(key);
 			mapEviction.removeKey(key);
 		}
@@ -182,9 +194,6 @@ public class EntityMapPartitionImpl<K, V>
 				}
 			}
 			postRemoveFunc.apply();
-		}
-		synchronized (uniques) {
-			uniques.removeValues(removedValues);
 		}
 		for(K key : keys) {
 			lockProvider.removeLock(key);
@@ -220,20 +229,8 @@ public class EntityMapPartitionImpl<K, V>
 	
 	public static class Builder implements EzyBuilder<EntityMapPartition> {
 
-		protected Map uniqueKeyMaps;
-		protected EntityUniques uniques;
 		protected EntityMapSetting mapSetting;
 		protected EntityMapPersistExecutor mapPersistExecutor;
-		
-		public Builder uniqueKeyMaps(Map uniqueKeyMaps) {
-			this.uniqueKeyMaps = uniqueKeyMaps;
-			return this;
-		}
-		
-		public Builder uniques(EntityUniques uniques) {
-			this.uniques = uniques;
-			return this;
-		}
 		
 		public Builder mapSetting(EntityMapSetting mapSetting) {
 			this.mapSetting = mapSetting;

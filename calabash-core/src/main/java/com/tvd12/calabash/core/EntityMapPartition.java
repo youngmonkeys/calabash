@@ -13,6 +13,8 @@ public interface EntityMapPartition<K, V> {
 	
 	V get(Object key);
 	
+	V getByQuery(K key, Object query);
+	
 	Map<K, V> get(Set<K> keys);
 	
 	V remove(Object key);

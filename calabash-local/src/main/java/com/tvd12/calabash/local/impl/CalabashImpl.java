@@ -12,7 +12,6 @@ import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.executor.SimpleEntityMapPersistExecutor;
 import com.tvd12.calabash.local.factory.EntityMapFactory;
-import com.tvd12.calabash.local.factory.EntityUniqueFactory;
 import com.tvd12.calabash.local.factory.SimpleEntityMapFactory;
 import com.tvd12.calabash.local.manager.EntityMapManager;
 import com.tvd12.calabash.local.manager.SimpleEntityMapManager;
@@ -33,7 +32,6 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	protected final Prototypes prototypes;
 	protected final EntityMapFactory mapFactory;
 	protected final EntityMapManager mapManager;
-	protected final EntityUniqueFactory uniqueFactory;
 	protected final MapPersistManager mapPersistManager;
 	protected final MapEvictionManager mapEvictionManager;
 	protected final EntityMapPersistFactory mapPersistFactory;
@@ -45,7 +43,6 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	public CalabashImpl(CalabashBuilder builder) {
 		this.settings = builder.getSettings();
 		this.prototypes = builder.getPrototypes();
-		this.uniqueFactory = builder.getUniqueFactory();
 		this.mapPersistFactory = builder.getMapPersistFactory();
 		this.mapPersistManager = newMapPersistManager();
 		this.persistActionQueueFactory = newPersistActionQueueFactory();
@@ -81,7 +78,6 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 		return SimpleEntityMapFactory.builder()
 				.settings(settings)
 				.prototype(prototypes)
-				.uniqueFactory(uniqueFactory)
 				.mapPersistManager(mapPersistManager)
 				.mapPersistFactory(mapPersistFactory)
 				.mapPersistExecutor(mapPersistExecutor)

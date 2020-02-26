@@ -3,23 +3,16 @@ package com.tvd12.calabash.local.impl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.function.Function;
 
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPartition;
 import com.tvd12.calabash.core.prototype.Prototypes;
-import com.tvd12.calabash.core.query.MapQuery;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.core.util.MapPartitions;
 import com.tvd12.calabash.eviction.MapEvictable;
 import com.tvd12.calabash.local.builder.EntityMapBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.setting.EntityMapSetting;
-import com.tvd12.calabash.local.unique.EntityUniques;
-import com.tvd12.ezyfox.concurrent.EzyMapLockProvider;
-import com.tvd12.ezyfox.concurrent.EzyMixedMapLockProxyProvider;
-import com.tvd12.ezyfox.util.EzyHasIdEntity;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -29,26 +22,16 @@ public class EntityMapImpl<K, V>
 
 	protected final int maxPartition;
 	protected final Prototypes prototypes;
-	protected final EntityUniques<V> uniques;
 	protected final EntityMapSetting setting;
-	protected final EzyMapLockProvider lockProviderForQuery;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
-	protected final Map<Object, Function<V, Object>> uniqueKeyMaps;
 	protected final EntityMapPartition<K, V>[] partitions;
 	
 	public EntityMapImpl(EntityMapBuilder builder) {
 		this.setting = builder.getMapSetting();
 		this.prototypes = builder.getPrototypes();
-		this.uniqueKeyMaps = builder.getUniqueKeyMaps();
 		this.mapPersistExecutor = builder.getMapPersistExecutor();
 		this.maxPartition = setting.getMaxPartition();
-		this.uniques = newUniques();
 		this.partitions = newPartitions();
-		this.lockProviderForQuery = new EzyMixedMapLockProxyProvider();
-	}
-	
-	protected EntityUniques newUniques() {
-		return new EntityUniques<>(uniqueKeyMaps);
 	}
 	
 	protected EntityMapPartition<K, V>[] newPartitions() {
@@ -61,8 +44,6 @@ public class EntityMapImpl<K, V>
 	protected EntityMapPartition<K, V> newPartition() {
 		return EntityMapPartitionImpl.builder()
 				.mapSetting(setting)
-				.uniques(uniques)
-				.uniqueKeyMaps(uniqueKeyMaps)
 				.mapPersistExecutor(mapPersistExecutor)
 				.build();
 	}
@@ -131,52 +112,10 @@ public class EntityMapImpl<K, V>
 	}
 	
 	@Override
-	public V getByQuery(MapQuery query) {
-		K key = null;
-		V value = null;
-		Map<Object, Object> uniqueKeys = null;
-		if(query instanceof EzyHasIdEntity) {
-			EzyHasIdEntity<K> hasId = (EzyHasIdEntity<K>)query;
-			key = hasId.getId();
-			value = getFromPartition(key);
-		}
-		if(value == null) {
-			uniqueKeys = query.getKeys();
-			synchronized (uniques) {
-				value = uniques.getValue(uniqueKeys);
-			}
-		}
-		if(value == null)
-			value = loadByQuery(query, key, uniqueKeys);
-		V copyValue = prototypes.copy(value);
-		return copyValue;
-	}
-	
-	protected V loadByQuery(MapQuery query, K key, Map<Object, Object> uniqueKeys) {
-		V unloadValue = null;
-		Lock lock = lockProviderForQuery.provideLock(query);
-		lock.lock();
-		try {
-			V value = null;
-			if(key != null)
-				value = getFromPartition(key);
-			if(value == null)
-				value = uniques.getValue(uniqueKeys);
-			if(value != null)
-				return value;
-			unloadValue = (V)mapPersistExecutor.loadByQuery(setting, query);
-			
-			if(unloadValue != null) {
-				if(key != null) {
-					putToPartition(key, unloadValue);
-				}
-			}
-		}
-		finally {
-			lock.unlock();
-			lockProviderForQuery.removeLock(query);
-		}
-		return unloadValue;
+	public V getByQuery(K key, Object query) {
+		int pindex = MapPartitions.getPartitionIndex(maxPartition, key);
+		V value = partitions[pindex].getByQuery(key, query);
+		return value;
 	}
 	
 	@Override
@@ -217,11 +156,6 @@ public class EntityMapImpl<K, V>
 	@Override
 	public void addStatistics(Map<String, Object> statistics) {
 		statistics.put("size", size());
-		Map<String, Object> uniquesStat = new HashMap<>();
-		synchronized (uniques) {
-			((StatisticsAware)uniques).addStatistics(uniquesStat);
-		}
-		statistics.put("uniques", uniquesStat);
 	}
 
 }

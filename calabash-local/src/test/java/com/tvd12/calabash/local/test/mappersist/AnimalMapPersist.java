@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.annotation.MapPersistence;
-import com.tvd12.calabash.core.query.MapQuery;
 import com.tvd12.calabash.local.test.AnimalByNickQuery;
 import com.tvd12.calabash.local.test.CollectionNames;
 import com.tvd12.ezyfox.bean.annotation.EzyAutoBind;
@@ -27,7 +26,7 @@ public class AnimalMapPersist implements EntityMapPersist<Long, Animal> {
 	}
 	
 	@Override
-	public Object loadByQuery(MapQuery query) {
+	public Object loadByQuery(Object query) {
 		AnimalByNickQuery q = (AnimalByNickQuery)query;
 		Animal entity = animalRepo.findByField("nick", q.getNick());
 		return entity;

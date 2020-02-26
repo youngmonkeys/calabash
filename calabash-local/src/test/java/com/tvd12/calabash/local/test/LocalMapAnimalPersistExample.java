@@ -14,9 +14,6 @@ import com.tvd12.calabash.core.annotation.MapPersistence;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
 import com.tvd12.calabash.local.builder.CalabashBuilder;
-import com.tvd12.calabash.local.factory.EntityUniqueFactory;
-import com.tvd12.calabash.local.factory.SimpleEntityUniqueFactory;
-import com.tvd12.calabash.local.factory.SimpleEntityUniqueFactory.UniqueKeyMapsBuilder;
 import com.tvd12.calabash.local.setting.SimpleEntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
 import com.tvd12.calabash.local.setting.SimpleSettings;
@@ -50,22 +47,15 @@ public class LocalMapAnimalPersistExample {
 			mapPersistFactory.addMapPersist(mapName, (EntityMapPersist) mapPersist);
 		}
 		
-		SimpleEntityUniqueFactory.Builder uniqueFactoryBuilder = SimpleEntityUniqueFactory.builder();
-		UniqueKeyMapsBuilder<Animal> uniqueKeyMapsBuilder = uniqueFactoryBuilder.newUniqueKeyMapsBuilder(CollectionNames.ANIMAL);
-		uniqueKeyMapsBuilder.addUniqueKeyMap("nick", a -> a.getNick());
-		uniqueKeyMapsBuilder.build();
-		EntityUniqueFactory uniqueFactory = uniqueFactoryBuilder.build();
-		
 		Calabash calabash = new CalabashBuilder()
 				.settings(settings)
-				.uniqueFactory(uniqueFactory)
 				.mapPersistFactory(mapPersistFactory)
 				.build();
 		Animal animal = new Animal(2, "animal 2", "cat");
 		EntityMap<Long, Animal> entityMap = calabash.getEntityMap(CollectionNames.ANIMAL);
 		entityMap.put(animal.getId(), animal);
 		AnimalByNickQuery query = new AnimalByNickQuery(animal.getNick());
-		Animal animalByQuery = entityMap.getByQuery(query);
+		Animal animalByQuery = entityMap.getByQuery(1L, query);
 		System.out.println("animal by query: " + animalByQuery);
 		
 		Map<String, Object> statistics = new HashMap<>();

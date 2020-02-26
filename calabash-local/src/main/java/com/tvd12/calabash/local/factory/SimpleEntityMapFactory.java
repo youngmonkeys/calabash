@@ -16,7 +16,6 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 
 	protected final Settings settings;
 	protected final Prototypes prototypes;
-	protected final EntityUniqueFactory uniqueFactory;
 	protected final MapPersistManager mapPersistManager;
 	protected final EntityMapPersistFactory mapPersistFactory;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
@@ -24,7 +23,6 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 	protected SimpleEntityMapFactory(Builder builder) {
 		this.settings = builder.settings;
 		this.prototypes = builder.prototypes;
-		this.uniqueFactory = builder.uniqueFactory;
 		this.mapPersistFactory = builder.mapPersistFactory;
 		this.mapPersistManager = builder.mapPersistManager;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
@@ -42,7 +40,6 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 				.prototypes(prototypes)
 				.mapPersistExecutor(mapPersistExecutor)
 				.mapSetting(settings.getMapSetting(mapName))
-				.uniqueKeyMaps(uniqueFactory.newUniqueKeyMaps(mapName))
 				.build();
 		return map;
 	}
@@ -60,7 +57,6 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 		
 		protected Settings settings;
 		protected Prototypes prototypes;
-		protected EntityUniqueFactory uniqueFactory;
 		protected MapPersistManager mapPersistManager;
 		protected EntityMapPersistFactory mapPersistFactory;
 		protected EntityMapPersistExecutor mapPersistExecutor;
@@ -72,11 +68,6 @@ public class SimpleEntityMapFactory extends EzyLoggable implements EntityMapFact
 		
 		public Builder prototype(Prototypes prototypes) {
 			this.prototypes = prototypes;
-			return this;
-		}
-		
-		public Builder uniqueFactory(EntityUniqueFactory uniqueFactory) {
-			this.uniqueFactory = uniqueFactory;
 			return this;
 		}
 		
