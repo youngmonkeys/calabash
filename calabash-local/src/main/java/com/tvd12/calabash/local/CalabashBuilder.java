@@ -1,9 +1,8 @@
-package com.tvd12.calabash.local.builder;
+package com.tvd12.calabash.local;
 
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.prototype.Prototypes;
 import com.tvd12.calabash.core.prototype.SimplePrototypes;
-import com.tvd12.calabash.local.impl.CalabashImpl;
 import com.tvd12.calabash.local.setting.Settings;
 import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
 import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
@@ -39,7 +38,7 @@ public class CalabashBuilder implements EzyBuilder<Calabash> {
 			prototypes = new SimplePrototypes();
 		if(mapPersistFactory == null)
 			mapPersistFactory = new DefaultEntityMapPersistFactory();
-		return new CalabashImpl(this);
+		return new CalabashLocal(this);
 	}
 	
 }

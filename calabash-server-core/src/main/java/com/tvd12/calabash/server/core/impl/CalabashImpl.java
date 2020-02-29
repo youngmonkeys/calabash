@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.BytesMap;
+import com.tvd12.calabash.core.IAtomicLong;
 import com.tvd12.calabash.core.manager.MapEvictionManager;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.persist.action.PersistActionQueueFactory;
@@ -20,7 +21,9 @@ import com.tvd12.calabash.server.core.executor.SimpleBytesMapBackupExecutor;
 import com.tvd12.calabash.server.core.executor.SimpleBytesMapPersistExecutor;
 import com.tvd12.calabash.server.core.factory.BytesMapFactory;
 import com.tvd12.calabash.server.core.factory.SimpleBytesMapFactory;
+import com.tvd12.calabash.server.core.manager.AtomicLongManager;
 import com.tvd12.calabash.server.core.manager.BytesMapManager;
+import com.tvd12.calabash.server.core.manager.SimpleAtomicLongManager;
 import com.tvd12.calabash.server.core.manager.SimpleBytesMapManager;
 import com.tvd12.calabash.server.core.persist.PersistActionHandlingLoopImpl;
 import com.tvd12.calabash.server.core.setting.Settings;
@@ -34,6 +37,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	protected final BytesMapFactory mapFactory;
 	protected final BytesMapManager mapManager;
 	protected final MapPersistManager mapPersistManager;
+	protected final AtomicLongManager atomicLongManager;
 	protected final MapEvictionManager mapEvictionManager;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
@@ -53,8 +57,9 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 		this.mapPersistExecutor = newMapPersistExecutor();
 		this.mapFactory = newMapFactory();
 		this.mapManager = newMapManager();
-		this.persistActionHandlingLoop = newPersistActionHandlingLoop();
 		this.mapEvictionManager = newMapEvictionManager();
+		this.atomicLongManager = newAtomicLongManager();
+		this.persistActionHandlingLoop = newPersistActionHandlingLoop();
 		this.startAllComponents();
 	}
 	
@@ -112,6 +117,12 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 				.build();
 	}
 	
+	protected AtomicLongManager newAtomicLongManager() {
+		String mapName = settings.getAtomicLongMapName();
+		BytesMap map = getBytesMap(mapName);
+		return new SimpleAtomicLongManager(map);
+	}
+	
 	protected void startAllComponents() {
 		try {
 			mapEvictionManager.start();
@@ -125,6 +136,12 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	public BytesMap getBytesMap(String name) {
 		BytesMap map = mapManager.getMap(name);
 		return map;
+	}
+	
+	@Override
+	public IAtomicLong getAtomicLong(String name) {
+		IAtomicLong atomicLong = atomicLongManager.getAtomicLong(name);
+		return atomicLong;
 	}
 
 	@Override

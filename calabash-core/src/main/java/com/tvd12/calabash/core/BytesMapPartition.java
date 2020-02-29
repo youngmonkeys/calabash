@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.tvd12.calabash.core.util.ByteArray;
 
-public interface BytesMapPartition extends IMap {
+public interface BytesMapPartition {
 	
 	void set(ByteArray key, byte[] value);
 

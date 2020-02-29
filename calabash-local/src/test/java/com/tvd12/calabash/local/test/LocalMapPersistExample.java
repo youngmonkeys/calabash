@@ -10,10 +10,11 @@ import com.mongodb.MongoClient;
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPersist;
+import com.tvd12.calabash.core.IAtomicLong;
 import com.tvd12.calabash.core.annotation.MapPersistence;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
-import com.tvd12.calabash.local.builder.CalabashBuilder;
+import com.tvd12.calabash.local.CalabashBuilder;
 import com.tvd12.calabash.local.setting.SimpleEntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
 import com.tvd12.calabash.local.setting.SimpleSettings;
@@ -53,6 +54,10 @@ public class LocalMapPersistExample {
 		Person person = new Person(11, "person 6", 18);
 		EntityMap<Long, Person> entityMap = calabash.getEntityMap(CollectionNames.PERSON);
 		entityMap.put(person.getId(), person);
+		
+		IAtomicLong atomicLong = calabash.getAtomicLong("hello");
+		Long newValue = atomicLong.incrementAndGet();
+		System.out.println("atomic long new value: " + newValue);
 		
 		Map<String, Object> statistics = new HashMap<>();
 		while(true) {

@@ -13,7 +13,7 @@ import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.annotation.MapPersistence;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
-import com.tvd12.calabash.local.builder.CalabashBuilder;
+import com.tvd12.calabash.local.CalabashBuilder;
 import com.tvd12.calabash.local.setting.SimpleEntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
 import com.tvd12.calabash.local.setting.SimpleSettings;

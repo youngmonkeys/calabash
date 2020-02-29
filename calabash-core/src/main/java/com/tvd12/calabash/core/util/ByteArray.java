@@ -11,12 +11,20 @@ public class ByteArray implements Serializable {
 	@Getter
 	protected final byte[] bytes;
 	
+	public ByteArray(String bytes) {
+		this(bytes.getBytes());
+	}
+	
 	public ByteArray(byte[] bytes) {
 		if(bytes == null)
 			throw new NullPointerException("bytes can not be null");
 		this.bytes = bytes;
 	}
 
+	public static ByteArray wrap(String bytes) {
+		return new ByteArray(bytes);
+	}
+	
 	public static ByteArray wrap(byte[] bytes) {
 		return new ByteArray(bytes);
 	}

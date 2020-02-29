@@ -23,6 +23,4 @@ public interface EntityMap<K, V> extends IMap {
 	
 	void remove(Set<K> keys);
 	
-	void clear();
-	
 }

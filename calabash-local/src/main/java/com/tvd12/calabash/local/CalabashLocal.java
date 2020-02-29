@@ -1,19 +1,21 @@
-package com.tvd12.calabash.local.impl;
+package com.tvd12.calabash.local;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
+import com.tvd12.calabash.core.IAtomicLong;
 import com.tvd12.calabash.core.manager.MapEvictionManager;
 import com.tvd12.calabash.core.prototype.Prototypes;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
-import com.tvd12.calabash.local.builder.CalabashBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.executor.SimpleEntityMapPersistExecutor;
 import com.tvd12.calabash.local.factory.EntityMapFactory;
 import com.tvd12.calabash.local.factory.SimpleEntityMapFactory;
+import com.tvd12.calabash.local.manager.AtomicLongManager;
 import com.tvd12.calabash.local.manager.EntityMapManager;
+import com.tvd12.calabash.local.manager.SimpleAtomicLongManager;
 import com.tvd12.calabash.local.manager.SimpleEntityMapManager;
 import com.tvd12.calabash.local.persist.PersistActionHandlingLoopImpl;
 import com.tvd12.calabash.local.setting.Settings;
@@ -26,13 +28,14 @@ import com.tvd12.calabash.persist.manager.SimpleMapPersistManager;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 @SuppressWarnings("unchecked")
-public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAware {
+public class CalabashLocal extends EzyLoggable implements Calabash, StatisticsAware {
 	
 	protected final Settings settings;
 	protected final Prototypes prototypes;
 	protected final EntityMapFactory mapFactory;
 	protected final EntityMapManager mapManager;
 	protected final MapPersistManager mapPersistManager;
+	protected final AtomicLongManager atomicLongManager;
 	protected final MapEvictionManager mapEvictionManager;
 	protected final EntityMapPersistFactory mapPersistFactory;
 	protected final EntityMapPersistExecutor mapPersistExecutor;
@@ -40,7 +43,7 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	protected final PersistActionQueueManager persistActionQueueManager;
 	protected final PersistActionHandlingLoop persistActionHandlingLoop;
 	
-	public CalabashImpl(CalabashBuilder builder) {
+	protected CalabashLocal(CalabashBuilder builder) {
 		this.settings = builder.getSettings();
 		this.prototypes = builder.getPrototypes();
 		this.mapPersistFactory = builder.getMapPersistFactory();
@@ -50,8 +53,9 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 		this.mapPersistExecutor = newMapPersistExecutor();
 		this.mapFactory = newMapFactory();
 		this.mapManager = newMapManager();
-		this.persistActionHandlingLoop = newPersistActionHandlingLoop();
 		this.mapEvictionManager = newMapEvictionManager();
+		this.atomicLongManager = newAtomicLongManager();
+		this.persistActionHandlingLoop = newPersistActionHandlingLoop();
 		this.startAllComponents();
 	}
 	
@@ -104,6 +108,12 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 				.build();
 	}
 	
+	protected AtomicLongManager newAtomicLongManager() {
+		String mapName = settings.getAtomicLongMapName();
+		EntityMap<String, Long> map = getEntityMap(mapName);
+		return new SimpleAtomicLongManager(map);
+	}
+	
 	protected void startAllComponents() {
 		try {
 			mapEvictionManager.start();
@@ -120,10 +130,20 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	}
 	
 	@Override
+	public IAtomicLong getAtomicLong(String name) {
+		IAtomicLong atomicLong = atomicLongManager.getAtomicLong(name);
+		return atomicLong;
+	}
+	
+	@Override
 	public void addStatistics(Map<String, Object> statistics) {
 		Map<String, Object> mapManagerStat = new HashMap<>();
 		((StatisticsAware)mapManager).addStatistics(mapManagerStat);
 		statistics.put("mapManager", mapManagerStat);
+	}
+	
+	public static CalabashBuilder builder() {
+		return new CalabashBuilder();
 	}
 
 }

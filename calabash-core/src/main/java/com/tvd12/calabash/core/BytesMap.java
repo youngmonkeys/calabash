@@ -22,9 +22,5 @@ public interface BytesMap extends IMap {
 	byte[] remove(ByteArray key);
 	
 	void remove(Set<ByteArray> keys);
-
-	void clear();
-
-	String getName();
 	
 }

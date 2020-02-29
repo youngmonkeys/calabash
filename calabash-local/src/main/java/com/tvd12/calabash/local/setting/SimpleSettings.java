@@ -11,6 +11,9 @@ public class SimpleSettings implements Settings {
 	@Getter
 	@Setter
 	protected int mapEvictionInterval = 3;
+	@Getter
+	@Setter
+	protected String atomicLongMapName = "___calabash_atomic_long___";
 	protected Map<String, EntityMapSetting> mapSettings = new HashMap<>();
 	
 	public void addMapSetting(EntityMapSetting setting) {
@@ -31,6 +34,7 @@ public class SimpleSettings implements Settings {
 			EntityMapSetting mapSetting = mapSettings.get(mapName);
 			if (mapSetting == null) {
 				mapSetting = new SimpleEntityMapSetting();
+				((SimpleEntityMapSetting)mapSetting).setMapName(mapName);
 				mapSettings.put(mapName, mapSetting);
 			}
 			return mapSetting;

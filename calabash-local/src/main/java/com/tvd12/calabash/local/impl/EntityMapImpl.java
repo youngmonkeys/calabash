@@ -158,4 +158,9 @@ public class EntityMapImpl<K, V>
 		statistics.put("size", size());
 	}
 
+	@Override
+	public String getName() {
+		return setting.getMapName();
+	}
+
 }

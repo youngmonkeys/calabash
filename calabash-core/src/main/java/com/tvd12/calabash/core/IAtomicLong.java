@@ -1,9 +1,9 @@
 package com.tvd12.calabash.core;
 
-public interface IMap {
-	
-	void clear();
+public interface IAtomicLong {
 
+	long incrementAndGet();
+	
 	String getName();
 	
 }

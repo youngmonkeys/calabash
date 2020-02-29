@@ -22,7 +22,7 @@ public class ByteArrayTest {
 	
 	@Test(expectedExceptions = NullPointerException.class)
 	public void test2() {
-		ByteArray.wrap(null);
+		ByteArray.wrap((byte[])null);
 	}
 	
 }
