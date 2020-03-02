@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.annotation.MapPersistence;
+import com.tvd12.calabash.core.setting.ISettings;
 import com.tvd12.ezyfox.bean.annotation.EzyAutoBind;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 
@@ -11,7 +12,7 @@ import lombok.Setter;
 
 @Setter
 @EzySingleton
-@MapPersistence("___calabash_atomic_long___")
+@MapPersistence(ISettings.DEFAULT_ATOMIC_LONG_MAP_NAME)
 public class MaxIdMapPersist implements EntityMapPersist<String, Long> {
 
 	@EzyAutoBind

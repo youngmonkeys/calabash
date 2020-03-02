@@ -22,13 +22,13 @@ public class AtomicLongImpl implements IAtomicLong {
 	}
 	
 	@Override
-	public long incrementAndGet() {
+	public long addAndGet(long delta) {
 		synchronized (this) {
 			Long current = null;
 			byte[] currentBytes = map.get(nameBytes);
 			if(currentBytes != null)
 				current = EzyLongs.bin2long(currentBytes);
-			Long newValue = current == null ? 1L : current + 1;
+			Long newValue = current == null ? delta : current + delta;
 			byte[] newValueBytes = EzyBytes.getBytes(newValue);
 			map.put(nameBytes, newValueBytes);
 			return newValue;

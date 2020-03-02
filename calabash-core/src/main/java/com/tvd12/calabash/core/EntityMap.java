@@ -18,9 +18,13 @@ public interface EntityMap<K, V> extends IMap {
 	Map<K, V> get(Set<K> keys);
 	
 	V getByQuery(K key, Object query);
-
+	
 	V remove(Object key);
 	
 	void remove(Set<K> keys);
 	
+	default boolean containsKey(K key) {
+		V value = get(key);
+		return value != null;
+	}
 }

@@ -10,11 +10,18 @@ public class SimpleSettings implements Settings {
 
 	@Setter
 	@Getter
-	protected int mapEvictionInterval = 3;
+	protected int mapEvictionInterval;
 	@Getter
 	@Setter
-	protected String atomicLongMapName = "___calabash_atomic_long___";
-	protected Map<String, MapSetting> mapSettings = new HashMap<>();
+	protected String atomicLongMapName;
+	
+	protected Map<String, MapSetting> mapSettings;
+	
+	public SimpleSettings() {
+		this.mapSettings = new HashMap<>();
+		this.atomicLongMapName = DEFAULT_ATOMIC_LONG_MAP_NAME;
+		this.mapEvictionInterval = DEFAULT_MAP_EVICTION_INTERVAL;
+	}
 	
 	public void addMapSetting(MapSetting setting) {
 		mapSettings.put(setting.getMapName(), setting);

@@ -56,7 +56,7 @@ public class LocalMapPersistExample {
 		entityMap.put(person.getId(), person);
 		
 		IAtomicLong atomicLong = calabash.getAtomicLong("hello");
-		Long newValue = atomicLong.incrementAndGet();
+		Long newValue = atomicLong.addAndGet(100L);
 		System.out.println("atomic long new value: " + newValue);
 		
 		Map<String, Object> statistics = new HashMap<>();

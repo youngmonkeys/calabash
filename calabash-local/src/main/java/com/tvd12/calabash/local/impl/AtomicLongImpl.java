@@ -17,10 +17,10 @@ public class AtomicLongImpl implements IAtomicLong {
 	}
 	
 	@Override
-	public long incrementAndGet() {
+	public long addAndGet(long delta) {
 		synchronized (this) {
 			Long current = map.get(name);
-			Long newValue = current == null ? 1L : current + 1;
+			Long newValue = current == null ? delta : current + delta;
 			map.put(name, newValue);
 			return newValue;
 		}

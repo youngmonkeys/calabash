@@ -1,5 +1,7 @@
 package com.tvd12.calabash.local.test.mappersist;
 
+import com.tvd12.calabash.core.setting.ISettings;
+
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import lombok.AllArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity("___calabash_atomic_long___")
+@Entity(ISettings.DEFAULT_ATOMIC_LONG_MAP_NAME)
 public class MaxId {
 
 	@Id
