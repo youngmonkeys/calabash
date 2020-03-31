@@ -19,11 +19,11 @@ import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
 import com.tvd12.calabash.local.setting.SimpleSettings;
 import com.tvd12.calabash.local.test.mappersist.Animal;
 import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
+import com.tvd12.ezydata.mongodb.loader.EzyInputStreamMongoClientLoader;
+import com.tvd12.ezydata.morphia.EzyDataStoreBuilder;
+import com.tvd12.ezydata.morphia.bean.EzyMorphiaRepositories;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
 import com.tvd12.ezyfox.bean.EzyBeanContextBuilder;
-import com.tvd12.ezyfox.mongodb.loader.EzyInputStreamMongoClientLoader;
-import com.tvd12.ezyfox.morphia.EzyDataStoreBuilder;
-import com.tvd12.ezyfox.morphia.bean.EzyMorphiaRepositories;
 import com.tvd12.ezyfox.stream.EzyAnywayInputStreamLoader;
 
 import dev.morphia.Datastore;

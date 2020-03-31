@@ -26,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
-			<artifactId>ezyfox-morphia</artifactId>
+			<artifactId>ezydata-morphia</artifactId>
 			<version>${ezy.morphia.version}</version>
 			<scope>test</scope>
 		</dependency>
