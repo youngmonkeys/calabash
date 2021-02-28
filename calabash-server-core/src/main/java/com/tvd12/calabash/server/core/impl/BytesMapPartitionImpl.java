@@ -1,6 +1,5 @@
 package com.tvd12.calabash.server.core.impl;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,9 +14,9 @@ import com.tvd12.calabash.server.core.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.server.core.executor.BytesMapPersistExecutor;
 import com.tvd12.calabash.server.core.setting.MapSetting;
 import com.tvd12.ezyfox.builder.EzyBuilder;
+import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.concurrent.EzyConcurrentHashMapLockProvider;
 import com.tvd12.ezyfox.concurrent.EzyMapLockProvider;
-import com.tvd12.ezyfox.function.EzyVoid;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 public class BytesMapPartitionImpl 
@@ -26,16 +25,16 @@ public class BytesMapPartitionImpl
 
 	protected final MapSetting mapSetting;
 	protected final MapEviction mapEviction;
+	protected final EzyEntityCodec entityCodec;
 	protected final Map<ByteArray, byte[]> map;
 	protected final EzyMapLockProvider lockProvider;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	
-	protected final static EzyVoid EMPTY_FUNC = () -> {};
-	
 	public BytesMapPartitionImpl(Builder builder) {
 		this.map  = new HashMap<>();
 		this.mapSetting = builder.mapSetting;
+		this.entityCodec = builder.entityCodec;
 		this.mapBackupExecutor = builder.mapBackupExecutor;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
 		this.lockProvider = new EzyConcurrentHashMapLockProvider();
@@ -151,20 +150,31 @@ public class BytesMapPartitionImpl
 	
 	@Override
 	public void remove(Set<ByteArray> keys) {
-		remove(keys, () -> mapPersistExecutor.delete(mapSetting, keys));
-		mapEviction.removeKeys(keys);
-	}
-	
-	protected void remove(Collection<ByteArray> keys, EzyVoid postRemoveFunc) {
 		synchronized (map) {
 			for(ByteArray key : keys)
 				map.remove(key);
 			mapBackupExecutor.remove(mapSetting, keys);
-			postRemoveFunc.apply();
+			mapPersistExecutor.delete(mapSetting, keys);
 		}
 		for(ByteArray key : keys) {
 			lockProvider.removeLock(key);
 		}
+		mapEviction.removeKeys(keys);
+	}
+	
+	@Override
+	public long addAndGet(ByteArray key, long delta) {
+		long nextValue = delta;
+		synchronized (map) {
+			byte[] valueBytes = map.get(key);
+			if(valueBytes != null)
+				nextValue += entityCodec.deserialize(valueBytes, long.class);
+			byte[] nextValueBytes = entityCodec.serialize(nextValue);
+			mapBackupExecutor.backup(mapSetting, key, nextValueBytes);
+			mapPersistExecutor.persist(mapSetting, key, nextValueBytes);
+		}
+		mapEviction.updateKeyTime(key);
+		return nextValue;
 	}
 	
 	@Override
@@ -188,7 +198,14 @@ public class BytesMapPartitionImpl
 	@Override
 	public void evict() {
 		List<ByteArray> evictableKeys = mapEviction.getEvictableKeys();
-		remove(evictableKeys, EMPTY_FUNC);
+		synchronized (map) {
+			for(ByteArray key : evictableKeys)
+				map.remove(key);
+			mapBackupExecutor.remove(mapSetting, evictableKeys);
+		}
+		for(ByteArray key : evictableKeys) {
+			lockProvider.removeLock(key);
+		}
 	}
 	
 	public static Builder builder() {
@@ -198,11 +215,17 @@ public class BytesMapPartitionImpl
 	public static class Builder implements EzyBuilder<BytesMapPartition> {
 		
 		protected MapSetting mapSetting;
+		protected EzyEntityCodec entityCodec;
 		protected BytesMapBackupExecutor mapBackupExecutor;
 		protected BytesMapPersistExecutor mapPersistExecutor;
 		
 		public Builder mapSetting(MapSetting mapSetting) {
 			this.mapSetting = mapSetting;
+			return this;
+		}
+		
+		public Builder entityCodec(EzyEntityCodec entityCodec) {
+			this.entityCodec = entityCodec;
 			return this;
 		}
 		

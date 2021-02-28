@@ -22,24 +22,24 @@
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-binding-codec</artifactId>
-			<version>${ezy.binding.codec.version}</version>
+			<version>${ezyfox.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
-			<artifactId>ezydata-morphia</artifactId>
-			<version>${ezy.morphia.version}</version>
+			<artifactId>ezydata-mongodb</artifactId>
+			<version>${ezydata.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-bean</artifactId>
-			<version>${ezy.bean.version}</version>
+			<version>${ezyfox.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-msgpack</artifactId>
-			<version>${ezy.msgpack.version}</version>
+			<version>${ezyfox.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

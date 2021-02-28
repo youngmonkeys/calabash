@@ -17,6 +17,14 @@ public class AtomicLongImpl implements IAtomicLong {
 	}
 	
 	@Override
+	public long get() {
+		synchronized (this) {
+			Long current = map.get(name);
+			return current == null ? 0L : current;
+		}
+	}
+	
+	@Override
 	public long addAndGet(long delta) {
 		synchronized (this) {
 			Long current = map.get(name);

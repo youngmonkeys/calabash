@@ -10,10 +10,11 @@ import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.core.util.MapPartitions;
 import com.tvd12.calabash.eviction.MapEvictable;
-import com.tvd12.calabash.server.core.builder.BytesMapBuilder;
 import com.tvd12.calabash.server.core.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.server.core.executor.BytesMapPersistExecutor;
 import com.tvd12.calabash.server.core.setting.MapSetting;
+import com.tvd12.ezyfox.builder.EzyBuilder;
+import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 public class BytesMapImpl
@@ -22,14 +23,16 @@ public class BytesMapImpl
 
 	protected final int maxPartition;
 	protected final MapSetting setting;
+	protected final EzyEntityCodec entityCodec;
 	protected final BytesMapPartition[] partitions;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	
-	public BytesMapImpl(BytesMapBuilder builder) {
-		this.setting = builder.getMapSetting();
-		this.mapBackupExecutor = builder.getMapBackupExecutor();
-		this.mapPersistExecutor = builder.getMapPersistExecutor();
+	public BytesMapImpl(Builder builder) {
+		this.setting = builder.mapSetting;
+		this.entityCodec = builder.entityCodec;
+		this.mapBackupExecutor = builder.mapBackupExecutor;
+		this.mapPersistExecutor = builder.mapPersistExecutor;
 		this.maxPartition = setting.getMaxPartition();
 		this.partitions = newPartitions();
 	}
@@ -126,6 +129,13 @@ public class BytesMapImpl
 	}
 	
 	@Override
+	public long addAndGet(ByteArray key, long delta) {
+		int pindex = MapPartitions.getPartitionIndex(maxPartition, key);
+		long answer = partitions[pindex].addAndGet(key, delta);
+		return answer;
+	}
+	
+	@Override
 	public void clear() {
 		for(int i = 0 ; i < maxPartition ; ++i)
 			partitions[i].clear();
@@ -152,5 +162,43 @@ public class BytesMapImpl
 	@Override
 	public String getName() {
 		return setting.getMapName();
+	}
+	
+	public static Builder builder() {
+		return new Builder();
+	}
+	
+	public static class Builder implements EzyBuilder<BytesMap> {
+		
+		protected MapSetting mapSetting;
+		protected EzyEntityCodec entityCodec;
+		protected BytesMapBackupExecutor mapBackupExecutor;
+		protected BytesMapPersistExecutor mapPersistExecutor;
+		
+		public Builder mapSetting(MapSetting mapSetting) {
+			this.mapSetting = mapSetting;
+			return this;
+		}
+		
+		public Builder entityCodec(EzyEntityCodec entityCodec) {
+			this.entityCodec = entityCodec;
+			return this;
+		}
+		
+		public Builder mapBackupExecutor(BytesMapBackupExecutor mapBackupExecutor) {
+			this.mapBackupExecutor = mapBackupExecutor;
+			return this;
+		}
+		
+		public Builder mapPersistExecutor(BytesMapPersistExecutor mapPersistExecutor) {
+			this.mapPersistExecutor = mapPersistExecutor;
+			return this;
+		}
+
+		@Override
+		public BytesMap build() {
+			return new BytesMapImpl(this);
+		}
+		
 	}
 }

@@ -20,6 +20,8 @@ public interface BytesMapPartition {
 	byte[] remove(ByteArray key);
 	
 	void remove(Set<ByteArray> keys);
+	
+	long addAndGet(ByteArray key, long delta);
 
 	int size();
 	

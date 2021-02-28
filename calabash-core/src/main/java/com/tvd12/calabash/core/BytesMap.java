@@ -23,4 +23,6 @@ public interface BytesMap extends IMap {
 	
 	void remove(Set<ByteArray> keys);
 	
+	long addAndGet(ByteArray key, long delta);
+	
 }

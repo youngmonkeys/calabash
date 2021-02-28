@@ -5,9 +5,9 @@ import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
 import com.tvd12.calabash.persist.manager.MapPersistManager;
 import com.tvd12.calabash.server.core.BytesMapPersist;
-import com.tvd12.calabash.server.core.builder.BytesMapBuilder;
 import com.tvd12.calabash.server.core.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.server.core.executor.BytesMapPersistExecutor;
+import com.tvd12.calabash.server.core.impl.BytesMapImpl;
 import com.tvd12.calabash.server.core.persist.EntityBytesMapPersist;
 import com.tvd12.calabash.server.core.setting.Settings;
 import com.tvd12.ezyfox.builder.EzyBuilder;
@@ -40,7 +40,8 @@ public class SimpleBytesMapFactory extends EzyLoggable implements BytesMapFactor
 	}
 	
 	protected BytesMap createMap(String mapName) {
-		BytesMap map = new BytesMapBuilder()
+		BytesMap map = BytesMapImpl.builder()
+				.entityCodec(entityCodec)
 				.mapBackupExecutor(mapBackupExecutor)
 				.mapPersistExecutor(mapPersistExecutor)
 				.mapSetting(settings.getMapSetting(mapName))

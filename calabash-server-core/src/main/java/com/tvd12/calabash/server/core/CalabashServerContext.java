@@ -1,4 +1,4 @@
-package com.tvd12.calabash.server.core.impl;
+package com.tvd12.calabash.server.core;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +10,11 @@ import com.tvd12.calabash.core.manager.MapEvictionManager;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
 import com.tvd12.calabash.persist.action.PersistActionQueueFactory;
 import com.tvd12.calabash.persist.action.PersistActionQueueManager;
+import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
 import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
 import com.tvd12.calabash.persist.handler.PersistActionHandlingLoop;
 import com.tvd12.calabash.persist.manager.MapPersistManager;
 import com.tvd12.calabash.persist.manager.SimpleMapPersistManager;
-import com.tvd12.calabash.server.core.builder.CalabashBuilder;
 import com.tvd12.calabash.server.core.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.server.core.executor.BytesMapPersistExecutor;
 import com.tvd12.calabash.server.core.executor.SimpleBytesMapBackupExecutor;
@@ -27,10 +27,11 @@ import com.tvd12.calabash.server.core.manager.SimpleAtomicLongManager;
 import com.tvd12.calabash.server.core.manager.SimpleBytesMapManager;
 import com.tvd12.calabash.server.core.persist.PersistActionHandlingLoopImpl;
 import com.tvd12.calabash.server.core.setting.Settings;
+import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
-public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAware {
+public class CalabashServerContext extends EzyLoggable implements Calabash, StatisticsAware {
 	
 	protected final Settings settings;
 	protected final EzyEntityCodec entityCodec;
@@ -46,10 +47,10 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 	protected final PersistActionQueueManager persistActionQueueManager;
 	protected final PersistActionHandlingLoop persistActionHandlingLoop;
 	
-	public CalabashImpl(CalabashBuilder builder) {
-		this.settings = builder.getSettings();
-		this.entityCodec = builder.getEntityCodec();
-		this.entityMapPersistFactory = builder.getEntityMapPersistFactory();
+	public CalabashServerContext(Builder builder) {
+		this.settings = builder.settings;
+		this.entityCodec = builder.entityCodec;
+		this.entityMapPersistFactory = builder.entityMapPersistFactory;
 		this.mapPersistManager = newMapPersistManager();
 		this.mapBackupExecutor = newMapBackupExecutor();
 		this.persistActionQueueFactory = newPersistActionQueueFactory();
@@ -149,5 +150,39 @@ public class CalabashImpl extends EzyLoggable implements Calabash, StatisticsAwa
 		Map<String, Object> mapManagerStat = new HashMap<>();
 		((StatisticsAware)mapManager).addStatistics(mapManagerStat);
 		statistics.put("mapManager", mapManagerStat);
+	}
+	
+	public static Builder builder() {
+		return new Builder();
+	}
+	
+	public static class Builder implements EzyBuilder<Calabash> {
+
+		protected Settings settings;
+		protected EzyEntityCodec entityCodec;
+		protected EntityMapPersistFactory entityMapPersistFactory;
+		
+		public Builder settings(Settings settings) {
+			this.settings = settings;
+			return this;
+		}
+		
+		public Builder entityCodec(EzyEntityCodec entityCodec) {
+			this.entityCodec = entityCodec;
+			return this;
+		}
+		
+		public Builder entityMapPersistFactory(EntityMapPersistFactory entityMapPersistFactory) {
+			this.entityMapPersistFactory = entityMapPersistFactory;
+			return this;
+		}
+		
+		@Override
+		public Calabash build() {
+			if(entityMapPersistFactory == null)
+				entityMapPersistFactory = new DefaultEntityMapPersistFactory();
+			return new CalabashServerContext(this);
+		}
+		
 	}
 }

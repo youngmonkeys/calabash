@@ -19,7 +19,7 @@
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-concurrent</artifactId>
-			<version>${ezy.concurrent.version}</version>
+			<version>${ezyfox.version}</version>
 		</dependency>
 	</dependencies>
 </project>

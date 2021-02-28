@@ -1,12 +1,9 @@
 package com.tvd12.calabash.local.test;
 
-import static com.tvd12.ezyfox.util.EzyAutoImplAnnotations.getBeanName;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mongodb.MongoClient;
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.calabash.core.EntityMapPersist;
@@ -19,16 +16,9 @@ import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
 import com.tvd12.calabash.local.setting.SimpleSettings;
 import com.tvd12.calabash.local.test.mappersist.Animal;
 import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
-import com.tvd12.ezydata.mongodb.loader.EzyInputStreamMongoClientLoader;
-import com.tvd12.ezydata.morphia.EzyDataStoreBuilder;
-import com.tvd12.ezydata.morphia.bean.EzyMorphiaRepositories;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
-import com.tvd12.ezyfox.bean.EzyBeanContextBuilder;
-import com.tvd12.ezyfox.stream.EzyAnywayInputStreamLoader;
 
-import dev.morphia.Datastore;
-
-public class LocalMapAnimalPersistExample {
+public class LocalMapAnimalPersistExample extends LocalBaseTest {
 
 	@SuppressWarnings("rawtypes")
 	public void test()throws Exception {
@@ -66,50 +56,6 @@ public class LocalMapAnimalPersistExample {
 		}
 		
 	}
-	
-	protected EzyBeanContext newBeanContext() {
-		MongoClient mongoClient = newMongoClient("mongo_config.properties");
-		Datastore datastore = newDatastore(mongoClient, "test");
-		EzyBeanContextBuilder builder = EzyBeanContext.builder()
-				.addSingleton("mongoClient", mongoClient)
-				.addSingleton("datastore", datastore)
-				.scan("com.tvd12.calabash.local.test.mappersist");
-		addAutoImplMongoRepo(builder, datastore);
-		EzyBeanContext beanContext = builder.build();
-		return beanContext;
-	}
-	
-	private Datastore newDatastore(MongoClient mongoClient, String databaseName) {
-		return EzyDataStoreBuilder.dataStoreBuilder()
-			.mongoClient(mongoClient)
-			.databaseName(databaseName)
-			.scan("com.tvd12.calabash.local.test.mappersist")
-			.build();
-	}
-	
-	private MongoClient newMongoClient(String filePath) {
-		MongoClient mongoClient = new EzyInputStreamMongoClientLoader()
-				.inputStream(EzyAnywayInputStreamLoader.builder()
-						.context(getClass())
-						.build()
-						.load("mongo_config.properties"))
-				.load();
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> mongoClient.close()));
-		return mongoClient;
-	}
-	
-	private void addAutoImplMongoRepo(EzyBeanContextBuilder builder, Datastore datastore) {
-		Map<Class<?>, Object> additionalRepo = implementMongoRepo(datastore);
-		for (Class<?> repoType : additionalRepo.keySet()) {
-			builder.addSingleton(getBeanName(repoType), additionalRepo.get(repoType));
-		}
-	}
-	
-	private Map<Class<?>, Object> implementMongoRepo(Datastore datastore) {
-		return EzyMorphiaRepositories.newRepositoriesImplementer()
-			.scan("com.tvd12.calabash.local.test.mappersist")
-			.implement(datastore);
-}
 	
 	public static void main(String[] args) throws Exception {
 		new LocalMapAnimalPersistExample().test();

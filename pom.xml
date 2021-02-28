@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.tvd12</groupId>
 		<artifactId>ezyfox</artifactId>
-		<version>0.0.2</version>
+		<version>0.0.3</version>
 	</parent>
 
 	<artifactId>calabash</artifactId>
@@ -16,11 +16,9 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<ezy.bean.version>1.1.2</ezy.bean.version>
-		<ezy.msgpack.version>1.1.2</ezy.msgpack.version>
-		<ezy.morphia.version>1.1.1</ezy.morphia.version>
-		<ezy.concurrent.version>1.1.1</ezy.concurrent.version>
-		<ezy.binding.codec.version>1.1.2</ezy.binding.codec.version>
+		<ezyfox.version>1.1.4</ezyfox.version>
+		<ezydata.version>1.1.4</ezydata.version>
+		<quickrpc.version>1.0.0</quickrpc.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -28,13 +26,13 @@
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-tools</artifactId>
-			<version>1.1.0</version>
+			<version>${ezyfox.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>test-util</artifactId>
-			<version>1.0.5</version>
+			<version>1.0.6</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -43,5 +41,8 @@
     <module>calabash-local</module>
     <module>calabash-persist</module>
     <module>calabash-server-core</module>
+    <module>calabash-client</module>
+    <module>calabash-rpc-common</module>
+    <module>calabash-server</module>
   </modules>
 </project>

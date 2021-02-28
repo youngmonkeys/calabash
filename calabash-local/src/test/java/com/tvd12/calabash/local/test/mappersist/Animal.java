@@ -2,9 +2,9 @@ package com.tvd12.calabash.local.test.mappersist;
 
 import com.tvd12.calabash.core.prototype.Prototype;
 import com.tvd12.calabash.local.test.CollectionNames;
+import com.tvd12.ezydata.database.annotation.EzyCollection;
+import com.tvd12.ezyfox.annotation.EzyId;
 
-import dev.morphia.annotations.Entity;
-import dev.morphia.annotations.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +14,10 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(CollectionNames.ANIMAL)
+@EzyCollection(CollectionNames.ANIMAL)
 public class Animal implements Prototype {
 
-	@Id
+	@EzyId
 	protected long id;
 	protected String nick;
 	protected String name;
