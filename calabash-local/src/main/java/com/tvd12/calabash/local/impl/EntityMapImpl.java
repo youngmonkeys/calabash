@@ -1,6 +1,10 @@
 package com.tvd12.calabash.local.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,8 +84,8 @@ public class EntityMapImpl<K, V>
 	}
 
 	@Override
-	public void putAll(Map<K, V> m) {
-		Map<K, V> copy = prototypes.copyMap(m);
+	public void putAll(Map<? extends K, ? extends V> m) {
+		Map<K, V> copy = prototypes.copyMap((Map)m);
 		putAllToPartitions(copy);
 	}
 	
@@ -140,7 +144,7 @@ public class EntityMapImpl<K, V>
 			partitions[i].clear();
 	}
 	
-	public long size() {
+	public long sizeLong() {
 		long size = 0;
 		for(int i = 0 ; i < maxPartition ; ++i)
 			size += partitions[i].size();
@@ -161,6 +165,47 @@ public class EntityMapImpl<K, V>
 	@Override
 	public String getName() {
 		return setting.getMapName();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return sizeLong() > 0;
+	}
+
+	@Override
+	public boolean containsValue(Object value) {
+		for(int i = 0 ; i < maxPartition ; ++i) {
+			if(partitions[i].containsValue(value))
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Set<K> keySet() {
+		Set<K> answer = new HashSet<>();
+		for(int i = 0 ; i < maxPartition ; ++i) {
+			answer.addAll(partitions[i].keySet());
+		}
+		return answer;
+	}
+
+	@Override
+	public Collection<V> values() {
+		List<V> answer = new ArrayList<>();
+		for(int i = 0 ; i < maxPartition ; ++i) {
+			answer.addAll(partitions[i].values());
+		}
+		return answer;
+	}
+
+	@Override
+	public Set<Entry<K, V>> entrySet() {
+		Set<Entry<K, V>> answer = new HashSet<>();
+		for(int i = 0 ; i < maxPartition ; ++i) {
+			answer.addAll(partitions[i].entrySet());
+		}
+		return answer;
 	}
 
 }

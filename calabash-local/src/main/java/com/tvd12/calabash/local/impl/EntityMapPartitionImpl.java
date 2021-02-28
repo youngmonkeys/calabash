@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 
 import com.tvd12.calabash.core.EntityMapPartition;
@@ -221,6 +222,26 @@ public class EntityMapPartitionImpl<K, V>
 	public void evict() {
 		List<K> evictableKeys = mapEviction.getEvictableKeys();
 		remove(evictableKeys, EMPTY_FUNC);
+	}
+	
+	@Override
+	public boolean containsValue(Object value) {
+		return map.containsValue(value);
+	}
+	
+	@Override
+	public Set<K> keySet() {
+		return map.keySet();
+	}
+	
+	@Override
+	public Collection<V> values() {
+		return map.values();
+	}
+	
+	@Override
+	public Collection<Entry<K, V>> entrySet() {
+		return map.entrySet();
 	}
 	
 	public static Builder builder() {
