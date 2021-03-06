@@ -2,8 +2,8 @@ package com.tvd12.calabash.backend.test.localmappersit;
 
 import java.util.Map;
 
-import com.tvd12.calabash.core.EntityMapPersist;
-import com.tvd12.calabash.core.annotation.MapPersistence;
+import com.tvd12.calabash.persist.EntityMapPersist;
+import com.tvd12.calabash.persist.annotation.MapPersistence;
 import com.tvd12.ezyfox.bean.annotation.EzyAutoBind;
 import com.tvd12.ezyfox.bean.annotation.EzySingleton;
 

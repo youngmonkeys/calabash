@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.local.setting.EntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.EntityMapSetting;
+import com.tvd12.calabash.persist.EntityMapPersist;
 import com.tvd12.calabash.persist.action.PersistAction;
 import com.tvd12.calabash.persist.action.PersistActionQueue;
 import com.tvd12.calabash.persist.action.PersistActionQueueManager;

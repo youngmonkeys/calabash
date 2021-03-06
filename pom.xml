@@ -18,7 +18,7 @@
 	<properties>
 		<ezyfox.version>1.1.4</ezyfox.version>
 		<ezydata.version>1.1.4</ezydata.version>
-		<quickrpc.version>1.0.0</quickrpc.version>
+		<quickrpc.version>1.0.1</quickrpc.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -44,5 +44,6 @@
     <module>calabash-client</module>
     <module>calabash-rpc-common</module>
     <module>calabash-server</module>
+    <module>calabash-backup</module>
   </modules>
 </project>

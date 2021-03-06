@@ -201,7 +201,7 @@ public class CalabashClientFactory {
 				return;
 			QuickRpcClient quickRpcClient = QuickRpcClient.builder()
 					.scan("com.tvd12.calabash.rpc.common")
-					.connectTo("quickrpc://localhost")
+					.properties(properties)
 					.build();
 			clientProxy = new CalabashClientRpc(quickRpcClient);
 		}

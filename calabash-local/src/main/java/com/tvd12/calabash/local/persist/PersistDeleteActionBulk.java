@@ -3,7 +3,7 @@ package com.tvd12.calabash.local.persist;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.tvd12.calabash.core.EntityMapPersist;
+import com.tvd12.calabash.persist.EntityMapPersist;
 import com.tvd12.calabash.persist.action.PersistAction;
 import com.tvd12.calabash.persist.action.PersistDeleteManyAction;
 import com.tvd12.calabash.persist.action.PersistDeleteOneAction;

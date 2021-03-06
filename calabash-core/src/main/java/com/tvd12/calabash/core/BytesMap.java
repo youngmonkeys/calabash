@@ -17,6 +17,8 @@ public interface BytesMap extends IMap {
 	
 	byte[] get(ByteArray key);
 	
+	byte[] getByQuery(ByteArray key, byte[] query);
+	
 	Map<ByteArray, byte[]> get(Set<ByteArray> keys);
 
 	byte[] remove(ByteArray key);
@@ -24,5 +26,13 @@ public interface BytesMap extends IMap {
 	void remove(Set<ByteArray> keys);
 	
 	long addAndGet(ByteArray key, long delta);
+	
+	default void set(byte[] key, byte[] value) {
+		set(ByteArray.wrap(key), value);
+	}
+	
+	default byte[] get(byte[] key) {
+		return get(ByteArray.wrap(key));
+	}
 	
 }

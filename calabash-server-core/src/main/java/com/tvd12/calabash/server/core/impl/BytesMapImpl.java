@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.tvd12.calabash.converter.BytesLongConverter;
 import com.tvd12.calabash.core.BytesMap;
 import com.tvd12.calabash.core.BytesMapPartition;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
@@ -14,7 +15,6 @@ import com.tvd12.calabash.server.core.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.server.core.executor.BytesMapPersistExecutor;
 import com.tvd12.calabash.server.core.setting.MapSetting;
 import com.tvd12.ezyfox.builder.EzyBuilder;
-import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.util.EzyLoggable;
 
 public class BytesMapImpl
@@ -23,14 +23,14 @@ public class BytesMapImpl
 
 	protected final int maxPartition;
 	protected final MapSetting setting;
-	protected final EzyEntityCodec entityCodec;
 	protected final BytesMapPartition[] partitions;
+	protected final BytesLongConverter bytesLongConverter;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	
 	public BytesMapImpl(Builder builder) {
 		this.setting = builder.mapSetting;
-		this.entityCodec = builder.entityCodec;
+		this.bytesLongConverter = builder.bytesLongConverter;
 		this.mapBackupExecutor = builder.mapBackupExecutor;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
 		this.maxPartition = setting.getMaxPartition();
@@ -47,6 +47,7 @@ public class BytesMapImpl
 	protected BytesMapPartition newPartition() {
 		return BytesMapPartitionImpl.builder()
 				.mapSetting(setting)
+				.bytesLongConverter(bytesLongConverter)
 				.mapBackupExecutor(mapBackupExecutor)
 				.mapPersistExecutor(mapPersistExecutor)
 				.build();
@@ -89,14 +90,15 @@ public class BytesMapImpl
 
 	@Override
 	public byte[] get(ByteArray key) {
-		byte[] value = getFromPartition(key);
-		return value;
-		
-	}
-	
-	protected byte[] getFromPartition(ByteArray key) {
 		int pindex = MapPartitions.getPartitionIndex(maxPartition, key);
 		byte[] value = partitions[pindex].get(key);
+		return value;
+	}
+	
+	@Override
+	public byte[] getByQuery(ByteArray key, byte[] query) {
+		int pindex = MapPartitions.getPartitionIndex(maxPartition, key);
+		byte[] value = partitions[pindex].getByQuery(key, query);
 		return value;
 	}
 	
@@ -171,7 +173,7 @@ public class BytesMapImpl
 	public static class Builder implements EzyBuilder<BytesMap> {
 		
 		protected MapSetting mapSetting;
-		protected EzyEntityCodec entityCodec;
+		protected BytesLongConverter bytesLongConverter;
 		protected BytesMapBackupExecutor mapBackupExecutor;
 		protected BytesMapPersistExecutor mapPersistExecutor;
 		
@@ -180,8 +182,8 @@ public class BytesMapImpl
 			return this;
 		}
 		
-		public Builder entityCodec(EzyEntityCodec entityCodec) {
-			this.entityCodec = entityCodec;
+		public Builder bytesLongConverter(BytesLongConverter bytesLongConverter) {
+			this.bytesLongConverter = bytesLongConverter;
 			return this;
 		}
 		

@@ -15,6 +15,8 @@ public interface BytesMapPartition {
 	
 	byte[] get(ByteArray key);
 	
+	byte[] getByQuery(ByteArray key, byte[] query);
+	
 	Map<ByteArray, byte[]> get(Set<ByteArray> keys);
 
 	byte[] remove(ByteArray key);

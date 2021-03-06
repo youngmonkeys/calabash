@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 
+import com.tvd12.calabash.converter.BytesLongConverter;
 import com.tvd12.calabash.core.BytesMapPartition;
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.eviction.MapEviction;
@@ -14,7 +15,6 @@ import com.tvd12.calabash.server.core.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.server.core.executor.BytesMapPersistExecutor;
 import com.tvd12.calabash.server.core.setting.MapSetting;
 import com.tvd12.ezyfox.builder.EzyBuilder;
-import com.tvd12.ezyfox.codec.EzyEntityCodec;
 import com.tvd12.ezyfox.concurrent.EzyConcurrentHashMapLockProvider;
 import com.tvd12.ezyfox.concurrent.EzyMapLockProvider;
 import com.tvd12.ezyfox.util.EzyLoggable;
@@ -25,16 +25,16 @@ public class BytesMapPartitionImpl
 
 	protected final MapSetting mapSetting;
 	protected final MapEviction mapEviction;
-	protected final EzyEntityCodec entityCodec;
 	protected final Map<ByteArray, byte[]> map;
 	protected final EzyMapLockProvider lockProvider;
+	protected final BytesLongConverter bytesLongConverter;
 	protected final BytesMapBackupExecutor mapBackupExecutor;
 	protected final BytesMapPersistExecutor mapPersistExecutor;
 	
 	public BytesMapPartitionImpl(Builder builder) {
 		this.map  = new HashMap<>();
 		this.mapSetting = builder.mapSetting;
-		this.entityCodec = builder.entityCodec;
+		this.bytesLongConverter = builder.bytesLongConverter;
 		this.mapBackupExecutor = builder.mapBackupExecutor;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
 		this.lockProvider = new EzyConcurrentHashMapLockProvider();
@@ -94,6 +94,40 @@ public class BytesMapPartitionImpl
 		}
 		finally {
 			keyLock.unlock();
+		}
+		if(unloadValue != null) {
+			synchronized (map) {
+				map.putIfAbsent(key, unloadValue);
+			}
+		}
+		return unloadValue;
+	}
+	
+	@Override
+	public byte[] getByQuery(ByteArray key, byte[] query) {
+		byte[] value = null;
+		synchronized (map) {
+			value = map.get(key);
+		}
+		if(value == null)
+			value = loadByQuery(key, query);
+		if(value != null)
+			mapEviction.updateKeyTime(key);
+		return value;
+	}
+	
+	protected byte[] loadByQuery(ByteArray key, byte[] query) {
+		Lock lock = lockProvider.provideLock(key);
+		byte[] unloadValue = null;
+		lock.lock();
+		try {
+			byte[] value = map.get(key);
+			if(value != null)
+				return value;
+			unloadValue = mapPersistExecutor.loadByQuery(mapSetting, key, query);
+		}
+		finally {
+			lock.unlock();
 		}
 		if(unloadValue != null) {
 			synchronized (map) {
@@ -168,8 +202,8 @@ public class BytesMapPartitionImpl
 		synchronized (map) {
 			byte[] valueBytes = map.get(key);
 			if(valueBytes != null)
-				nextValue += entityCodec.deserialize(valueBytes, long.class);
-			byte[] nextValueBytes = entityCodec.serialize(nextValue);
+				nextValue += bytesLongConverter.bytesToLong(valueBytes);
+			byte[] nextValueBytes = bytesLongConverter.longToBytes(nextValue);
 			mapBackupExecutor.backup(mapSetting, key, nextValueBytes);
 			mapPersistExecutor.persist(mapSetting, key, nextValueBytes);
 		}
@@ -215,7 +249,7 @@ public class BytesMapPartitionImpl
 	public static class Builder implements EzyBuilder<BytesMapPartition> {
 		
 		protected MapSetting mapSetting;
-		protected EzyEntityCodec entityCodec;
+		protected BytesLongConverter bytesLongConverter;
 		protected BytesMapBackupExecutor mapBackupExecutor;
 		protected BytesMapPersistExecutor mapPersistExecutor;
 		
@@ -224,8 +258,8 @@ public class BytesMapPartitionImpl
 			return this;
 		}
 		
-		public Builder entityCodec(EzyEntityCodec entityCodec) {
-			this.entityCodec = entityCodec;
+		public Builder bytesLongConverter(BytesLongConverter bytesLongConverter) {
+			this.bytesLongConverter = bytesLongConverter;
 			return this;
 		}
 		

@@ -5,13 +5,15 @@ import java.util.List;
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.backend.test.ServerCoreBaseTest;
 import com.tvd12.calabash.core.BytesMap;
-import com.tvd12.calabash.core.EntityMapPersist;
-import com.tvd12.calabash.core.annotation.MapPersistence;
 import com.tvd12.calabash.core.util.ByteArray;
-import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
-import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
+import com.tvd12.calabash.persist.EntityMapPersist;
+import com.tvd12.calabash.persist.annotation.MapPersistence;
+import com.tvd12.calabash.persist.factory.BytesMapPersistFactory;
+import com.tvd12.calabash.persist.factory.EntityBytesMapPersistFactory;
+import com.tvd12.calabash.persist.factory.SimpleEntityMapPersistFactory;
+import com.tvd12.calabash.persist.setting.SimpleMapPersistSetting;
+import com.tvd12.calabash.persist.util.MapPersistenceAnnotations;
 import com.tvd12.calabash.server.core.CalabashServerContext;
-import com.tvd12.calabash.server.core.setting.SimpleMapPersistSetting;
 import com.tvd12.calabash.server.core.setting.SimpleMapSetting;
 import com.tvd12.calabash.server.core.setting.SimpleSettings;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
@@ -35,16 +37,20 @@ public class LocalMapPersistExample extends ServerCoreBaseTest {
 		mapSetting.setPersistSetting(mapPersistSetting);
 		settings.addMapSetting(mapSetting);
 		EzyBeanContext beanContext = newBeanContext();
-		DefaultEntityMapPersistFactory mapPersistFactory = new DefaultEntityMapPersistFactory();
+		SimpleEntityMapPersistFactory.Builder mapPersistFactoryBuilder = 
+				SimpleEntityMapPersistFactory.builder();
 		List mapPersistences = beanContext.getSingletons(MapPersistence.class);
 		for(Object mapPersist : mapPersistences) {
 			String mapName = MapPersistenceAnnotations.getMapName(mapPersist);
-			mapPersistFactory.addMapPersist(mapName, (EntityMapPersist) mapPersist);
+			mapPersistFactoryBuilder.addMapPersist(mapName, (EntityMapPersist) mapPersist);
 		}
+		BytesMapPersistFactory bytesMapPersistFactory = EntityBytesMapPersistFactory.builder()
+				.entityCodec(entityCodec)
+				.entityMapPersistFactory(mapPersistFactoryBuilder.build())
+				.build();
 		Calabash calabash = CalabashServerContext.builder()
 				.settings(settings)
-				.entityCodec(entityCodec)
-				.entityMapPersistFactory(mapPersistFactory)
+				.bytesMapPersistFactory(bytesMapPersistFactory)
 				.build();
 		ByteArray keyBytes = new ByteArray(entityCodec.serialize(1L));
 		byte[] values = entityCodec.serialize(new Person(9L, "bar", 29));

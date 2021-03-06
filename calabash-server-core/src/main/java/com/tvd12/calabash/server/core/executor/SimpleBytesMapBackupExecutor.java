@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tvd12.calabash.backup.BytesMapBackup;
+import com.tvd12.calabash.backup.setting.MapBackupSetting;
 import com.tvd12.calabash.core.util.ByteArray;
-import com.tvd12.calabash.server.core.BytesMapBackup;
-import com.tvd12.calabash.server.core.setting.MapBackupSetting;
 import com.tvd12.calabash.server.core.setting.MapSetting;
 import com.tvd12.ezyfox.util.EzyLoggable;
 

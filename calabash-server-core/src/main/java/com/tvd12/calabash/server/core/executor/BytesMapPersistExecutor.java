@@ -14,6 +14,8 @@ public interface BytesMapPersistExecutor {
 	
 	byte[] load(MapSetting mapSetting, ByteArray key);
 	
+	byte[] loadByQuery(MapSetting mapSetting, ByteArray key, byte[] query);
+	
 	void persist(MapSetting mapSetting, ByteArray key, byte[] value);
 	
 	void persist(MapSetting mapSetting, Map<ByteArray, byte[]> m);

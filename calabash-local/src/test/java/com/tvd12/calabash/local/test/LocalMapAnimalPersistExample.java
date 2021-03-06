@@ -6,16 +6,16 @@ import java.util.Map;
 
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.core.EntityMap;
-import com.tvd12.calabash.core.EntityMapPersist;
-import com.tvd12.calabash.core.annotation.MapPersistence;
 import com.tvd12.calabash.core.statistic.StatisticsAware;
-import com.tvd12.calabash.core.util.MapPersistenceAnnotations;
 import com.tvd12.calabash.local.CalabashBuilder;
 import com.tvd12.calabash.local.setting.SimpleEntityMapPersistSetting;
 import com.tvd12.calabash.local.setting.SimpleEntityMapSetting;
 import com.tvd12.calabash.local.setting.SimpleSettings;
 import com.tvd12.calabash.local.test.mappersist.Animal;
-import com.tvd12.calabash.persist.factory.DefaultEntityMapPersistFactory;
+import com.tvd12.calabash.persist.EntityMapPersist;
+import com.tvd12.calabash.persist.annotation.MapPersistence;
+import com.tvd12.calabash.persist.factory.SimpleEntityMapPersistFactory;
+import com.tvd12.calabash.persist.util.MapPersistenceAnnotations;
 import com.tvd12.ezyfox.bean.EzyBeanContext;
 
 public class LocalMapAnimalPersistExample extends LocalBaseTest {
@@ -30,16 +30,17 @@ public class LocalMapAnimalPersistExample extends LocalBaseTest {
 		mapSetting.setPersistSetting(mapPersistSetting);
 		settings.addMapSetting(mapSetting);
 		EzyBeanContext beanContext = newBeanContext();
-		DefaultEntityMapPersistFactory mapPersistFactory = new DefaultEntityMapPersistFactory();
+		SimpleEntityMapPersistFactory.Builder mapPersistFactoryBuilder = 
+				SimpleEntityMapPersistFactory.builder();
 		List mapPersistences = beanContext.getSingletons(MapPersistence.class);
 		for(Object mapPersist : mapPersistences) {
 			String mapName = MapPersistenceAnnotations.getMapName(mapPersist);
-			mapPersistFactory.addMapPersist(mapName, (EntityMapPersist) mapPersist);
+			mapPersistFactoryBuilder.addMapPersist(mapName, (EntityMapPersist) mapPersist);
 		}
 		
 		Calabash calabash = new CalabashBuilder()
 				.settings(settings)
-				.mapPersistFactory(mapPersistFactory)
+				.mapPersistFactory(mapPersistFactoryBuilder.build())
 				.build();
 		Animal animal = new Animal(2, "animal 2", "cat");
 		EntityMap<Long, Animal> entityMap = calabash.getEntityMap(CollectionNames.ANIMAL);

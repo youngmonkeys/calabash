@@ -1,11 +1,11 @@
 package com.tvd12.calabash.local.factory;
 
 import com.tvd12.calabash.core.EntityMap;
-import com.tvd12.calabash.core.EntityMapPersist;
 import com.tvd12.calabash.core.prototype.Prototypes;
 import com.tvd12.calabash.local.builder.EntityMapBuilder;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.setting.Settings;
+import com.tvd12.calabash.persist.EntityMapPersist;
 import com.tvd12.calabash.persist.factory.EntityMapPersistFactory;
 import com.tvd12.calabash.persist.manager.MapPersistManager;
 import com.tvd12.ezyfox.builder.EzyBuilder;

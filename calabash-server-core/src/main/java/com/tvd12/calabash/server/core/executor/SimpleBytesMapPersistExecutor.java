@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.tvd12.calabash.core.util.ByteArray;
+import com.tvd12.calabash.persist.BytesMapPersist;
 import com.tvd12.calabash.persist.action.PersistAction;
 import com.tvd12.calabash.persist.action.PersistActionQueue;
 import com.tvd12.calabash.persist.action.PersistActionQueueManager;
@@ -13,8 +14,7 @@ import com.tvd12.calabash.persist.action.PersistDeleteOneAction;
 import com.tvd12.calabash.persist.action.PersistSaveManyAction;
 import com.tvd12.calabash.persist.action.PersistSaveOneAction;
 import com.tvd12.calabash.persist.manager.MapPersistManager;
-import com.tvd12.calabash.server.core.BytesMapPersist;
-import com.tvd12.calabash.server.core.setting.MapPersistSetting;
+import com.tvd12.calabash.persist.setting.MapPersistSetting;
 import com.tvd12.calabash.server.core.setting.MapSetting;
 import com.tvd12.ezyfox.builder.EzyBuilder;
 import com.tvd12.ezyfox.util.EzyLoggable;
@@ -56,6 +56,16 @@ public class SimpleBytesMapPersistExecutor
 		BytesMapPersist mapPersist = getMapPersist(mapSetting);
 		if(mapPersist != null) {
 			byte[] value = mapPersist.load(key);
+			return value;
+		}
+		return null;
+	}
+	
+	@Override
+	public byte[] loadByQuery(MapSetting mapSetting, ByteArray key, byte[] query) {
+		BytesMapPersist mapPersist = getMapPersist(mapSetting);
+		if(mapPersist != null) {
+			byte[] value = mapPersist.loadByQuery(key, query);
 			return value;
 		}
 		return null;
