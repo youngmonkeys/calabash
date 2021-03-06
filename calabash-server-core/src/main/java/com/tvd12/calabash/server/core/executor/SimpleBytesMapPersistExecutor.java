@@ -107,6 +107,11 @@ public class SimpleBytesMapPersistExecutor
 		}
 	}
 	
+	@Override
+	public boolean hasMapPersist(String mapName) {
+		return mapPersistManager.hasMapPersist(mapName);
+	}
+	
 	protected BytesMapPersist getMapPersist(MapSetting setting) {
 		BytesMapPersist mp = mapPersistManager.getMapPersist(setting.getMapName());
 		return mp;

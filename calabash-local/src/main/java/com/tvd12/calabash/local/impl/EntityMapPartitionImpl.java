@@ -12,6 +12,7 @@ import java.util.concurrent.locks.Lock;
 
 import com.tvd12.calabash.core.EntityMapPartition;
 import com.tvd12.calabash.eviction.MapEviction;
+import com.tvd12.calabash.eviction.SimpleMapEviction;
 import com.tvd12.calabash.local.executor.EntityMapPersistExecutor;
 import com.tvd12.calabash.local.setting.EntityMapSetting;
 import com.tvd12.ezyfox.builder.EzyBuilder;
@@ -38,7 +39,13 @@ public class EntityMapPartitionImpl<K, V>
 		this.mapSetting = builder.mapSetting;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
 		this.lockProvider = new EzyConcurrentHashMapLockProvider();
-		this.mapEviction = new MapEviction(mapSetting.getEvictionSetting());
+		this.mapEviction = newMapEviction();
+	}
+	
+	protected MapEviction newMapEviction() {
+		if(mapPersistExecutor.hasMapPersist(mapSetting.getMapName()))
+			return new SimpleMapEviction(mapSetting.getEvictionSetting());
+		return MapEviction.DEFAULT;
 	}
 	
 	@Override

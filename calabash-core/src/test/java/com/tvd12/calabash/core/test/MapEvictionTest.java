@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 import com.tvd12.calabash.core.setting.IMapEvictionSetting;
 import com.tvd12.calabash.eviction.MapEviction;
+import com.tvd12.calabash.eviction.SimpleMapEviction;
 import com.tvd12.ezyfox.collect.Sets;
 
 public class MapEvictionTest {
@@ -13,7 +14,7 @@ public class MapEvictionTest {
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void test() throws Exception {
-		MapEviction mapEviction = new MapEviction(new IMapEvictionSetting() {
+		MapEviction mapEviction = new SimpleMapEviction(new IMapEvictionSetting() {
 			
 			@Override
 			public int getKeyMaxIdleTime() {

@@ -206,6 +206,11 @@ public class EntityMapImpl<K, V> implements EntityMap<K, V>, EzyHasIntId {
 		return mapName;
 	}
 	
+	@Override
+	public String toString() {
+		return "Map(" + mapId + ", " + mapName + ")";
+	}
+	
 	public static Builder builder() {
 		return new Builder();
 	}

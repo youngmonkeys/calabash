@@ -24,4 +24,6 @@ public interface BytesMapPersistExecutor {
 	
 	void delete(MapSetting mapSetting, Set<ByteArray> keys);
 	
+	boolean hasMapPersist(String mapName);
+	
 }

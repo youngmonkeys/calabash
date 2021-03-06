@@ -3,10 +3,15 @@ package com.tvd12.calabash.client.impl;
 import com.tvd12.calabash.client.CalabashClientProxy;
 import com.tvd12.calabash.core.IAtomicLong;
 import com.tvd12.ezyfox.builder.EzyBuilder;
+import com.tvd12.ezyfox.constant.EzyHasIntId;
 
-public class AtomicLongImpl implements IAtomicLong {
+import lombok.Getter;
 
+public class AtomicLongImpl implements IAtomicLong, EzyHasIntId {
+
+	@Getter
 	protected final int id;
+	@Getter
 	protected final String name;
 	protected final CalabashClientProxy clientProxy;
 
@@ -34,8 +39,9 @@ public class AtomicLongImpl implements IAtomicLong {
 		return answer;
 	}
 	
-	public String getName() {
-		return name;
+	@Override
+	public String toString() {
+		return "AtomicLong(" + id + ", " + name + ")";
 	}
 	
 	public static Builder builder() {

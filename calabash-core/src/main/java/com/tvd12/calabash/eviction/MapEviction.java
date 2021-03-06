@@ -1,70 +1,24 @@
 package com.tvd12.calabash.eviction;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import com.tvd12.calabash.core.setting.IMapEvictionSetting;
+@SuppressWarnings("rawtypes")
+public interface MapEviction {
+	
+	MapEviction DEFAULT = new MapEviction() {};
 
-public class MapEviction {
+	default void updateKeyTime(Object key) {}
+	
+	default void updateKeysTime(Collection keys) {}
+	
+	default void removeKey(Object key) {}
 
-	protected final long keyMaxIdTime;
-	protected final List<Object> evictableKeys;
-	protected final Map<Object, Long> keyLastAccessTimes;
+	default void removeKeys(Collection keys) {}
 	
-	public MapEviction(IMapEvictionSetting setting) {
-		this.keyMaxIdTime = setting.getKeyMaxIdleTimeMilis();
-		this.keyLastAccessTimes = new HashMap<>();
-		this.evictableKeys = new ArrayList<Object>();
-	}
-	
-	public void updateKeyTime(Object key) {
-		synchronized (this) {
-			keyLastAccessTimes.put(key, System.currentTimeMillis());
-		}
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public void updateKeysTime(Collection keys) {
-		synchronized (this) {
-			for(Object key : keys)
-				keyLastAccessTimes.put(key, System.currentTimeMillis());
-		}
-	}
-	
-	public void removeKey(Object key) {
-		synchronized (this) {
-			keyLastAccessTimes.remove(key);
-		}
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public void removeKeys(Collection keys) {
-		synchronized (this) {
-			for(Object key : keys)
-				keyLastAccessTimes.remove(key);
-		}
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public List getEvictableKeys() {
-		evictableKeys.clear();
-		long currentTime = System.currentTimeMillis();
-		synchronized (this) {
-			for(Object key : keyLastAccessTimes.keySet()) {
-				long lastAccesstime = keyLastAccessTimes.get(key);
-				long idleTime = currentTime - lastAccesstime;
-				if(idleTime > keyMaxIdTime) {
-					evictableKeys.add(key);
-				}
-			}
-			for(Object key : evictableKeys) {
-				keyLastAccessTimes.remove(key);
-			}
-		}
-		return evictableKeys;
+	default List getEvictableKeys() {
+		return Collections.emptyList();
 	}
 	
 }

@@ -6,4 +6,8 @@ public interface MapPersistManager {
 	
 	void addMapPersist(String mapName, Object mapPersist);
 	
+	default boolean hasMapPersist(String mapName) {
+		return getMapPersist(mapName) != null;
+	}
+	
 }

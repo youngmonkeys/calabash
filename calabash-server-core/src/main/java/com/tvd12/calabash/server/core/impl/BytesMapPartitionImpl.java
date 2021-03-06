@@ -11,6 +11,7 @@ import com.tvd12.calabash.converter.BytesLongConverter;
 import com.tvd12.calabash.core.BytesMapPartition;
 import com.tvd12.calabash.core.util.ByteArray;
 import com.tvd12.calabash.eviction.MapEviction;
+import com.tvd12.calabash.eviction.SimpleMapEviction;
 import com.tvd12.calabash.server.core.executor.BytesMapBackupExecutor;
 import com.tvd12.calabash.server.core.executor.BytesMapPersistExecutor;
 import com.tvd12.calabash.server.core.setting.MapSetting;
@@ -38,7 +39,13 @@ public class BytesMapPartitionImpl
 		this.mapBackupExecutor = builder.mapBackupExecutor;
 		this.mapPersistExecutor = builder.mapPersistExecutor;
 		this.lockProvider = new EzyConcurrentHashMapLockProvider();
-		this.mapEviction = new MapEviction(mapSetting.getEvictionSetting());
+		this.mapEviction = newMapEviction();
+	}
+	
+	protected MapEviction newMapEviction() {
+		if(mapPersistExecutor.hasMapPersist(mapSetting.getMapName()))
+			return new SimpleMapEviction(mapSetting.getEvictionSetting());
+		return MapEviction.DEFAULT;
 	}
 	
 	@Override
@@ -204,6 +211,7 @@ public class BytesMapPartitionImpl
 			if(valueBytes != null)
 				nextValue += bytesLongConverter.bytesToLong(valueBytes);
 			byte[] nextValueBytes = bytesLongConverter.longToBytes(nextValue);
+			map.put(key, nextValueBytes);
 			mapBackupExecutor.backup(mapSetting, key, nextValueBytes);
 			mapPersistExecutor.persist(mapSetting, key, nextValueBytes);
 		}

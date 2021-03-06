@@ -23,5 +23,7 @@ public interface EntityMapPersistExecutor {
 	void delete(EntityMapSetting mapSetting, Object key);
 	
 	void delete(EntityMapSetting mapSetting, Set keys);
+
+	boolean hasMapPersist(String mapName);
 	
 }

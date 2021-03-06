@@ -4,7 +4,7 @@ public interface ISettings {
 	
 	int DEFAULT_MAP_EVICTION_INTERVAL = 3;
 	
-	String DEFAULT_ATOMIC_LONG_MAP_NAME = "___calabash.atomic_long___";
+	String DEFAULT_ATOMIC_LONG_MAP_NAME = "___atomic_long___";
 
 	String getAtomicLongMapName();
 	

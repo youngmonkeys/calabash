@@ -107,6 +107,11 @@ public class SimpleEntityMapPersistExecutor
 		}
 	}
 	
+	@Override
+	public boolean hasMapPersist(String mapName) {
+		return mapPersistManager.hasMapPersist(mapName);
+	}
+	
 	protected EntityMapPersist getMapPersist(EntityMapSetting setting) {
 		EntityMapPersist mp = mapPersistManager.getMapPersist(setting.getMapName());
 		return mp;
