@@ -5,7 +5,6 @@ import com.tvd12.calabash.client.factory.AtomicLongFactory;
 import com.tvd12.calabash.client.factory.EntityMapFactory;
 import com.tvd12.calabash.client.factory.MessageChannelFactory;
 import com.tvd12.calabash.client.manager.AtomicLongProvider;
-import com.tvd12.calabash.client.manager.EntityMapNameManager;
 import com.tvd12.calabash.client.manager.EntityMapProvider;
 import com.tvd12.calabash.client.manager.MessageChannelProvider;
 import com.tvd12.calabash.client.setting.Settings;
@@ -21,7 +20,6 @@ public class CalabaseClient implements Calabash {
 	protected final EzyEntityCodec entityCodec;
 	protected final EntityMapFactory mapFactory;
 	protected final EntityMapProvider mapProvider;
-	protected final EntityMapNameManager mapNameManager;
 	protected final MessageChannelFactory channelFactory;
 	protected final MessageChannelProvider channelProvider;
 	protected final AtomicLongFactory atomicLongFactory;
@@ -32,7 +30,6 @@ public class CalabaseClient implements Calabash {
 		this.clientProxy = builder.clientProxy;
 		this.entityCodec = builder.entityCodec;
 		this.mapFactory = newMapFactory();
-		this.mapNameManager = newMapNameManager();
 		this.mapProvider = newMapProvider();
 		this.channelFactory = newChannelFactory();
 		this.channelProvider = newChannelProvider();
@@ -48,14 +45,9 @@ public class CalabaseClient implements Calabash {
 				.build();
 	}
 	
-	protected EntityMapNameManager newMapNameManager() {
-		return new EntityMapNameManager();
-	}
-	
 	protected EntityMapProvider newMapProvider() {
 		return EntityMapProvider.builder()
 				.mapFactory(mapFactory)
-				.mapNameManager(mapNameManager)
 				.build();
 	}
 	

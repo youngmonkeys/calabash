@@ -61,6 +61,8 @@ public class EntityMapImpl<K, V> implements EntityMap<K, V>, EzyHasIntId {
 		byte[] keyBytes = entityCodec.serialize(key);
 		byte[] valueBytes = entityCodec.serialize(value);
 		byte[] oldValue = clientProxy.mapPut(mapId, keyBytes, valueBytes);
+		if(oldValue == null)
+			return null;
 		return entityCodec.deserialize(oldValue, valueType);
 	}
 	
@@ -86,7 +88,7 @@ public class EntityMapImpl<K, V> implements EntityMap<K, V>, EzyHasIntId {
 		return value;
 	}
 	
-	public Map<K, V> get(Set<K> keys) {
+	public Map<K, V> get(Collection<K> keys) {
 		byte[][] keyBytesArray = new byte[keys.size()][];
 		int i = 0;
 		for(K key : keys)
@@ -130,8 +132,11 @@ public class EntityMapImpl<K, V> implements EntityMap<K, V>, EzyHasIntId {
 	@Override
 	public V remove(Object key) {
 		byte[] keyBytes = entityCodec.serialize(key);
-		clientProxy.mapRemove(mapId, keyBytes);
-		return null;
+		byte[] valueBytes = clientProxy.mapRemove(mapId, keyBytes);
+		if(valueBytes == null)
+			return null;
+		V value = entityCodec.deserialize(valueBytes, valueType);
+		return value; 
 	}
 	
 	@Override

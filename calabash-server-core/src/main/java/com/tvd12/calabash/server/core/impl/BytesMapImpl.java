@@ -1,5 +1,6 @@
 package com.tvd12.calabash.server.core.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -103,7 +104,7 @@ public class BytesMapImpl
 	}
 	
 	@Override
-	public Map<ByteArray, byte[]> get(Set<ByteArray> keys) {
+	public Map<ByteArray, byte[]> get(Collection<ByteArray> keys) {
 		Map<ByteArray, byte[]> answer = new HashMap<>();
 		Map<Integer, Set<ByteArray>> ckeys = MapPartitions.classifyKeys(maxPartition, keys);
 		for(Integer index : ckeys.keySet()) {

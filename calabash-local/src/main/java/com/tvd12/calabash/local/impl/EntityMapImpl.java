@@ -103,7 +103,7 @@ public class EntityMapImpl<K, V>
 	}
 
 	@Override
-	public Map<K, V> get(Set<K> keys) {
+	public Map<K, V> get(Collection<K> keys) {
 		Map<K, V> answer = new HashMap<>();
 		Map<Integer, Set<K>> ckeys = MapPartitions.classifyKeys(maxPartition, keys);
 		for(Integer index : ckeys.keySet()) {

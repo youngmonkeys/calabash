@@ -26,7 +26,7 @@ public interface CalabashClientProxy extends EzyCloseable {
 	
 	boolean mapContainsValue(int mapId, byte[] value);
 	
-	void mapRemove(int mapId, byte[] key);
+	byte[] mapRemove(int mapId, byte[] key);
 	
 	void mapRemove(int mapId, byte[]... keys);
 	

@@ -25,7 +25,7 @@ import com.tvd12.calabash.server.core.factory.BytesMapFactory;
 import com.tvd12.calabash.server.core.factory.SimpleBytesMapFactory;
 import com.tvd12.calabash.server.core.manager.AtomicLongManager;
 import com.tvd12.calabash.server.core.manager.BytesMapManager;
-import com.tvd12.calabash.server.core.manager.MapNameManager;
+import com.tvd12.calabash.server.core.manager.NameIdManager;
 import com.tvd12.calabash.server.core.manager.SimpleAtomicLongManager;
 import com.tvd12.calabash.server.core.manager.SimpleBytesMapManager;
 import com.tvd12.calabash.server.core.setting.Settings;
@@ -38,7 +38,9 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 	protected final Settings settings;
 	protected final BytesMapFactory mapFactory;
 	protected final BytesMapManager mapManager;
-	protected final MapNameManager mapNameManager;
+	protected final NameIdManager mapNameManager;
+	protected final NameIdManager atomicLongNameManager;
+	protected final NameIdManager messageChannelNameManager;
 	protected final MapPersistManager mapPersistManager;
 	protected final AtomicLongManager atomicLongManager;
 	protected final MapEvictionManager mapEvictionManager;
@@ -55,6 +57,8 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 		this.bytesLongConverter = builder.bytesLongConverter;
 		this.bytesMapPersistFactory = builder.bytesMapPersistFactory;
 		this.mapNameManager = newMapNameManager();
+		this.atomicLongNameManager = newAtomicLongNameManager();
+		this.messageChannelNameManager = newMessageChannelNameManager();
 		this.mapPersistManager = newMapPersistManager();
 		this.mapBackupExecutor = newMapBackupExecutor();
 		this.persistActionQueueFactory = newPersistActionQueueFactory();
@@ -72,9 +76,21 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 		return new SimpleBytesMapBackupExecutor();
 	}
 	
-	protected MapNameManager newMapNameManager() {
-		return new MapNameManager(
+	protected NameIdManager newMapNameManager() {
+		return new NameIdManager(
 				bytesMapPersistFactory.newMapNameIdMapPersist()
+		);
+	}
+	
+	protected NameIdManager newAtomicLongNameManager() {
+		return new NameIdManager(
+				bytesMapPersistFactory.newAtomicLongNameIdMapPersist()
+		);
+	}
+	
+	protected NameIdManager newMessageChannelNameManager() {
+		return new NameIdManager(
+				bytesMapPersistFactory.newMessageChannelNameIdMapPersist()
 		);
 	}
 	
@@ -149,18 +165,40 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 		return map;
 	}
 	
+	public BytesMap getBytesMap(int id) {
+		String name = mapNameManager.getName(id);
+		if(name == null)
+			return null;
+		return mapManager.getMap(name);
+	}
+	
 	public int getMapId(String mapName) {
-		return this.mapNameManager.getMapId(mapName);
+		return mapNameManager.getId(mapName);
 	}
 	
 	public String getMapName(int mapId) {
-		return mapNameManager.getMapName(mapId);
+		return mapNameManager.getName(mapId);
 	}
 	
 	@Override
 	public IAtomicLong getAtomicLong(String name) {
 		IAtomicLong atomicLong = atomicLongManager.getAtomicLong(name);
 		return atomicLong;
+	}
+	
+	public IAtomicLong getAtomicLong(int id) {
+		String name = atomicLongNameManager.getName(id);
+		if(name == null)
+			return null;
+		return atomicLongManager.getAtomicLong(name);
+	} 
+	
+	public int getAtomicLongId(String atomicLongName) {
+		return atomicLongNameManager.getId(atomicLongName);
+	}
+	
+	public String getAtomicLongName(int atomicLongId) {
+		return atomicLongNameManager.getName(atomicLongId);
 	}
 
 	@Override

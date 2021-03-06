@@ -1,7 +1,9 @@
 package com.tvd12.calabash.core.util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.tvd12.ezyfox.io.EzyBytes;
 import com.tvd12.ezyfox.io.EzyLongs;
@@ -30,6 +32,13 @@ public class ByteArray implements Serializable {
 	
 	public static ByteArray wrap(byte[] bytes) {
 		return new ByteArray(bytes);
+	}
+	
+	public static List<ByteArray> wrap(byte[][] bytess) {
+		List<ByteArray> list = new ArrayList<>(bytess.length);
+		for(byte[] bytes : bytess)
+			list.add(wrap(bytes));
+		return list;
 	}
 	
 	public static byte[] numberToBytes(long number) {

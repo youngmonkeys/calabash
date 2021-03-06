@@ -6,19 +6,16 @@ import java.util.Map;
 import com.tvd12.calabash.client.factory.EntityMapFactory;
 import com.tvd12.calabash.core.EntityMap;
 import com.tvd12.ezyfox.builder.EzyBuilder;
-import com.tvd12.ezyfox.constant.EzyHasIntId;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class EntityMapProvider {
 
 	protected final Map<String, EntityMap> maps;
 	protected final EntityMapFactory mapFactory;
-	protected final EntityMapNameManager mapNameManager;
 	
 	protected EntityMapProvider(Builder builder) {
 		this.maps = new HashMap<>();
 		this.mapFactory = builder.mapFactory;
-		this.mapNameManager = builder.mapNameManager;
 	}
 	
 	public <K, V> EntityMap<K, V> getMap(String name) {
@@ -42,7 +39,6 @@ public class EntityMapProvider {
 			if(map == null) {
 				map = mapFactory.newMap(name);
 				maps.put(name, map);
-				mapNameManager.put(((EzyHasIntId)map).getId(), name);
 			}
 			return map;
 		}
@@ -55,7 +51,6 @@ public class EntityMapProvider {
 			if(map == null) {
 				map = mapFactory.newMap(name, keyType, valueType);
 				maps.put(name, map);
-				mapNameManager.put(((EzyHasIntId)map).getId(), name);
 			}
 			return map;
 		}
@@ -68,15 +63,9 @@ public class EntityMapProvider {
 	public static class Builder implements EzyBuilder<EntityMapProvider> {
 		
 		protected EntityMapFactory mapFactory;
-		protected EntityMapNameManager mapNameManager;
 		
 		public Builder mapFactory(EntityMapFactory mapFactory) {
 			this.mapFactory = mapFactory;
-			return this;
-		}
-		
-		public Builder mapNameManager(EntityMapNameManager mapNameManager) {
-			this.mapNameManager = mapNameManager;
 			return this;
 		}
 		

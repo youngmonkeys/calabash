@@ -91,9 +91,9 @@ public class CalabashClientRpc
 	}
 
 	@Override
-	public void mapRemove(int mapId, byte[] key) {
+	public byte[] mapRemove(int mapId, byte[] key) {
 		MapRemoveOneRequest request = new MapRemoveOneRequest(mapId, key);
-		call(Command.MAP_REMOVE_ONE, request, boolean.class);
+		return call(Command.MAP_REMOVE_ONE, request, byte[].class);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.tvd12.calabash.core;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ public interface EntityMap<K, V> extends IMap, Map<K, V> {
 	
 	void set(K key, V value);
 	
-	Map<K, V> get(Set<K> keys);
+	Map<K, V> get(Collection<K> keys);
 	
 	V getByQuery(K key, Object query);
 	
