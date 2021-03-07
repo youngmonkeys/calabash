@@ -48,11 +48,11 @@ public interface CalabashClientProxy extends EzyCloseable {
 	
 	long atomicLongAddAndGet(int atomicLongId, long delta);
 	
-	int channelGetId(String channelName);
+	int messageChannelGetId(String channelName);
 	
-	void publish(int channelId, byte[] message);
+	void messageChannelPublish(int channelId, byte[] message);
 	
-	void subscribe(int channelId, MessageChannelSubscriber subscriber);
+	void messageChannelSubscribe(int channelId, MessageChannelSubscriber subscriber);
 	
 	void close();
 

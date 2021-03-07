@@ -48,6 +48,6 @@ public class AtomicLongRequestController {
 		IAtomicLong atomicLong = serverContext.getAtomicLong(atomicLongId);
 		if(atomicLong != null)
 			return atomicLong;
-		throw new BadRequestException(ErrorCodes.INVALID_ATOMIC_LONG, "there is no atomicLong with id: " + atomicLongId);
+		throw new BadRequestException(ErrorCodes.INVALID_ATOMIC_LONG_ID, "there is no atomicLong with id: " + atomicLongId);
 	}
 }

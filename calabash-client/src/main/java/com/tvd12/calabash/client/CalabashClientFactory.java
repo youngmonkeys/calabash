@@ -11,10 +11,14 @@ import javax.persistence.Id;
 import com.tvd12.calabash.client.annotation.CachedKey;
 import com.tvd12.calabash.client.annotation.CachedValue;
 import com.tvd12.calabash.client.annotation.Message;
+import com.tvd12.calabash.client.factory.MessageChannelFactory;
+import com.tvd12.calabash.client.manager.MessageChannelProvider;
 import com.tvd12.calabash.client.setting.Settings;
 import com.tvd12.calabash.client.setting.SettingsBuilder;
 import com.tvd12.calabash.client.util.CachedValueAnnotations;
 import com.tvd12.calabash.client.util.MessageAnnotations;
+import com.tvd12.calabash.rpc.common.Commands;
+import com.tvd12.calabash.rpc.common.response.MessageResponse;
 import com.tvd12.ezyfox.annotation.EzyId;
 import com.tvd12.ezyfox.binding.EzyBindingContext;
 import com.tvd12.ezyfox.binding.EzyBindingContextBuilder;
@@ -36,11 +40,13 @@ public class CalabashClientFactory {
 	protected final Settings settings;
 	protected final EzyEntityCodec entityCodec;
 	protected final CalabashClientProxy clientProxy;
+	protected final MessageChannelProvider messageChannelProvider;
 	
 	protected CalabashClientFactory(Builder builder) {
 		this.settings = builder.settings;
 		this.entityCodec = builder.entityCodec;
 		this.clientProxy = builder.clientProxy;
+		this.messageChannelProvider = builder.messageChannelProvider;
 	}
 	
 	public CalabaseClient newClient() {
@@ -48,6 +54,7 @@ public class CalabashClientFactory {
 				.settings(settings)
 				.clientProxy(clientProxy)
 				.entityCodec(entityCodec)
+				.messageChannelProvider(messageChannelProvider)
 				.build();
 	}
 	
@@ -66,6 +73,8 @@ public class CalabashClientFactory {
 		protected SettingsBuilder settingsBuilder;
 		protected EzyBindingContext bindingContext;
 		protected EzyBindingContextBuilder bindingContextBuilder;
+		protected MessageChannelFactory messageChannelFactory;
+		protected MessageChannelProvider messageChannelProvider;
 		
 		public Builder() {
 			this.properties = new Properties();
@@ -73,7 +82,7 @@ public class CalabashClientFactory {
 		}
 		
 		public Builder scan(String packageName) {
-			packagesToScan.add(packageName);
+			this.packagesToScan.add(packageName);
 			return this;
 		}
 		
@@ -120,6 +129,8 @@ public class CalabashClientFactory {
 			this.prepareBindingContext();
 			this.prepareEntityCodec();
 			this.prepareClientProxy();
+			this.prepareMessageChannelFactory();
+			this.prepareMessageChannelProvider();
 			return new CalabashClientFactory(this);
 		}
 		
@@ -172,13 +183,27 @@ public class CalabashClientFactory {
 		}
 		
 		private void prepareEntityCodec() {
-			if(entityCodec != null)
-				return;
-			entityCodec = EzyBindingEntityCodec.builder()
+			if(entityCodec == null) {
+				entityCodec = EzyBindingEntityCodec.builder()
 					.marshaller(bindingContext.newMarshaller())
 					.unmarshaller(bindingContext.newUnmarshaller())
 					.messageSerializer(new MsgPackSimpleSerializer())
 					.messageDeserializer(new MsgPackSimpleDeserializer())
+					.build();
+			}
+		}
+		
+		protected void prepareMessageChannelFactory() {
+			messageChannelFactory = MessageChannelFactory.builder()
+					.settings(settings)
+					.clientProxy(clientProxy)
+					.entityCodec(entityCodec)
+					.build();
+		}
+		
+		protected void prepareMessageChannelProvider() {
+			messageChannelProvider = MessageChannelProvider.builder()
+					.channelFactory(messageChannelFactory)
 					.build();
 		}
 		
@@ -196,14 +221,21 @@ public class CalabashClientFactory {
 			return idField;
 		}
 		
+		@SuppressWarnings("rawtypes")
 		private void prepareClientProxy() {
-			if(clientProxy != null)
-				return;
-			QuickRpcClient quickRpcClient = QuickRpcClient.builder()
-					.scan("com.tvd12.calabash.rpc.common")
-					.properties(properties)
-					.build();
-			clientProxy = new CalabashClientRpc(quickRpcClient);
+			if(clientProxy == null) {
+				QuickRpcClient quickRpcClient = QuickRpcClient.builder()
+						.properties(properties)
+						.scan("com.tvd12.calabash.rpc.common")
+						.onResponseRecevied(Commands.MESSAGE, r -> {
+							MessageResponse mr = r.getData(MessageResponse.class);
+							MessageChannel channel = messageChannelProvider.getChannel(mr.getChannelId());
+							if(channel != null)
+								channel.receiveMessage(mr.getMessage());
+						})
+						.build();
+				clientProxy = new CalabashClientRpc(quickRpcClient);
+			}
 		}
 		
 	}

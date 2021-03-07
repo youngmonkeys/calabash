@@ -4,6 +4,4 @@ public interface MessageChannelSetting {
 
 	Class<?> getMessageType();
 	
-	int getSubThreadPoolSize();
-	
 }

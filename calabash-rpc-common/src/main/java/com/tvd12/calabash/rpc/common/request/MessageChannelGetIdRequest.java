@@ -14,8 +14,8 @@ import lombok.Setter;
 @EzyArrayBinding
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubscribeRequest {
+public class MessageChannelGetIdRequest {
 
-	protected int channelId;
+	protected String channelName;
 	
 }

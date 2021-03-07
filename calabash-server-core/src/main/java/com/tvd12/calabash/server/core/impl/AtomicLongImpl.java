@@ -29,4 +29,9 @@ public class AtomicLongImpl implements IAtomicLong {
 		return map.addAndGet(nameBytes, delta);
 	}
 	
+	@Override
+	public String toString() {
+		return "AtomicLong(" + name + ")";
+	}
+	
 }

@@ -167,6 +167,11 @@ public class BytesMapImpl
 		return setting.getMapName();
 	}
 	
+	@Override
+	public String toString() {
+		return "Map(" + setting.getMapName() + ")";
+	}
+	
 	public static Builder builder() {
 		return new Builder();
 	}

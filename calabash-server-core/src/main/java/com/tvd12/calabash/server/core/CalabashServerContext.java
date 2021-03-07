@@ -25,9 +25,11 @@ import com.tvd12.calabash.server.core.factory.BytesMapFactory;
 import com.tvd12.calabash.server.core.factory.SimpleBytesMapFactory;
 import com.tvd12.calabash.server.core.manager.AtomicLongManager;
 import com.tvd12.calabash.server.core.manager.BytesMapManager;
+import com.tvd12.calabash.server.core.manager.MessageChannelManager;
 import com.tvd12.calabash.server.core.manager.NameIdManager;
 import com.tvd12.calabash.server.core.manager.SimpleAtomicLongManager;
 import com.tvd12.calabash.server.core.manager.SimpleBytesMapManager;
+import com.tvd12.calabash.server.core.message.MessageChannel;
 import com.tvd12.calabash.server.core.setting.Settings;
 import com.tvd12.calabash.server.core.setting.SimpleSettings;
 import com.tvd12.ezyfox.builder.EzyBuilder;
@@ -41,6 +43,7 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 	protected final NameIdManager mapNameManager;
 	protected final NameIdManager atomicLongNameManager;
 	protected final NameIdManager messageChannelNameManager;
+	protected final MessageChannelManager messageChannelManager;
 	protected final MapPersistManager mapPersistManager;
 	protected final AtomicLongManager atomicLongManager;
 	protected final MapEvictionManager mapEvictionManager;
@@ -56,6 +59,7 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 		this.settings = builder.settings;
 		this.bytesLongConverter = builder.bytesLongConverter;
 		this.bytesMapPersistFactory = builder.bytesMapPersistFactory;
+		this.messageChannelManager = builder.messageChannelManager;
 		this.mapNameManager = newMapNameManager();
 		this.atomicLongNameManager = newAtomicLongNameManager();
 		this.messageChannelNameManager = newMessageChannelNameManager();
@@ -200,6 +204,26 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 	public String getAtomicLongName(int atomicLongId) {
 		return atomicLongNameManager.getName(atomicLongId);
 	}
+	
+	public MessageChannel getMessageChannel(String name) {
+		MessageChannel channel = messageChannelManager.getChannel(name);
+		return channel;
+	}
+	
+	public MessageChannel getMessageChannel(int id) {
+		String name = messageChannelNameManager.getName(id);
+		if(name == null)
+			return null;
+		return messageChannelManager.getChannel(name);
+	}
+	
+	public int getMessageChannelId(String channelName) {
+		return messageChannelNameManager.getId(channelName);
+	}
+	
+	public String getMessageChannelName(int channelId) {
+		return messageChannelNameManager.getName(channelId);
+	}
 
 	@Override
 	public void addStatistics(Map<String, Object> statistics) {
@@ -216,6 +240,7 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 
 		protected Settings settings;
 		protected BytesLongConverter bytesLongConverter;
+		protected MessageChannelManager messageChannelManager;
 		protected BytesMapPersistFactory bytesMapPersistFactory;
 		
 		public Builder settings(Settings settings) {
@@ -225,6 +250,11 @@ public class CalabashServerContext extends EzyLoggable implements Calabash, Stat
 		
 		public Builder bytesLongConverter(BytesLongConverter bytesLongConverter) {
 			this.bytesLongConverter = bytesLongConverter;
+			return this;
+		}
+		
+		public Builder messageChannelManager(MessageChannelManager messageChannelManager) {
+			this.messageChannelManager = messageChannelManager;
 			return this;
 		}
 		

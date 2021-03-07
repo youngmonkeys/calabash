@@ -3,7 +3,6 @@ package com.tvd12.calabash.client;
 import com.tvd12.calabash.Calabash;
 import com.tvd12.calabash.client.factory.AtomicLongFactory;
 import com.tvd12.calabash.client.factory.EntityMapFactory;
-import com.tvd12.calabash.client.factory.MessageChannelFactory;
 import com.tvd12.calabash.client.manager.AtomicLongProvider;
 import com.tvd12.calabash.client.manager.EntityMapProvider;
 import com.tvd12.calabash.client.manager.MessageChannelProvider;
@@ -20,10 +19,9 @@ public class CalabaseClient implements Calabash {
 	protected final EzyEntityCodec entityCodec;
 	protected final EntityMapFactory mapFactory;
 	protected final EntityMapProvider mapProvider;
-	protected final MessageChannelFactory channelFactory;
-	protected final MessageChannelProvider channelProvider;
 	protected final AtomicLongFactory atomicLongFactory;
 	protected final AtomicLongProvider atomicLongProvider;
+	protected final MessageChannelProvider messageChannelProvider;
 	
 	protected CalabaseClient(Builder builder) {
 		this.settings = builder.settings;
@@ -31,10 +29,9 @@ public class CalabaseClient implements Calabash {
 		this.entityCodec = builder.entityCodec;
 		this.mapFactory = newMapFactory();
 		this.mapProvider = newMapProvider();
-		this.channelFactory = newChannelFactory();
-		this.channelProvider = newChannelProvider();
 		this.atomicLongFactory = newAtomicLongFactory();
 		this.atomicLongProvider = newAtomicLongProvider();
+		this.messageChannelProvider = builder.messageChannelProvider;
 	}
 	
 	protected EntityMapFactory newMapFactory() {
@@ -48,20 +45,6 @@ public class CalabaseClient implements Calabash {
 	protected EntityMapProvider newMapProvider() {
 		return EntityMapProvider.builder()
 				.mapFactory(mapFactory)
-				.build();
-	}
-	
-	protected MessageChannelFactory newChannelFactory() {
-		return MessageChannelFactory.builder()
-				.settings(settings)
-				.clientProxy(clientProxy)
-				.entityCodec(entityCodec)
-				.build();
-	}
-	
-	protected MessageChannelProvider newChannelProvider() {
-		return MessageChannelProvider.builder()
-				.channelFactory(channelFactory)
 				.build();
 	}
 	
@@ -92,12 +75,12 @@ public class CalabaseClient implements Calabash {
 		return mapProvider.getMap(name, keyType, valueType);
 	}
 	
-	public <T> MessageChannel<T> getChannel(String name) {
-		return channelProvider.getChannel(name);
+	public <T> MessageChannel<T> getMessageChannel(String name) {
+		return messageChannelProvider.getChannel(name);
 	}
 	
-	public <T> MessageChannel<T> getChannel(String name, Class<T> messageType) {
-		return channelProvider.getChannel(name, messageType);
+	public <T> MessageChannel<T> getMessageChannel(String name, Class<T> messageType) {
+		return messageChannelProvider.getChannel(name, messageType);
 	}
 	
 	@Override
@@ -114,6 +97,7 @@ public class CalabaseClient implements Calabash {
 		protected Settings settings;
 		protected EzyEntityCodec entityCodec;
 		protected CalabashClientProxy clientProxy;
+		protected MessageChannelProvider messageChannelProvider;
 		
 		public Builder settings(Settings settings) {
 			this.settings = settings;
@@ -127,6 +111,11 @@ public class CalabaseClient implements Calabash {
 		
 		public Builder clientProxy(CalabashClientProxy clientProxy) {
 			this.clientProxy = clientProxy;
+			return this;
+		}
+		
+		public Builder messageChannelProvider(MessageChannelProvider messageChannelProvider) {
+			this.messageChannelProvider = messageChannelProvider;
 			return this;
 		}
 		

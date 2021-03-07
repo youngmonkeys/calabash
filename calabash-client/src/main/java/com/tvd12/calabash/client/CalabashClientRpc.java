@@ -10,7 +10,7 @@ import com.tvd12.calabash.rpc.common.request.AtomicLongAddAndGetRequest;
 import com.tvd12.calabash.rpc.common.request.AtomicLongGetIdRequest;
 import com.tvd12.calabash.rpc.common.request.AtomicLongGetRequest;
 import com.tvd12.calabash.rpc.common.request.AtomicLongIncrementAndGetRequest;
-import com.tvd12.calabash.rpc.common.request.ChannelGetIdRequest;
+import com.tvd12.calabash.rpc.common.request.MessageChannelGetIdRequest;
 import com.tvd12.calabash.rpc.common.request.MapClearRequest;
 import com.tvd12.calabash.rpc.common.request.MapContainsKeyRequest;
 import com.tvd12.calabash.rpc.common.request.MapGetByQueryRequest;
@@ -22,8 +22,8 @@ import com.tvd12.calabash.rpc.common.request.MapPutRequest;
 import com.tvd12.calabash.rpc.common.request.MapRemoveManyRequest;
 import com.tvd12.calabash.rpc.common.request.MapRemoveOneRequest;
 import com.tvd12.calabash.rpc.common.request.MapSetRequest;
-import com.tvd12.calabash.rpc.common.request.PublishRequest;
-import com.tvd12.calabash.rpc.common.request.SubscribeRequest;
+import com.tvd12.calabash.rpc.common.request.MessageChannelPublishRequest;
+import com.tvd12.calabash.rpc.common.request.MessageChannelSubscribeRequest;
 import com.tvd12.ezyfox.util.EzyLoggable;
 import com.tvd12.quick.rpc.client.QuickRpcClient;
 import com.tvd12.quick.rpc.client.entity.RpcRequest;
@@ -153,21 +153,21 @@ public class CalabashClientRpc
 	}
 
 	@Override
-	public int channelGetId(String channelName) {
-		ChannelGetIdRequest request = new ChannelGetIdRequest(channelName);
-		return call(Command.CHANNEL_GET_ID, request, int.class);
+	public int messageChannelGetId(String channelName) {
+		MessageChannelGetIdRequest request = new MessageChannelGetIdRequest(channelName);
+		return call(Command.MESSAGE_CHANNEL_GET_ID, request, int.class);
 	}
 
 	@Override
-	public void publish(int channelId, byte[] message) {
-		PublishRequest request = new PublishRequest(channelId, message);
-		client.fire(new RpcRequest(Command.PUBLISH.getValue(), request));
+	public void messageChannelPublish(int channelId, byte[] message) {
+		MessageChannelPublishRequest request = new MessageChannelPublishRequest(channelId, message);
+		client.fire(new RpcRequest(Command.MESSAGE_CHANNEL_PUBLISH.getValue(), request));
 	}
 
 	@Override
-	public void subscribe(int channelId, MessageChannelSubscriber subscriber) {
-		SubscribeRequest request = new SubscribeRequest(channelId);
-		call(Command.SUBSCRIBE, request, boolean.class);
+	public void messageChannelSubscribe(int channelId, MessageChannelSubscriber subscriber) {
+		MessageChannelSubscribeRequest request = new MessageChannelSubscribeRequest(channelId);
+		call(Command.MESSAGE_CHANNEL_SUBSCRIBE, request, boolean.class);
 	}
 
 	@Override

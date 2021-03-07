@@ -17,9 +17,10 @@ public final class Commands {
 	public static final String ATOMIC_LONG_GET= "c";
 	public static final String ATOMIC_LONG_INCREMENT_AND_GET= "d";
 	public static final String ATOMIC_LONG_ADD_AND_GET= "e";
-	public static final String CHANNEL_GET_ID= "f";
-	public static final String PUBLISH= "g";
-	public static final String SUBSCRIBE= "h";
+	public static final String MESSAGE_CHANNEL_GET_ID= "f";
+	public static final String MESSAGE_CHANNEL_PUBLISH= "g";
+	public static final String MESSSGE_CHANNEL_SUBSCRIBE= "h";
+	public static final String MESSAGE = "i";
 	
 	private Commands() {}
 	

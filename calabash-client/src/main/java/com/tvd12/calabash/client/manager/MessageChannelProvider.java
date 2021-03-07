@@ -12,10 +12,19 @@ public class MessageChannelProvider {
 
 	protected final Map<String, MessageChannel> channels;
 	protected final MessageChannelFactory channelFactory;
+	protected final Map<Integer, String> channelNameById;
 	
 	protected MessageChannelProvider(Builder builder) {
 		this.channels = new HashMap<>();
+		this.channelNameById = new HashMap<>();
 		this.channelFactory = builder.channelFactory;
+	}
+	
+	public <T> MessageChannel<T> getChannel(int channelId) {
+		String name = channelNameById.get(channelId);
+		if(name == null)
+			return null;
+		return channels.get(name);
 	}
 	
 	public <T> MessageChannel<T> getChannel(String name) {
@@ -38,6 +47,7 @@ public class MessageChannelProvider {
 			if(channel == null) {
 				channel = channelFactory.newChannel(name);
 				channels.put(name, channel);
+				channelNameById.put(channel.getId(), name);
 			}
 			return channel;
 		}
@@ -49,6 +59,7 @@ public class MessageChannelProvider {
 			if(channel == null) {
 				channel = channelFactory.newChannel(name, messageType);
 				channels.put(name, channel);
+				channelNameById.put(channel.getId(), name);
 			}
 			return channel;
 		}
@@ -73,5 +84,5 @@ public class MessageChannelProvider {
 		}
 		
 	}
-	
+
 }

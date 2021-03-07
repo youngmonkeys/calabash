@@ -56,7 +56,6 @@ public class SettingsBuilder implements EzyBuilder<Settings> {
 				return setting;
 			return new MessageChannelSettingBuilder()
 					.messageType(setting.getMessageType())
-					.subThreadPoolSize(setting.getSubThreadPoolSize())
 					.build();
 		});
 		return this;
