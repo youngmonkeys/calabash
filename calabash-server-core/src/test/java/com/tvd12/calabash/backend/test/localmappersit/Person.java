@@ -1,8 +1,8 @@
 package com.tvd12.calabash.backend.test.localmappersit;
 
-import com.tvd12.ezydata.database.annotation.EzyCollection;
 import com.tvd12.ezyfox.annotation.EzyId;
 import com.tvd12.ezyfox.binding.annotation.EzyArrayBinding;
+import com.tvd12.ezyfox.database.annotation.EzyCollection;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

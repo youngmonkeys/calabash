@@ -2,8 +2,8 @@ package com.tvd12.calabash.local.test.mappersist;
 
 import com.tvd12.calabash.core.prototype.Prototype;
 import com.tvd12.calabash.local.test.CollectionNames;
-import com.tvd12.ezydata.database.annotation.EzyCollection;
 import com.tvd12.ezyfox.annotation.EzyId;
+import com.tvd12.ezyfox.database.annotation.EzyCollection;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

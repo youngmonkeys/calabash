@@ -16,7 +16,7 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<ezy.version>1.1.4</ezy.version>
+		<ezy.version>1.2.2</ezy.version>
 		<quickrpc.version>1.0.3</quickrpc.version>
 	</properties>
 
