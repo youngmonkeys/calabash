@@ -233,22 +233,30 @@ public class EntityMapPartitionImpl<K, V>
 	
 	@Override
 	public boolean containsValue(Object value) {
-		return map.containsValue(value);
+		synchronized (map) {
+			return map.containsValue(value);	
+		}
 	}
 	
 	@Override
 	public Set<K> keySet() {
-		return map.keySet();
+		synchronized (map) {
+			return map.keySet();	
+		}
 	}
 	
 	@Override
 	public Collection<V> values() {
-		return map.values();
+		synchronized (map) {
+			return map.values();
+		}
 	}
 	
 	@Override
 	public Collection<Entry<K, V>> entrySet() {
-		return map.entrySet();
+		synchronized (map) {
+			return map.entrySet();
+		}
 	}
 	
 	public static Builder builder() {

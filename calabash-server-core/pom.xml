@@ -27,25 +27,25 @@
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezydata-mongodb</artifactId>
-			<version>${ezydata.version}</version>
+			<version>${ezy.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-bean</artifactId>
-			<version>${ezyfox.version}</version>
+			<version>${ezy.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-binding-codec</artifactId>
-			<version>${ezyfox.version}</version>
+			<version>${ezy.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.tvd12</groupId>
 			<artifactId>ezyfox-msgpack</artifactId>
-			<version>${ezyfox.version}</version>
+			<version>${ezy.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
