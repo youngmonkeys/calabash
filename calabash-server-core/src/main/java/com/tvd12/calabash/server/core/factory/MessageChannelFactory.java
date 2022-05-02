@@ -4,6 +4,5 @@ import com.tvd12.calabash.server.core.message.MessageChannel;
 
 public interface MessageChannelFactory {
 
-	MessageChannel newChannel(String name);
-	
+    MessageChannel newChannel(String name);
 }

@@ -4,6 +4,5 @@ import java.util.Map;
 
 public interface StatisticsAware {
 
-	void addStatistics(Map<String, Object> statistics);
-	
+    void addStatistics(Map<String, Object> statistics);
 }

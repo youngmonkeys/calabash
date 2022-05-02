@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SimpleMapPersistSetting implements MapPersistSetting {
-	
-	protected long writeDelay = 1000L;
-	
+
+    protected long writeDelay = 1000L;
 }

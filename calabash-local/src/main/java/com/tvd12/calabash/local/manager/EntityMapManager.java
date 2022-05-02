@@ -6,7 +6,6 @@ import com.tvd12.calabash.core.manager.MapManager;
 @SuppressWarnings("rawtypes")
 public interface EntityMapManager extends MapManager {
 
-	@Override
-	EntityMap getMap(String mapName);
-	
+    @Override
+    EntityMap getMap(String mapName);
 }

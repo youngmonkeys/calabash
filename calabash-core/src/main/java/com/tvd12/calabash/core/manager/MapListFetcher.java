@@ -4,7 +4,6 @@ import java.util.List;
 
 public interface MapListFetcher {
 
-	@SuppressWarnings("rawtypes")
-	void getMapList(List buffer);
-	
+    @SuppressWarnings("rawtypes")
+    void getMapList(List buffer);
 }

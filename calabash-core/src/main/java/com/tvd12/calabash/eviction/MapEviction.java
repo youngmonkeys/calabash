@@ -6,19 +6,18 @@ import java.util.List;
 
 @SuppressWarnings("rawtypes")
 public interface MapEviction {
-	
-	MapEviction DEFAULT = new MapEviction() {};
 
-	default void updateKeyTime(Object key) {}
-	
-	default void updateKeysTime(Collection keys) {}
-	
-	default void removeKey(Object key) {}
+    MapEviction DEFAULT = new MapEviction() {};
 
-	default void removeKeys(Collection keys) {}
-	
-	default List getEvictableKeys() {
-		return Collections.emptyList();
-	}
-	
+    default void updateKeyTime(Object key) {}
+
+    default void updateKeysTime(Collection keys) {}
+
+    default void removeKey(Object key) {}
+
+    default void removeKeys(Collection keys) {}
+
+    default List getEvictableKeys() {
+        return Collections.emptyList();
+    }
 }

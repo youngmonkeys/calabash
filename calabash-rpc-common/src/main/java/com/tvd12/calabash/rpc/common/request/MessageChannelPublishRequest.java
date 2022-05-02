@@ -2,7 +2,6 @@ package com.tvd12.calabash.rpc.common.request;
 
 import com.tvd12.ezyfox.binding.annotation.EzyArrayBinding;
 import com.tvd12.quick.rpc.core.annotation.RpcRequest;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageChannelPublishRequest {
-
-	protected int channelId;
-	protected byte[] message;
-	
+    protected int channelId;
+    protected byte[] message;
 }

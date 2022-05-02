@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SimpleEntityMapEvictionSetting implements EntityMapEvictionSetting {
-	
-	protected int keyMaxIdleTime;
-	
+
+    protected int keyMaxIdleTime;
 }

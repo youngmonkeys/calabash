@@ -7,12 +7,11 @@ import com.tvd12.calabash.persist.setting.MapPersistSetting;
 
 public interface MapSetting extends IMapSetting {
 
-	MapBackupSetting getBackupSetting();
-	
-	@Override
-	MapPersistSetting getPersistSetting();
-	
-	@Override
-	MapEvictionSetting getEvictionSetting();
-	
+    MapBackupSetting getBackupSetting();
+
+    @Override
+    MapPersistSetting getPersistSetting();
+
+    @Override
+    MapEvictionSetting getEvictionSetting();
 }

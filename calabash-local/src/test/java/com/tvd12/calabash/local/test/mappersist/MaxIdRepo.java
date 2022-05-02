@@ -4,5 +4,4 @@ import com.tvd12.ezydata.mongodb.EzyMongoRepository;
 import com.tvd12.ezyfox.annotation.EzyAutoImpl;
 
 @EzyAutoImpl
-public interface MaxIdRepo extends EzyMongoRepository<String, MaxId> {
-}
+public interface MaxIdRepo extends EzyMongoRepository<String, MaxId> {}

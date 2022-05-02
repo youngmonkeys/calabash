@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class SimpleMapSetting implements EntityMapSetting {
 
-	protected Class<?> keyType;
-	protected Class<?> valueType;
-
+    protected Class<?> keyType;
+    protected Class<?> valueType;
 }

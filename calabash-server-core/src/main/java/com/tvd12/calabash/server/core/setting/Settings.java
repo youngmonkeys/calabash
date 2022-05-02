@@ -5,6 +5,5 @@ import com.tvd12.calabash.core.setting.ISettings;
 
 public interface Settings extends ISettings, IMapSettings {
 
-	MapSetting getMapSetting(String mapName);
-	
+    MapSetting getMapSetting(String mapName);
 }

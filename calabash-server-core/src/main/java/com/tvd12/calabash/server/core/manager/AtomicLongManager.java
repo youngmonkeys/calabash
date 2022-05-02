@@ -4,6 +4,5 @@ import com.tvd12.calabash.core.IAtomicLong;
 
 public interface AtomicLongManager {
 
-	IAtomicLong getAtomicLong(String name);
-
+    IAtomicLong getAtomicLong(String name);
 }

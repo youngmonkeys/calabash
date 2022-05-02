@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SimpleEntityMapPersistSetting implements EntityMapPersistSetting {
-	
-	protected long writeDelay = 1000L;
-	
+
+    protected long writeDelay = 1000L;
 }

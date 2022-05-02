@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class SimpleChannelSetting implements MessageChannelSetting {
 
-	protected Class<?> messageType;
-	protected int subThreadPoolSize = 1;
-
+    protected Class<?> messageType;
+    protected int subThreadPoolSize = 1;
 }

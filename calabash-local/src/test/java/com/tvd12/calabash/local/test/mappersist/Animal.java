@@ -4,7 +4,6 @@ import com.tvd12.calabash.core.prototype.Prototype;
 import com.tvd12.calabash.local.test.CollectionNames;
 import com.tvd12.ezyfox.annotation.EzyId;
 import com.tvd12.ezyfox.database.annotation.EzyCollection;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,18 +16,17 @@ import lombok.Setter;
 @EzyCollection(CollectionNames.ANIMAL)
 public class Animal implements Prototype {
 
-	@EzyId
-	protected long id;
-	protected String nick;
-	protected String name;
-	
-	@Override
-	public Object clone() {
-		Animal c = new Animal();
-		c.id = id;
-		c.nick = nick;
-		c.name = name;
-		return c;
-	}
-	
+    @EzyId
+    protected long id;
+    protected String nick;
+    protected String name;
+
+    @Override
+    public Object clone() {
+        Animal c = new Animal();
+        c.id = id;
+        c.nick = nick;
+        c.name = name;
+        return c;
+    }
 }

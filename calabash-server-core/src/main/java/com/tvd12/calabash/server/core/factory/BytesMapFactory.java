@@ -4,6 +4,5 @@ import com.tvd12.calabash.core.BytesMap;
 
 public interface BytesMapFactory {
 
-	BytesMap newMap(String mapName);
-	
+    BytesMap newMap(String mapName);
 }

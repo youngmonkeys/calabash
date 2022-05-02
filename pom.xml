@@ -1,42 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.tvd12</groupId>
-		<artifactId>ezyfox</artifactId>
-		<version>1.0.3</version>
-	</parent>
+    <parent>
+        <groupId>com.tvd12</groupId>
+        <artifactId>ezyfox</artifactId>
+        <version>1.0.4</version>
+    </parent>
 
-	<artifactId>calabash</artifactId>
-	<version>1.0.0</version>
-	<packaging>pom</packaging>
-	
-	<name>calabash</name>
-	<url>http://maven.apache.org</url>
+    <artifactId>calabash</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
 
-	<properties>
-		<ezy.version>1.2.2</ezy.version>
-		<quickrpc.version>1.0.3</quickrpc.version>
-	</properties>
+    <name>calabash</name>
+    <url>http://maven.apache.org</url>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.tvd12</groupId>
-			<artifactId>ezyfox-tools</artifactId>
-			<version>${ezy.version}</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-	
-  <modules>
-    <module>calabash-core</module>
-    <module>calabash-local</module>
-    <module>calabash-persist</module>
-    <module>calabash-server-core</module>
-    <module>calabash-client</module>
-    <module>calabash-rpc-common</module>
-    <module>calabash-server</module>
-    <module>calabash-backup</module>
-  </modules>
+    <properties>
+        <ezy.version>1.2.3</ezy.version>
+        <quickrpc.version>1.0.4</quickrpc.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tvd12</groupId>
+            <artifactId>ezyfox-tools</artifactId>
+            <version>${ezy.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.42</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <consoleOutput>true</consoleOutput>
+                    <violationSeverity>warning</violationSeverity>
+                    <configLocation>checkstyle.xml</configLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>verify</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <modules>
+        <module>calabash-core</module>
+        <module>calabash-local</module>
+        <module>calabash-persist</module>
+        <module>calabash-server-core</module>
+        <module>calabash-client</module>
+        <module>calabash-rpc-common</module>
+        <module>calabash-server</module>
+        <module>calabash-backup</module>
+    </modules>
 </project>

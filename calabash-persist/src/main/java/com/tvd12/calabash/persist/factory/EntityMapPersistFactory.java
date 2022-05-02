@@ -5,11 +5,11 @@ import com.tvd12.calabash.persist.NameIdMapPersist;
 
 public interface EntityMapPersistFactory {
 
-	EntityMapPersist<?, ?> newMapPersist(String mapName);
-	
-	NameIdMapPersist newMapNameIdMapPersist();
-	
-	NameIdMapPersist newAtomicLongNameIdMapPersist();
-	
-	NameIdMapPersist newMessageChannelNameIdMapPersist();
+    EntityMapPersist<?, ?> newMapPersist(String mapName);
+
+    NameIdMapPersist newMapNameIdMapPersist();
+
+    NameIdMapPersist newAtomicLongNameIdMapPersist();
+
+    NameIdMapPersist newMessageChannelNameIdMapPersist();
 }

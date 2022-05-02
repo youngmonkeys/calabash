@@ -1,14 +1,12 @@
 package com.tvd12.calabash.core.test;
 
-import org.testng.annotations.Test;
-
 import com.tvd12.calabash.concurrent.Executors;
+import org.testng.annotations.Test;
 
 public class ExecutorsTest {
 
-	@Test
-	public void test() {
-		Executors.newFixedThreadPool(1, "test");
-	}
-	
+    @Test
+    public void test() {
+        Executors.newFixedThreadPool(1, "test");
+    }
 }

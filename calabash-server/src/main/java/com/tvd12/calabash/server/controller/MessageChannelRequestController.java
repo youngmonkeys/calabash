@@ -12,41 +12,44 @@ import com.tvd12.ezyfox.exception.BadRequestException;
 import com.tvd12.quick.rpc.server.annotation.Rpc;
 import com.tvd12.quick.rpc.server.annotation.RpcController;
 import com.tvd12.quick.rpc.server.entity.RpcSession;
-
 import lombok.Setter;
 
 @Setter
 @RpcController
 public class MessageChannelRequestController {
 
-	@EzyAutoBind
-	private CalabashServerContext serverContext;
-	
-	@Rpc(Commands.MESSAGE_CHANNEL_GET_ID)
-	public int messageChannelGetId(MessageChannelGetIdRequest request) {
-		return serverContext.getMessageChannelId(request.getChannelName());
-	}
-	
-	@Rpc(Commands.MESSSGE_CHANNEL_SUBSCRIBE)
-	public boolean messageChannelPublish(
-			MessageChannelSubscribeRequest request,
-			RpcSession session
-	) {
-		MessageChannel messageChannel = getMessageChannel(request.getChannelId());
-		messageChannel.addSubscriber(session);
-		return Boolean.TRUE;
-	}
-	
-	@Rpc(Commands.MESSAGE_CHANNEL_PUBLISH)
-	public void messageChannelPublish(MessageChannelPublishRequest request) {
-		MessageChannel messageChannel = getMessageChannel(request.getChannelId());
-		messageChannel.broadcast(request);
-	}
+    @EzyAutoBind
+    private CalabashServerContext serverContext;
 
-	private MessageChannel getMessageChannel(int channelId) {
-		MessageChannel messageChannel = serverContext.getMessageChannel(channelId);
-		if(messageChannel != null)
-			return messageChannel;
-		throw new BadRequestException(ErrorCodes.INVALID_MESSAGE_CHANNEL_ID, "there is no message channel with id: " + channelId);
-	}
+    @Rpc(Commands.MESSAGE_CHANNEL_GET_ID)
+    public int messageChannelGetId(MessageChannelGetIdRequest request) {
+        return serverContext.getMessageChannelId(request.getChannelName());
+    }
+
+    @Rpc(Commands.MESSGE_CHANNEL_SUBSCRIBE)
+    public boolean messageChannelPublish(
+        MessageChannelSubscribeRequest request,
+        RpcSession session
+    ) {
+        MessageChannel messageChannel = getMessageChannel(request.getChannelId());
+        messageChannel.addSubscriber(session);
+        return Boolean.TRUE;
+    }
+
+    @Rpc(Commands.MESSAGE_CHANNEL_PUBLISH)
+    public void messageChannelPublish(MessageChannelPublishRequest request) {
+        MessageChannel messageChannel = getMessageChannel(request.getChannelId());
+        messageChannel.broadcast(request);
+    }
+
+    private MessageChannel getMessageChannel(int channelId) {
+        MessageChannel messageChannel = serverContext.getMessageChannel(channelId);
+        if (messageChannel != null) {
+            return messageChannel;
+        }
+        throw new BadRequestException(
+            ErrorCodes.INVALID_MESSAGE_CHANNEL_ID,
+            "there is no message channel with id: " + channelId
+        );
+    }
 }

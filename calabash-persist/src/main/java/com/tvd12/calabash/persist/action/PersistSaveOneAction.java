@@ -7,12 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PersistSaveOneAction implements PersistAction {
 
-	protected final Object key;
-	protected final Object value;
-	
-	@Override
-	public PersistActionType getType() {
-		return PersistActionType.SAVE_ONE;
-	}
-	
+    protected final Object key;
+    protected final Object value;
+
+    @Override
+    public PersistActionType getType() {
+        return PersistActionType.SAVE_ONE;
+    }
 }

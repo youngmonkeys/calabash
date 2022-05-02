@@ -5,11 +5,11 @@ import com.tvd12.calabash.persist.NameIdMapPersist;
 
 public interface BytesMapPersistFactory {
 
-	BytesMapPersist newMapPersist(String mapName);
-	
-	NameIdMapPersist newMapNameIdMapPersist();
-	
-	NameIdMapPersist newAtomicLongNameIdMapPersist();
-	
-	NameIdMapPersist newMessageChannelNameIdMapPersist();
+    BytesMapPersist newMapPersist(String mapName);
+
+    NameIdMapPersist newMapNameIdMapPersist();
+
+    NameIdMapPersist newAtomicLongNameIdMapPersist();
+
+    NameIdMapPersist newMessageChannelNameIdMapPersist();
 }

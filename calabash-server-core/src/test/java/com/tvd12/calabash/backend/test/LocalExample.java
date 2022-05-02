@@ -12,23 +12,24 @@ import com.tvd12.calabash.server.core.impl.BytesMapImpl;
 import com.tvd12.calabash.server.core.setting.Settings;
 import com.tvd12.calabash.server.core.setting.SimpleSettings;
 
+import java.util.Arrays;
+
 public class LocalExample {
 
-	public static void main(String[] args) {
-		Settings settings = new SimpleSettings();
-		MapPersistManager mapPersistManager = new SimpleMapPersistManager();
-		BytesMapBackupExecutor backupExecutor = new SimpleBytesMapBackupExecutor();
-		BytesMapPersistExecutor persistExecutor = SimpleBytesMapPersistExecutor.builder()
-				.mapPersistManager(mapPersistManager)
-				.build();
-		BytesMap bytesMap = BytesMapImpl.builder()
-				.mapSetting(settings.getMapSetting("test"))
-				.mapBackupExecutor(backupExecutor)
-				.mapPersistExecutor(persistExecutor)
-				.build();
-		bytesMap.loadAll();
-		bytesMap.put(new ByteArray(new byte[] {1, 2, 3}), new byte[] {1, 2, 3});
-		System.out.println(bytesMap.get(new ByteArray(new byte[] {1, 2, 3})));
-	}
-	
+    public static void main(String[] args) {
+        Settings settings = new SimpleSettings();
+        MapPersistManager mapPersistManager = new SimpleMapPersistManager();
+        BytesMapBackupExecutor backupExecutor = new SimpleBytesMapBackupExecutor();
+        BytesMapPersistExecutor persistExecutor = SimpleBytesMapPersistExecutor.builder()
+            .mapPersistManager(mapPersistManager)
+            .build();
+        BytesMap bytesMap = BytesMapImpl.builder()
+            .mapSetting(settings.getMapSetting("test"))
+            .mapBackupExecutor(backupExecutor)
+            .mapPersistExecutor(persistExecutor)
+            .build();
+        bytesMap.loadAll();
+        bytesMap.put(new ByteArray(new byte[]{1, 2, 3}), new byte[]{1, 2, 3});
+        System.out.println(Arrays.toString(bytesMap.get(new ByteArray(new byte[]{1, 2, 3}))));
+    }
 }

@@ -7,16 +7,15 @@ import java.util.Set;
 
 public interface Prototypes {
 
-	<T> T copy(T origin);
+    static PrototypesBuilder builder() {
+        return SimplePrototypes.builder();
+    }
 
-	<V> Set<V> copySet(Collection<V> origin);
-	
-	<V> List<V> copyList(Collection<V> origin);
-	
-	<K, V> Map<K, V> copyMap(Map<K, V> origin);
+    <T> T copy(T origin);
 
-	static PrototypesBuilder builder() {
-		return SimplePrototypes.builder();
-	}
-	
+    <V> Set<V> copySet(Collection<V> origin);
+
+    <V> List<V> copyList(Collection<V> origin);
+
+    <K, V> Map<K, V> copyMap(Map<K, V> origin);
 }

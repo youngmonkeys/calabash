@@ -7,11 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PersistDeleteOneAction implements PersistAction {
 
-	protected final Object key;
-	
-	@Override
-	public PersistActionType getType() {
-		return PersistActionType.DELETE_ONE;
-	}
-	
+    protected final Object key;
+
+    @Override
+    public PersistActionType getType() {
+        return PersistActionType.DELETE_ONE;
+    }
 }

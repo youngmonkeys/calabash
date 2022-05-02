@@ -14,91 +14,89 @@ import com.tvd12.ezyfox.util.EzyLoggable;
 
 public class SimpleBytesMapFactory extends EzyLoggable implements BytesMapFactory {
 
-	protected final Settings settings;
-	protected final MapPersistManager mapPersistManager;
-	protected final BytesLongConverter bytesLongConverter;
-	protected final BytesMapBackupExecutor mapBackupExecutor;
-	protected final BytesMapPersistExecutor mapPersistExecutor;
-	protected final BytesMapPersistFactory bytesMapPersistFactory;
-	
-	protected SimpleBytesMapFactory(Builder builder) {
-		this.settings = builder.settings;
-		this.bytesLongConverter = builder.bytesLongConverter;
-		this.mapPersistManager = builder.mapPersistManager;
-		this.mapBackupExecutor = builder.mapBackupExecutor;
-		this.mapPersistExecutor = builder.mapPersistExecutor;
-		this.bytesMapPersistFactory = builder.bytesMapPersistFactory;
-	}
-	
-	@Override
-	public BytesMap newMap(String mapName) {
-		BytesMap map = createMap(mapName);
-		newMapPersist(mapName);
-		return map;
-	}
-	
-	protected BytesMap createMap(String mapName) {
-		BytesMap map = BytesMapImpl.builder()
-				.bytesLongConverter(bytesLongConverter)
-				.mapBackupExecutor(mapBackupExecutor)
-				.mapPersistExecutor(mapPersistExecutor)
-				.mapSetting(settings.getMapSetting(mapName))
-				.build();
-		return map;
-	}
-	
-	protected void newMapPersist(String mapName) {
-		BytesMapPersist mapPersist = bytesMapPersistFactory.newMapPersist(mapName);
-		mapPersistManager.addMapPersist(mapName, mapPersist);
-	}
-	
-	public static Builder builder() {
-		return new Builder();
-	}
-	
-	public static class Builder implements EzyBuilder<BytesMapFactory> {
-		
-		protected Settings settings;
-		protected MapPersistManager mapPersistManager;
-		protected BytesLongConverter bytesLongConverter;
-		protected BytesMapPersistFactory bytesMapPersistFactory;
-		protected BytesMapBackupExecutor mapBackupExecutor;
-		protected BytesMapPersistExecutor mapPersistExecutor;
-		
-		public Builder settings(Settings settings) {
-			this.settings = settings;
-			return this;
-		}
-		
-		public Builder bytesLongConverter(BytesLongConverter bytesLongConverter) {
-			this.bytesLongConverter = bytesLongConverter;
-			return this;
-		}
-		
-		public Builder bytesMapPersistFactory(BytesMapPersistFactory bytesMapPersistFactory) {
-			this.bytesMapPersistFactory = bytesMapPersistFactory;
-			return this;
-		}
-		
-		public Builder mapPersistManager(MapPersistManager mapPersistManager) {
-			this.mapPersistManager = mapPersistManager;
-			return this;
-		}
-		
-		public Builder mapBackupExecutor(BytesMapBackupExecutor mapBackupExecutor) {
-			this.mapBackupExecutor = mapBackupExecutor;
-			return this;
-		}
-		
-		public Builder mapPersistExecutor(BytesMapPersistExecutor mapPersistExecutor) {
-			this.mapPersistExecutor = mapPersistExecutor;
-			return this;
-		}
-		
-		@Override
-		public BytesMapFactory build() {
-			return new SimpleBytesMapFactory(this);
-		}
-	}
-	
+    protected final Settings settings;
+    protected final MapPersistManager mapPersistManager;
+    protected final BytesLongConverter bytesLongConverter;
+    protected final BytesMapBackupExecutor mapBackupExecutor;
+    protected final BytesMapPersistExecutor mapPersistExecutor;
+    protected final BytesMapPersistFactory bytesMapPersistFactory;
+
+    protected SimpleBytesMapFactory(Builder builder) {
+        this.settings = builder.settings;
+        this.bytesLongConverter = builder.bytesLongConverter;
+        this.mapPersistManager = builder.mapPersistManager;
+        this.mapBackupExecutor = builder.mapBackupExecutor;
+        this.mapPersistExecutor = builder.mapPersistExecutor;
+        this.bytesMapPersistFactory = builder.bytesMapPersistFactory;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    @Override
+    public BytesMap newMap(String mapName) {
+        BytesMap map = createMap(mapName);
+        newMapPersist(mapName);
+        return map;
+    }
+
+    protected BytesMap createMap(String mapName) {
+        return BytesMapImpl.builder()
+            .bytesLongConverter(bytesLongConverter)
+            .mapBackupExecutor(mapBackupExecutor)
+            .mapPersistExecutor(mapPersistExecutor)
+            .mapSetting(settings.getMapSetting(mapName))
+            .build();
+    }
+
+    protected void newMapPersist(String mapName) {
+        BytesMapPersist mapPersist = bytesMapPersistFactory.newMapPersist(mapName);
+        mapPersistManager.addMapPersist(mapName, mapPersist);
+    }
+
+    public static class Builder implements EzyBuilder<BytesMapFactory> {
+
+        protected Settings settings;
+        protected MapPersistManager mapPersistManager;
+        protected BytesLongConverter bytesLongConverter;
+        protected BytesMapPersistFactory bytesMapPersistFactory;
+        protected BytesMapBackupExecutor mapBackupExecutor;
+        protected BytesMapPersistExecutor mapPersistExecutor;
+
+        public Builder settings(Settings settings) {
+            this.settings = settings;
+            return this;
+        }
+
+        public Builder bytesLongConverter(BytesLongConverter bytesLongConverter) {
+            this.bytesLongConverter = bytesLongConverter;
+            return this;
+        }
+
+        public Builder bytesMapPersistFactory(BytesMapPersistFactory bytesMapPersistFactory) {
+            this.bytesMapPersistFactory = bytesMapPersistFactory;
+            return this;
+        }
+
+        public Builder mapPersistManager(MapPersistManager mapPersistManager) {
+            this.mapPersistManager = mapPersistManager;
+            return this;
+        }
+
+        public Builder mapBackupExecutor(BytesMapBackupExecutor mapBackupExecutor) {
+            this.mapBackupExecutor = mapBackupExecutor;
+            return this;
+        }
+
+        public Builder mapPersistExecutor(BytesMapPersistExecutor mapPersistExecutor) {
+            this.mapPersistExecutor = mapPersistExecutor;
+            return this;
+        }
+
+        @Override
+        public BytesMapFactory build() {
+            return new SimpleBytesMapFactory(this);
+        }
+    }
 }
